@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <script src="{% static 'robofork_app/js/jquery.3.2.1.js' %}"></script>
+    <script src="{% static 'robofork_app/js/popper.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/css/bootstrap.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/css/bootstrap-grid.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/css/bootstrap-reboot.css' %}" />
+    <script src="{% static 'robofork_app/js/bootstrap.js' %}"></script>
+    <script src="{% static 'robofork_app/js/bootstrap.bundle.js' %}"></script>
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>
