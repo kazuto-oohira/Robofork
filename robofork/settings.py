@@ -70,6 +70,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'robofork.wsgi.application'
 
+# add Login method
+LOGIN_URL = 'robofork_app:index'
+#LOGIN_REDIRECT_URL = 'robofork_app:redilect'
+
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
