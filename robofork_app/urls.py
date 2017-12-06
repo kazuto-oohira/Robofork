@@ -3,5 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('okuda', views.okuda),
+    path('redirect', views.redirect, name='redirect'),
 ]

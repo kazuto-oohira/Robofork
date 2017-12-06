@@ -3,24 +3,27 @@
 
 {% block content %}
 
-<!-- ログイン画面 20171205 -->
+<!-- ログイン画面 20171206 -->
 <h1>NKC</h1>
 <h1>Welcome to RoboFork IoT Manager</h1><br />
-<form action="/okuda" method="post" class="form-horizontal">
-    {% csrf_token %}
+<form action="/redirect" method="post" class="form-horizontal">
+{% csrf_token %}
+
+<!-- 対比用のオフセット空白行が欲しい***　--> 
  <div class="form-group">
     <div class="col-md-16"></div>
  </div>
+<!-- 対比用のオフセット空白行が欲しい*** -->
 
   <div class="form-group">
     <div class="col-md-12 col-md-offset-2">
-      <input type="text" class="form-control" id="login_name" name="name" placeholder="Name" value="{{ name1 }}" /><br />
+      <input type="text" class="form-control" id="login_name" name="name" placeholder="Name" /><br />
     </div>
   </div>
   
   <div class="form-group">
     <div class="col-md-12">
-      <input type="text" class="form-control" id="input_password" name="password" placeholder="Password"  value="{{ password1 }}"/></label><br />
+      <input type="text" class="form-control" id="input_password" name="password" placeholder="Password" /></label><br />
     </div>
   </div>
   
