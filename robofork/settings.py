@@ -24,6 +24,7 @@ SECRET_KEY = '$go0+$iu_8vo7m@d@(exo)2t%eehnq+ar_o_u5gcx715z3g^ly'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+INTERNAL_IPS = ('127.0.0.1')
 
 ALLOWED_HOSTS = []
 
@@ -38,9 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -71,7 +74,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'robofork.wsgi.application'
 
 # add Login method
-LOGIN_URL = 'robofork_app:index'
+# LOGIN_URL = 'robofork_app:index'
 #LOGIN_REDIRECT_URL = 'robofork_app:redilect'
 
 
