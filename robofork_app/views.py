@@ -6,21 +6,29 @@ from . import models
 def index(request):
     return render(request, 'robofork_app/index.html', None)
 
-
 def redirect(request):
-    
     disp_data = {
         'name': request.POST.get('name'),
         'password': request.POST.get('password'),
     }
-
     # models.pyにてログイン判定
-    which = models.my_view(request)
-    
-    # ユーザーと一致した場合 本来のページに移動
-    if which == 1:
-        return render(request, 'robofork_app/redirect.html', disp_data)
-
-    # ユーザーと一致しない場合 index.htmlに移動
+    # 権限がuserの場合
+    if models.my_view(request) == 1:
+        return render(request, 'robofork_app/usr.html', None)
+    # 権限がmanageの場合
+    if models.my_view(request) == 2:
+        return render(request, 'robofork_app/manage.html', None)
+    # 権限がNKC(planer)の場合
+    if models.my_view(request) == 3:
+        return render(request, 'robofork_app/plan.html', None)
+    # ユーザーと一致しない場合 index.htmlに移動（正しい値を入力するように促しても良い）
     else:
-        return render(request, 'robofork_app/index.html', disp_data)
+        return render(request, 'robofork_app/index.html', None)
+
+# logout用 test
+def logout(request):
+    disp_data = {
+        'name': request.POST.get('name'),
+        'password': request.POST.get('password'),
+    }
+    return render(request, 'robofork_app/logout.html', disp_data)
