@@ -1,5 +1,5 @@
 from django.urls import path
-from robofork_app.controllers import top
+from robofork_app.views import top
 
 urlpatterns = [
     path('', top.index, name='top'),
