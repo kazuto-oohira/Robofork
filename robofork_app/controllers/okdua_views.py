@@ -3,9 +3,6 @@ from django.template import loader
 from django.contrib.auth import authenticate, login
 from . import models
 
-def index(request):
-    return render(request, 'robofork_app/index.html', None)
-
 def redirect(request):
     disp_data = {
         'name': request.POST.get('name'),
