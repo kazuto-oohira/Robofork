@@ -5,7 +5,7 @@
     <div class="container">
         <h1>車両一覧</h1>
         <div class="col-md-8">
-            <form action="/redirect" method="post" class="form-horizontal">
+            <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="vehicle_name">車両名</label>
