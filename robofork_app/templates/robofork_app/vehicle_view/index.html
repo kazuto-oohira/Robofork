@@ -12,6 +12,7 @@
                             <th scope="col">#</th>
                             <th scope="col">車両名</th>
                             <th scope="col">車両ID</th>
+                            <th scope="col"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -20,6 +21,7 @@
                             <th scope="row">{{ vehicle.id }}</th>
                             <td>{{ vehicle.name }}</td>
                             <td>{{ vehicle.vehicle_no }}</td>
+                            <td><a class="btn btn-success" href="{% url 'vehicle_detail' vehicle.id %}" role="button">新規登録</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

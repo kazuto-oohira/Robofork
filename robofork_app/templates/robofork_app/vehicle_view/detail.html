@@ -9,12 +9,12 @@
                 {% csrf_token %}
                 <div class="form-group">
                     <label for="vehicle_name">車両名</label>
-                    <input type="text" class="form-control" id="vehicle_name" name="vehicle[name]" placeholder="車両名"/>
+                    <input type="text" class="form-control" id="vehicle_name" name="vehicle[name]" placeholder="車両名" value="{{ vehicle.name }}"/>
                     <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
                 </div>
                 <div class="form-group">
                     <label for="vehicle_vehicle_no">車両名</label>
-                    <input type="text" class="form-control" id="vehicle_vehicle_no" name="vehicle[vehicle_no]" placeholder="車両ID"/>
+                    <input type="text" class="form-control" id="vehicle_vehicle_no" name="vehicle[vehicle_no]" placeholder="車両ID" value="{{ vehicle.vehicle_no }}"/>
                     <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
                 </div>
                 <button type="submit" class="btn btn-primary">登録</button>
