@@ -22,7 +22,7 @@ def redirect(request):
         return render(request, 'robofork_app/plan.html', None)
     # ユーザーと一致しない場合 index.htmlに移動（正しい値を入力するように促しても良い）
     else:
-        return render(request, 'robofork_app/index.html', None)
+        return render(request, 'robofork_app/detail.html', None)
 
 # logout用 test
 def logout(request):

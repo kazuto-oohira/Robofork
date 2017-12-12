@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}車両一覧 | Robofork{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>車両明細</h1>
+        <div class="col-md-8">
+            <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="vehicle_name">車両名</label>
+                    <input type="text" class="form-control" id="vehicle_name" name="vehicle[name]" placeholder="車両名"/>
+                    <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
+                </div>
+                <div class="form-group">
+                    <label for="vehicle_vehicle_no">車両名</label>
+                    <input type="text" class="form-control" id="vehicle_vehicle_no" name="vehicle[vehicle_no]" placeholder="車両ID"/>
+                    <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
+                </div>
+                <button type="submit" class="btn btn-primary">登録</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}

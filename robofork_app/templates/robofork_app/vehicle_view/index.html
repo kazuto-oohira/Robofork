@@ -5,20 +5,31 @@
     <div class="container">
         <h1>車両一覧</h1>
         <div class="col-md-8">
-            <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="vehicle_name">車両名</label>
-                    <input type="text" class="form-control" id="vehicle_name" name="vehicle[name]" placeholder="車両名"/>
-                    <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
+            {% if vehicles %}
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">車両名</th>
+                            <th scope="col">車両ID</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for vehicle in vehicles %}
+                        <tr>
+                            <th scope="row">{{ vehicle.id }}</th>
+                            <td>{{ vehicle.name }}</td>
+                            <td>{{ vehicle.vehicle_no }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <div class="alert alert-secondary" role="alert">
+                    車両が見つかりません
                 </div>
-                <div class="form-group">
-                    <label for="vehicle_vehicle_no">車両名</label>
-                    <input type="text" class="form-control" id="vehicle_vehicle_no" name="vehicle[vehicle_no]" placeholder="車両ID"/>
-                    <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
-                </div>
-                <button type="submit" class="btn btn-primary">登録</button>
-            </form>
+            {% endif %}
+            <a class="btn btn-primary" href="{% url 'vehicle_new' %}" role="button">新規登録</a>
         </div>
     </div>
 {% endblock %}

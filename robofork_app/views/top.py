@@ -9,6 +9,6 @@ def index(request):
     """
 
     # 直接ログイン画面を開く方法
-    # return render(request, 'robofork_app/top/index.html', None)
+    # return render(request, 'robofork_app/top/detail.html', None)
     # リダイレクトする方法
     return redirect('vehicle_index')
