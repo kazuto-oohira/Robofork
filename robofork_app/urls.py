@@ -1,8 +1,8 @@
 from django.urls import path
-from robofork_app.views import top, vehicle_view
+from robofork_app.views import top_view, vehicle_view
 
 urlpatterns = [
-    path('', top.index, name='top'),
+    path('', top_view.index, name='top'),
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
     path('vehicle/save', vehicle_view.save, name='vehicle_save'),
