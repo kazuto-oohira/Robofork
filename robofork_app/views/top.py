@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 
 def index(request):
@@ -7,4 +7,8 @@ def index(request):
     :param request:
     :return:
     """
-    return render(request, 'robofork_app/top/index.html', None)
+
+    # 直接ログイン画面を開く方法
+    # return render(request, 'robofork_app/top/index.html', None)
+    # リダイレクトする方法
+    return redirect('vehicle_index')
