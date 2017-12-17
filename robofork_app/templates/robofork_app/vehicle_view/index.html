@@ -21,7 +21,7 @@
                             <th scope="row">{{ vehicle.id }}</th>
                             <td>{{ vehicle.name }}</td>
                             <td>{{ vehicle.vehicle_no }}</td>
-                            <td><a class="btn btn-success" href="{% url 'vehicle_detail' vehicle.id %}" role="button">新規登録</a></td>
+                            <td><a class="btn btn-success" href="{% url 'vehicle_detail' vehicle.id %}" role="button">編集</a></td>
                         </tr>
                     {% endfor %}
                     </tbody>

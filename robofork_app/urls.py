@@ -6,6 +6,7 @@ urlpatterns = [
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
     path('vehicle/save', vehicle_view.save, name='vehicle_save'),
+    path('vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
     path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
 
     # 奥田くんのやつは一旦コメントアウト

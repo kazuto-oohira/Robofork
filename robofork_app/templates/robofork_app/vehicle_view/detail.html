@@ -4,21 +4,35 @@
 {% block content %}
     <div class="container">
         <h1>車両明細</h1>
+        {% if form.errors %}
+            <div class="col-md-8 alert alert-danger" role="alert">
+                {% for field, error in form.errors.items %}
+                    {{ field|escape }}: {{ error|escape }}
+                {% endfor %}
+            </div>
+        {% endif %}
         <div class="col-md-8">
-            <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="vehicle_name">車両名</label>
-                    <input type="text" class="form-control" id="vehicle_name" name="vehicle[name]" placeholder="車両名" value="{{ vehicle.name }}"/>
-                    <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
-                </div>
-                <div class="form-group">
-                    <label for="vehicle_vehicle_no">車両名</label>
-                    <input type="text" class="form-control" id="vehicle_vehicle_no" name="vehicle[vehicle_no]" placeholder="車両ID" value="{{ vehicle.vehicle_no }}"/>
-                    <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
-                </div>
-                <button type="submit" class="btn btn-primary">登録</button>
-            </form>
+            {% if form.instance.id %}
+                <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal">
+            {% else %}
+                <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
+            {% endif %}
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="vehicle_name">車両名</label>
+                        <input type="text" class="form-control" id="{{ form.name.auto_id }}" name="{{ form.name.html_name }}"
+                               placeholder="車両名" value="{{ form.name.value|default_if_none:'' }}"/>
+                        <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="vehicle_vehicle_no">車両名</label>
+                        <input type="text" class="form-control" id="{{ form.vehicle_no.auto_id }}"
+                               name="{{ form.vehicle_no.html_name }}" placeholder="車両ID"
+                               value="{{ form.vehicle_no.value|default_if_none:'' }}"/>
+                        <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">登録</button>
+                </form>
         </div>
     </div>
 {% endblock %}
