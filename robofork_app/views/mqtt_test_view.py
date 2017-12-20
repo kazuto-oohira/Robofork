@@ -20,7 +20,7 @@ def send(request):
 
     # MQTT送信
     client = mqtt.Client()
-    client.connect("192.168.100.29", 1883, 60)
+    client.connect("192.168.1.121", 1883, 60)
     client.publish("Robofork/" + serial_number + "/toR", payload_json)
 
     return JsonResponse({'result': True})
