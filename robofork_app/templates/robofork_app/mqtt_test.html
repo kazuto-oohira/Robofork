@@ -29,6 +29,7 @@
 
     <script type="text/javascript">
     $(function() {
+        // 送信ボタンクリック
         $('#can_send').click(function() {
             $.ajax({
                 url: 'mqtt_test/send',
@@ -39,10 +40,18 @@
                 }
             }).done(function(data) {
                 if (data["result"] && data["result"] == true) {
-                    $('#can_id').val("");
-                    $('#can_data').val("");
+                    $('#can_send').popover('show');
+                    setTimeout(function() {
+                        $('#can_send').popover('hide');
+                    }, 1500);
                 }
             });
+        });
+
+        // 送信ボタン: Popover定義
+        $('#can_send').popover({
+            content: '送信しました',
+            trigger: 'manual'
         });
     });
     </script>

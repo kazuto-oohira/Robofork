@@ -13,7 +13,7 @@ def on_connect(client, userdata, flags, rc):
 
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
+    # print(msg.topic + " " + str(msg.payload))
     requests.post('http://127.0.0.1:8000/mqtt_test/receive', data={'payload': msg.payload})
 
 
