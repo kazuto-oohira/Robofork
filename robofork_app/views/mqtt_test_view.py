@@ -1,7 +1,12 @@
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 import paho.mqtt.client as mqtt
+
+
+def index(request):
+    return render(request, 'robofork_app/mqtt_test.html', None)
 
 
 @csrf_exempt
@@ -21,7 +26,7 @@ def send(request):
     # MQTT送信
     client = mqtt.Client()
     client.connect("192.168.1.121", 1883, 60)
-    client.publish("Robofork/" + serial_number + "/toR", payload_json)
+    client.publish("Robofork/" + serial_number + "/toS", payload_json)
 
     return JsonResponse({'result': True})
 

@@ -10,6 +10,7 @@ urlpatterns = [
     path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
 
     # MQTT テスト
+    path('mqtt_test', mqtt_test_view.index),
     path('mqtt_test/send', mqtt_test_view.send),
     path('mqtt_test/receive', mqtt_test_view.receive),
 
