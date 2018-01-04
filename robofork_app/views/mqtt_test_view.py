@@ -3,6 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
 import paho.mqtt.client as mqtt
+from channels import Group
+from channels.sessions import channel_session
 
 
 def index(request):
@@ -31,10 +33,18 @@ def send(request):
     return JsonResponse({'result': True})
 
 
-@csrf_exempt
-def receive(request):
-    payload = json.loads(request.POST['payload'])
+# @channel_session
+def ws_add(message):
+    message.reply_channel.send({"accept": True})
+    Group("can").add(message.reply_channel)
 
-    print(payload["serial_number"] + ":" + payload["id"] + ":" + ' '.join(payload["data"]))
 
-    return JsonResponse({'result': True})
+def ws_disconnect(message):
+    Group("can").discard(message.reply_channel)
+
+
+# @channel_session
+def ws_message(message):
+    Group("can").send({
+        "text": message.content['text'],
+    })

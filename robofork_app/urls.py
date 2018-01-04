@@ -12,7 +12,6 @@ urlpatterns = [
     # MQTT テスト
     path('mqtt_test', mqtt_test_view.index),
     path('mqtt_test/send', mqtt_test_view.send),
-    path('mqtt_test/receive', mqtt_test_view.receive),
 
     # 奥田くんのやつは一旦コメントアウト
     # path('redirect', views.redirect, name='redirect'),
