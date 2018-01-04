@@ -63,6 +63,7 @@
         });
         socket.addEventListener('message', function (event) {
             console.log(event.data);
+            $('#can_received').val(Date() + " "  + event.data + "\n" + $('#can_received').val());
         });
     });
     </script>
