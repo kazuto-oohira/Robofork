@@ -14,6 +14,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/css/vendor/bootstrap-reboot.css' %}" />
     <script src="{% static 'robofork_app/js/vendor/bootstrap.js' %}"></script>
     <script src="{% static 'robofork_app/js/vendor/bootstrap.bundle.js' %}"></script>
+    {% block page_scripts %}{% endblock %}
+    {% block page_style_sheets %}{% endblock %}
 </head>
 <body>
     {% block content %}{% endblock %}
