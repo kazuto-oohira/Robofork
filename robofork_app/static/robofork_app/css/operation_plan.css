@@ -1,4 +1,19 @@
+#map-container {
+    position: relative;
+    width: 460px;
+    height: 580px;
+}
 #map-img {
-    width: 818px;
-    height: 578px;
+    position: relative;
+    width: 460px;
+    height: 580px;
+}
+#map-draw-layer {
+    position: absolute;
+    width: 460px;
+    height: 580px;
+    top: 0;
+    left: 0;
+    /*background-color: #1b6d85;*/
+    /*opacity: 0.25;*/
 }
