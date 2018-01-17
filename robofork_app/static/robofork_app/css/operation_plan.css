@@ -1,14 +1,14 @@
-#map-container {
+.operation-plan-detail #map-container {
     position: relative;
     width: 460px;
     height: 580px;
 }
-#map-img {
+.operation-plan-detail #map-img {
     position: relative;
     width: 460px;
     height: 580px;
 }
-#map-draw-layer {
+.operation-plan-detail #map-draw-layer {
     position: absolute;
     width: 460px;
     height: 580px;

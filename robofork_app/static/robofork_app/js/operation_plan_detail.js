@@ -32,6 +32,10 @@ RBFK.operationPlan = (function(global) {
                 'fill': 'blue',
                 'cx': function(d) { return d['x']; },
                 'cy': function(d) { return d['y']; }
+            })
+            .style({ 'cursor': 'pointer' })
+            .on('click', function(d) {
+                alert(d['x'] + "/" + d['y']);
             });
     };
 
