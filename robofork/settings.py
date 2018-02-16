@@ -26,7 +26,9 @@ SECRET_KEY = '$go0+$iu_8vo7m@d@(exo)2t%eehnq+ar_o_u5gcx715z3g^ly'
 DEBUG = True
 INTERNAL_IPS = ('127.0.0.1')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '*'
+]
 
 
 # Application definition

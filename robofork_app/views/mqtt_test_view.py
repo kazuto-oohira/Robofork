@@ -24,10 +24,12 @@ def send(request):
         'data': [(i + j) for (i, j) in zip(can_data[::2], can_data[1::2])],
     }
     payload_json = json.dumps(payload_data)
+    
+    print(payload_json)
 
     # MQTT送信
     client = mqtt.Client()
-    client.connect("192.168.1.121", 1883, 60)
+    client.connect("192.168.13.101", 1883, 60)
     client.publish("Robofork/" + serial_number + "/toR", payload_json)
 
     return JsonResponse({'result': True})

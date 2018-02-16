@@ -1,6 +1,7 @@
 from django.urls import path
 from robofork_app.views import top_view, vehicle_view, mqtt_test_view
 from robofork_app.views.operation_plan.operation_plan_detail_view import *
+from robofork_app.views.vehicle_control_view import *
 
 urlpatterns = [
     path('', top_view.index, name='top'),
@@ -11,6 +12,8 @@ urlpatterns = [
     path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
 
     path('operation_plan', OperationPlanDetailView.as_view(), name='operation_show'),
+
+    path('vehicle/control/<int:vehicle_id>', VehicleControlView.as_view(), name='vehicle_control'),
 
     # MQTT テスト
     path('mqtt_test', mqtt_test_view.index),
