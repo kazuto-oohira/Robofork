@@ -133,9 +133,9 @@
 
                 // ステア角(-90度〜0〜90度)
                 if (onHorizontalDirection === 'right') {
-                    horizontalMinus = 1;
-                } else if (onHorizontalDirection === 'left') {
                     horizontalMinus = -1;
+                } else if (onHorizontalDirection === 'left') {
+                    horizontalMinus = 1;
                 } else {
                     return;
                 }
@@ -154,12 +154,26 @@
                     url: '/mqtt_test/send',
                     type: 'POST',
                     data: {
+                        //can_id: '1E0',
+                        can_id: '105',
+                        can_data: sendData + '0000'
+                    }
+                });
+            } else {
+                var offset = 32768;
+                var sendData = '00';
+                sendData += toHex(0 + offset) + toHex(0 + offset);
+
+                $.ajax({
+                    url: '/mqtt_test/send',
+                    type: 'POST',
+                    data: {
                         can_id: '105',
                         can_data: sendData + '0000'
                     }
                 });
             }
-        }, 100);
+        }, 200);
 
         // 手動自動
         $('#btn-auto, #btn-manual').click(function(data) {
