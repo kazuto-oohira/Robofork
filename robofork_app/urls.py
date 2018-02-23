@@ -11,7 +11,7 @@ urlpatterns = [
     path('vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
     path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
 
-    path('operation_plan', OperationPlanDetailView.as_view(), name='operation_show'),
+    path('operation_plan/<int:operation_plan_id>', OperationPlanDetailView.as_view()),
 
     path('vehicle/control/<int:vehicle_id>', VehicleControlView.as_view(), name='vehicle_control'),
 

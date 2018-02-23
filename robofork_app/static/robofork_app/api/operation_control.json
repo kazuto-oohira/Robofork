@@ -1,0 +1,17 @@
+{
+    'map-image': {
+      url: '/img/test/hoge.jpg',
+      width: 800,
+      height: 600
+    },
+    'master-markers': [
+        { id: 1, x:69, y:104, otonari: [2, 3] },
+        { id: 2, x:69, y:198 },
+        { id: 3, x:69, y:198 },
+        { id: 4, x:194, y:245 },
+        { id: 5, x:194, y:245 },
+        { id: 6, x:231, y:198 },
+        { id: 7, x:231, y:198 },
+        { id: 8, x:231, y:104 }
+    ]
+}
