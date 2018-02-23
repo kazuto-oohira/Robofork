@@ -14,3 +14,7 @@
 	* `python manage.py runserver`
 	* 8000 番ポートをすでに使用している場合は末尾に別のポート番号をつける
 	* access <http://127.0.0.1:8000>
+
+一部 `/operation_plan/` 以下については、
+別途フロントエンドのフレームワークを導入しており、
+詳しくは robofork_frontend/README.md を参照のこと。

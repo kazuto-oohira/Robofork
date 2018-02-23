@@ -2,7 +2,9 @@
 {% block title %}運用 | Robofork{% endblock %}
 
 {% block page_style_sheets %}
+<!-- コンポーネント内では使わないため、コンポーネントの外で使う場合に追加する
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}robofork_app/css/operation_plan.css" />
+    -->
 {% endblock %}
 {% block page_scripts %}
     <script src="{{ STATIC_URL }}robofork_app/vendor/d3.v3.min.js"></script>
@@ -10,14 +12,16 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container operation-plan-detail">
-        <div class="row">
-            <div class="col-xs-12">
-                <div id="map-container">
-                    <img id="map-img" src="{{ STATIC_URL }}robofork_app/img/test/map1.jpg">
-                    <svg id="map-draw-layer"></svg>
-                </div>
-            </div>
+    <div class="container operation-plan-detail" id="app">
+      <div class="row">
+        <div class="col-xs-6">
+          <h2>マップ画面</h2>
+          <map-viewer></map-viewer>
         </div>
+        <div class="col-xs-6">
+          <h2>指示画面</h2>
+          <command-viewer></command-viewer>
+        </div>
+      </div>
     </div>
 {% endblock %}
