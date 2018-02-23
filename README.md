@@ -2,7 +2,7 @@
 
 ## 開発環境の動かし方
 
-1. Python 3.4 以上の環境を整える
+1. Python 3.6 以上の環境を整える
 	* see <https://docs.djangoproject.com/ja/2.0/faq/install/#faq-python-version-support>
 	* `python -V`
 2. requirements.txt の依存パッケージをインストールする
