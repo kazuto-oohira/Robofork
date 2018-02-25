@@ -8,7 +8,7 @@
     "offsetX": "-2.5",
     "offsetY": "0",
     "startNode": 1,
-    "sitartDir": 1
+    "startDir": 1
   },
   "mainNodes": [
     { "id": 1, "x": "-7.9",  "y": "-1.2", "neighbors": [19] },
