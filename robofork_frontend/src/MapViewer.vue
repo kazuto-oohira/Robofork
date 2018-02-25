@@ -1,8 +1,7 @@
 <template>
   <div id="map-viewer">
-    <p>MapViewer component here</p>
     <div id="map-container">
-      <img id="map-img" :src="mapImage">
+      <img v-if="mapImage" id="map-img" :src="mapImage.url" :width="mapImage.width" :height="mapImage.height">
       <svg id="map-draw-layer">
         <circle v-for="node in nodes" r="8" fill="blue" :cx="node.x" :cy="node.y" @click="click(node)"></circle>
       </svg>
@@ -11,24 +10,35 @@
 </template>
 
 <script>
+import axios from 'axios'
+
+const OPERATION_ENDPOINT = '/static/robofork_app/api/operation_control.json';
+
 export default {
   name: 'map-viewer',
   data () {
     return {
-      nodes: [
-        { id: 1, x:69,  y:104, neighbors: [2]    },
-        { id: 2, x:69,  y:198, neighbors: [1, 3] },
-        { id: 3, x:194, y:245, neighbors: [2, 4] },
-        { id: 4, x:231, y:198, neighbors: [3, 5] },
-        { id: 5, x:231, y:104, neighbors: [4]    },
-      ],
-      mapImage: '/static/robofork_app/img/test/map1.jpg',
+      nodes: [],
+      mapImage: {},
     }
   },
+
   methods: {
     click: function(node) {
       window.alert(`${node.x} / ${node.y}`);
     },
+  },
+
+  created() {
+    axios.get(OPERATION_ENDPOINT)
+      .then((resp) => {
+        if ('nodes' in resp.data) {
+          this.nodes = resp.data.nodes;
+        }
+        if ('mapImage' in resp.data) {
+          this.mapImage = resp.data.mapImage;
+        }
+      });
   },
 }
 </script>
