@@ -5,6 +5,14 @@
         <img v-if="config" class="map-image" :src="config.imageUrl">
         <svg class="map-draw-layer">
           <circle
+          v-for="(node, index) in allnodes"
+          v-if="showAll"
+          :cx="mapSubX[index]"
+          :cy="mapSubY[index]"
+          class="subnode"
+          :title="node.id">
+          </circle>
+          <circle
           v-for="(node, index) in mainNodes"
           :cx="mapX[index]"
           :cy="mapY[index]"
@@ -19,10 +27,22 @@
       </div>
     </div>
     <div class="row">
-      <h3>履歴操作</h3>
-      <button @click="undo()" :disabled="!hasUndo" class="btn btn-default">undo</button>
-      <button @click="redo()" :disabled="!hasRedo" class="btn btn-default">redo</button>
-      <button @click="clear()":disabled="selectedNodes.length <= 0" class="btn btn-warning">clear</button>
+      <div class="btn-group">
+        <button @click="undo()" :disabled="!hasUndo" class="btn btn-default">undo</button>
+        <button @click="redo()" :disabled="!hasRedo" class="btn btn-default">redo</button>
+        <button @click="clear()":disabled="selectedNodes.length <= 0" class="btn btn-warning">clear</button>
+      </div>
+      <div class="btn-group">
+        <button @click="startAnimation()" class="btn btn-primary">Start</button>
+        <button @click="startAnimation()" class="btn btn-danger">Stop</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" v-model="showAll"> サブノードも含めて表示する
+        </label>
+      </div>
     </div>
     <div class="row">
       <div class="log col-sm-12">
@@ -30,6 +50,7 @@
         <p>selectedNodes: {{ selectedNodes.map(n => n.id).join(',') }}</p>
         <p>hasUndo: {{ hasUndo }}</p>
         <p>hasRedo: {{ hasRedo }}</p>
+        <p>allnodes: {{ allnodes }}</p>
       </div>
     </div>
   </div>
@@ -47,10 +68,12 @@ export default {
   data() {
     return {
       mainNodes: [],
+      subNodes: [],
       config: {},
       selectedNodes: [],
       hasUndo: false,
       hasRedo: false,
+      showAll: false,
     }
   },
 
@@ -84,6 +107,24 @@ export default {
       });
     },
 
+    mapSubX: function() {
+      return this.allnodes.map((item) => {
+        const offsetX = Number(item.x) + Number(this.config.offsetX);
+        return offsetX * this.unitX + this.config.imageWidth;
+      });
+    },
+
+    mapSubY: function() {
+      return this.allnodes.map((item) => {
+        const offsetY = Number(item.y) + Number(this.config.offsetY);
+        return -offsetY * this.unitY;
+      });
+    },
+
+    allnodes: function() {
+      return this.mainNodes.concat(...this.subNodes.map(item => item.nodes)).sort((a, b) => a.id - b.id);
+    },
+
     currentId: function() {
       return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : this.config.startNode;
     },
@@ -99,6 +140,9 @@ export default {
         }
         if ('mainNodes' in resp.data) {
           this.mainNodes = resp.data.mainNodes;
+        }
+        if ('subNodes' in resp.data) {
+          this.subNodes = resp.data.subNodes;
         }
 
         this.initialize();
@@ -166,9 +210,12 @@ export default {
 </script>
 
 <style>
+.row {
+  margin-bottom: 20px;
+}
 .map-container {
   position: relative;
-  select: none;
+  user-select: none;
 }
 
 .map-image {
@@ -185,6 +232,10 @@ export default {
   top: 0;
 }
 
+.map-draw-layer g {
+  width: 100%;
+  height: 100%;
+}
 .map-draw-layer circle {
   r: 8;
   fill: blue;
@@ -203,11 +254,27 @@ export default {
   cursor: pointer;
 }
 
+.map-draw-layer circle.subnode {
+  r: 4;
+  fill: yellow;
+}
+
+.map-draw-layer circle.current-path {
+  fill: red;
+}
+
+.btn-group + .btn-group {
+  margin-left: 20px;
+}
+
+.checkbox label {
+  user-select: none;
+}
+
 .log {
   height: 100px;
   box-sizing: border-box;
   overflow: scroll;
-  margin-top: 20px;
   padding: 0.5rem 1rem;
   background: #eee;
 }
