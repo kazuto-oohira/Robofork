@@ -14,11 +14,11 @@
       </div>
       <div class="col-xs-6">
         <h2>指示画面</h2>
-        <command-viewer></command-viewer>
+        <command-viewer
+          :mainNodes="mainNodes"
+          :routes="routes"
+        ></command-viewer>
       </div>
-    </div>
-    <div class="row">
-      <p>親コンポーネントの情報<br>{{ routes }}</p>
     </div>
   </div>
 </template>
