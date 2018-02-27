@@ -75,19 +75,20 @@
 </template>
 
 <script>
-import axios from 'axios'
-import undo from 'undo-manager'
-
-const OPERATION_ENDPOINT = '/static/robofork_app/api/operation_control.json';
-
 export default {
   name: 'map-viewer',
 
+  props: [
+    'mainNodes',
+    'subNodes',
+    'config',
+    'history',
+    'parentRoutes',
+    'loaded',
+  ],
+
   data() {
     return {
-      mainNodes: [],
-      subNodes: [],
-      config: {},
       selectedNodes: [],
       hasUndo: false,
       hasRedo: false,
@@ -164,34 +165,29 @@ export default {
   },
 
   created() {
-    this.history = new undo();
-
-    axios.get(OPERATION_ENDPOINT)
-      .then((resp) => {
-        if ('config' in resp.data) {
-          this.config = resp.data.config;
-        }
-        if ('mainNodes' in resp.data) {
-          this.mainNodes = resp.data.mainNodes;
-        }
-        if ('subNodes' in resp.data) {
-          this.subNodes = resp.data.subNodes;
-        }
-
+    this.$watch('loaded', () => {
+      if (this.loaded) {
         this.initialize();
+      }
+    });
 
-        // history のバインディングできないところを callback でカバー
-        this.history.setCallback(() => {
-          this.hasUndo = this.history.hasUndo();
-          this.hasRedo = this.history.hasRedo();
-        });
-      });
+    // routes の変更を検知して parentRoutes も変更する
+    this.$watch('routes', () => {
+      this.$emit('update:parentRoutes', this.routes);
+    });
   },
 
   methods: {
     initialize: function() {
       this.selectedNodes = [];
+
       this.history.clear();
+      // history のバインディングできないところを callback でカバー
+      this.history.setCallback(() => {
+        this.hasUndo = this.history.hasUndo();
+        this.hasRedo = this.history.hasRedo();
+      });
+
       this.robofork.x = this.startNode.x;
       this.robofork.y = this.startNode.y;
     },
@@ -285,7 +281,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .row {
   margin-bottom: 20px;
 }
