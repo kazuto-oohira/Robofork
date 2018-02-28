@@ -4,7 +4,13 @@ from django.http import JsonResponse
 import json
 import paho.mqtt.client as mqtt
 from channels import Group
-from channels.sessions import channel_session
+from django.conf import settings
+from os import path
+import csv
+
+
+# 定数
+MQTT_SERVER = '192.168.100.149'
 
 
 def index(request):
@@ -20,8 +26,7 @@ def send(request):
     payload_data = {
         'serial_number': serial_number,
         'id': can_id,
-        # 'data': can_data,
-        'data': [(i + j) for (i, j) in zip(can_data[::2], can_data[1::2])],
+        'data': to_can_data(can_data)
     }
     payload_json = json.dumps(payload_data)
     
@@ -29,13 +34,73 @@ def send(request):
 
     # MQTT送信
     client = mqtt.Client()
-    client.connect("192.168.13.101", 1883, 60)
+    client.connect(MQTT_SERVER, 1883, 60)
     client.publish("Robofork/" + serial_number + "/toR", payload_json)
+    client.disconnect()
 
     return JsonResponse({'result': True})
 
 
-# @channel_session
+def route_execute(request):
+    # MQTT
+    client = mqtt.Client()
+    client.connect(MQTT_SERVER, 1883, 60)
+
+    # ルート情報CSVファイルを開く
+    with open(path.join(settings.BASE_DIR, "test_route.csv")) as f:
+        reader = csv.reader(f, delimiter="\t")
+
+        # 件数を取得してPreMap送信
+        row_count = sum(1 for row in reader)
+        f.seek(0)
+        client.publish("Robofork/1/toR", json.dumps({
+            'serial_number': '1',
+            'id': '101',
+            'data': to_can_data(to_hex(999) + to_hex(row_count) + "00000000")
+        }))
+
+        # 1件ごと
+        index = 1
+        for row in reader:
+            # 102
+            data = to_can_data(
+                to_hex(index) +
+                to_hex(int(float(row[1]) * 1000) + 32768) +
+                to_hex(int(float(row[2]) * 1000) + 32768) +
+                to_hex(int(float(row[4]) * 1000) + 32768)
+            )
+            client.publish("Robofork/1/toR", json.dumps({
+                'serial_number': '1',
+                'id': '102',
+                'data': data
+            }))
+
+            # 103
+            data = to_can_data(
+                to_hex(index) +
+                to_hex_2(int(row[3])) +
+                to_hex_2(int(row[5])) +
+                to_hex(int(float(row[6]) * 1000) + 32768) +
+                to_hex(int(float(row[7]) * 1000) + 32768)
+            )
+            client.publish("Robofork/1/toR", json.dumps({
+                'serial_number': '1',
+                'id': '103',
+                'data': data
+            }))
+
+            index += 1
+
+        client.publish("Robofork/1/toR", json.dumps({
+            'serial_number': '1',
+            'id': '104',
+            'data': to_can_data(to_hex(999) + to_hex_2(1) + to_hex_2(1) + "00000000")
+        }))
+
+    client.disconnect()
+    return JsonResponse({'result': True})
+
+
 def ws_add(message):
     message.reply_channel.send({"accept": True})
     Group("can").add(message.reply_channel)
@@ -45,8 +110,19 @@ def ws_disconnect(message):
     Group("can").discard(message.reply_channel)
 
 
-# @channel_session
 def ws_message(message):
     Group("can").send({
         "text": message.content['text'],
     })
+
+
+def to_hex(value):
+    return hex(value).split('x')[-1].zfill(4)
+
+
+def to_hex_2(value):
+    return hex(value).split('x')[-1].zfill(2)
+
+
+def to_can_data(value):
+    return [(i + j) for (i, j) in zip(value[::2], value[1::2])]

@@ -16,7 +16,7 @@ def on_message(client, userdata, msg):
     # print(msg.topic + " " + str(msg.payload))
 
     # 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
-    ws = websocket.create_connection("ws://127.0.0.1:80/mqtt_test_ws")
+    ws = websocket.create_connection("ws://127.0.0.1:8000/mqtt_test_ws")
     ws.send(msg.payload.decode('ASCII'))
     ws.close()
 
@@ -26,7 +26,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("127.0.0.1", 1883, 60)
+client.connect("192.168.100.149", 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
