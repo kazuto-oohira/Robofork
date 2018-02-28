@@ -68,7 +68,7 @@ def route_execute(request):
                 to_hex(index) +
                 to_hex(int(float(row[1]) * 1000) + 32768) +
                 to_hex(int(float(row[2]) * 1000) + 32768) +
-                to_hex(int(float(row[4]) * 1000) + 32768)
+                to_hex(int(float(row[4])) + 32768)
             )
             print(data)
             client.connect(MQTT_SERVER, 1883, 60)
