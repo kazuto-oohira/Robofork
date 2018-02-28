@@ -7,6 +7,7 @@ from channels import Group
 from django.conf import settings
 from os import path
 import csv
+import time
 
 
 # 定数
@@ -71,6 +72,7 @@ def route_execute(request):
                 to_hex(int(float(row[4])) + 32768)
             )
             print(data)
+            time.sleep(0.02)
             client.connect(MQTT_SERVER, 1883, 60)
             client.publish("Robofork/1/toR", json.dumps({
                 'serial_number': '1',
@@ -87,6 +89,7 @@ def route_execute(request):
                 to_hex(int(float(row[7]) * 1000) + 32768)
             )
             print(data)
+            time.sleep(0.02)
             client.connect(MQTT_SERVER, 1883, 60)
             client.publish("Robofork/1/toR", json.dumps({
                 'serial_number': '1',
@@ -95,7 +98,8 @@ def route_execute(request):
             }))
 
             index += 1
-
+        
+        time.sleep(0.02)
         client.connect(MQTT_SERVER, 1883, 60)
         client.publish("Robofork/1/toR", json.dumps({
             'serial_number': '1',
