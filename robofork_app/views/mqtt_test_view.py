@@ -10,7 +10,7 @@ import csv
 
 
 # 定数
-MQTT_SERVER = '192.168.100.149'
+MQTT_SERVER = '192.168.13.101'
 
 
 def index(request):
@@ -58,6 +58,7 @@ def route_execute(request):
             'id': '101',
             'data': to_can_data(to_hex(999) + to_hex(row_count) + "00000000")
         }))
+        print("START " + str(row_count))
 
         # 1件ごと
         index = 1
@@ -69,6 +70,8 @@ def route_execute(request):
                 to_hex(int(float(row[2]) * 1000) + 32768) +
                 to_hex(int(float(row[4]) * 1000) + 32768)
             )
+            print(data)
+            client.connect(MQTT_SERVER, 1883, 60)
             client.publish("Robofork/1/toR", json.dumps({
                 'serial_number': '1',
                 'id': '102',
@@ -83,6 +86,8 @@ def route_execute(request):
                 to_hex(int(float(row[6]) * 1000) + 32768) +
                 to_hex(int(float(row[7]) * 1000) + 32768)
             )
+            print(data)
+            client.connect(MQTT_SERVER, 1883, 60)
             client.publish("Robofork/1/toR", json.dumps({
                 'serial_number': '1',
                 'id': '103',
@@ -91,11 +96,13 @@ def route_execute(request):
 
             index += 1
 
+        client.connect(MQTT_SERVER, 1883, 60)
         client.publish("Robofork/1/toR", json.dumps({
             'serial_number': '1',
             'id': '104',
             'data': to_can_data(to_hex(999) + to_hex_2(1) + to_hex_2(1) + "00000000")
         }))
+        print("END")
 
     client.disconnect()
     return JsonResponse({'result': True})
