@@ -14,6 +14,7 @@ import time
 MQTT_SERVER = '192.168.13.101'
 MQTT_PORT = 1883
 
+
 def index(request):
     return render(request, 'robofork_app/mqtt_test.html', None)
 

@@ -67,7 +67,8 @@
             size: 225,
         }));
 
-        var onMove = false;
+        var onMoveVertical = false;
+        var onMoveHorizontal = false;
         var onVerticalDirection = 'up';
         var onHorizontalDirection = 'left';
         var onVerticalForce = 0;
@@ -75,9 +76,9 @@
 
         nippleVertical.on('start end', function(event, data) {
             if (event.type === 'start') {
-                onMove = true;
+                onMoveVertical = true;
             } else {
-                onMove = false;
+                onMoveVertical = false;
                 onVerticalDirection = 'up';
                 onVerticalForce = 0;
             }
@@ -92,9 +93,9 @@
 
         nippleHorizontal.on('start end', function(event, data) {
             if (event.type === 'start') {
-                onMove = true;
+                onMoveHorizontal = true;
             } else {
-                onMove = false;
+                onMoveHorizontal = false;
                 onHorizontalDirection = 'left';
                 onHorizontalForce = 0;
             }
@@ -108,7 +109,7 @@
         });
 
         setInterval(function() {
-            if (onMove) {
+            if (onMoveVertical || onMoveHorizontal) {
                 //console.log(onVerticalDirection + '/' + onVerticalForce + ' ' + onHorizontalDirection + '/' + onHorizontalForce);
 
                 // データ編集
@@ -175,7 +176,7 @@
             }
         }, 200);
 
-        // 手動自動
+        // 手動・自動
         $('#btn-auto, #btn-manual').click(function(data) {
             var sendData = '0000010000000000';
             if (data.target.id === 'btn-manual') {
