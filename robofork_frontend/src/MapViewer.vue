@@ -55,8 +55,8 @@
     </div>
     <div class="row">
       <div class="btn-group">
-        <button @click="undo()" :disabled="!hasUndo" class="btn btn-default">undo</button>
-        <button @click="redo()" :disabled="!hasRedo" class="btn btn-default">redo</button>
+        <button @click="undo()" :disabled="!hasUndo || animate" class="btn btn-default">undo</button>
+        <button @click="redo()" :disabled="!hasRedo || animate" class="btn btn-default">redo</button>
         <button @click="clear()":disabled="selectedNodes.length <= 0" class="btn btn-warning">clear</button>
       </div>
       <div class="btn-group">
@@ -230,14 +230,25 @@ export default {
     },
 
     undo: function() {
+      // アニメーション途中は選択できない
+      if (this.animate) {
+        return;
+      }
+
       this.history.undo();
     },
 
     redo: function() {
+      // アニメーション途中は選択できない
+      if (this.animate) {
+        return;
+      }
+
       this.history.redo();
     },
 
     clear: function() {
+      this.animate = false;
       this.initialize();
     },
 
