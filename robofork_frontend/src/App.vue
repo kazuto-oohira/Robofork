@@ -5,7 +5,7 @@
         <h2>マップ画面</h2>
         <map-viewer
           :config="config"
-          :mainNodes="mainNodes"
+          :mainNodes.sync="mainNodes"
           :subNodes="subNodes"
           :history="history"
           :parentRoutes.sync="routes"
@@ -59,12 +59,13 @@ export default {
       .then((resp) => {
         if ('config' in resp.data) {
           this.config = resp.data.config;
+          this.config.startId = 0; // dummy
         }
         if ('mainNodes' in resp.data) {
-          this.mainNodes = resp.data.mainNodes;
+          this.mainNodes = [1];// resp.data.mainNodes;
         }
         if ('subNodes' in resp.data) {
-          this.subNodes = resp.data.subNodes;
+          this.subNodes = [];// resp.data.subNodes;
         }
 
         // lazy load はめんどそうなので loaded でチェック

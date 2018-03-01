@@ -3,7 +3,7 @@
     <div class="row">
       <div class="map-container" :style="containerStyles">
         <img v-if="config" class="map-image" :src="config.imageUrl">
-        <div class="map-draw-layer">
+        <div class="map-draw-layer" @click="mark($event.offsetX, $event.offsetY)">
           <!-- subNodes -->
           <template v-for="subNode in subNodes">
           <div
@@ -74,11 +74,13 @@
     <div class="row">
       <div class="log col-sm-12">
         <p>startNode: {{ startNode }}</p>
+        <p>currentNode: {{ currentNode }}</p>
         <p>currentId: {{ currentId }}</p>
         <p>hasUndo: {{ hasUndo }}</p>
         <p>hasRedo: {{ hasRedo }}</p>
         <p>selectedNodes: {{ selectedNodes.map(n => n.id).join(', ') }}</p>
         <p>routes: {{ routes.map(i => i.id).join(', ') }}</p>
+        <p>subNodes: {{ subNodes }}</p>
       </div>
     </div>
   </div>
@@ -131,8 +133,13 @@ export default {
       return this.mainNodes.find(item => item.id === this.config.startId);
     },
 
+    currentNode: function() {
+      return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1] : null;
+    },
+
     currentId: function() {
-      return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : this.config.startId;
+      return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : null;
+      // return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : this.config.startId;
     },
 
     // selectedNodes から subNodes 含めたノードリストを自動計算する
@@ -144,7 +151,7 @@ export default {
         return [this.startNode];
       }
 
-      const mainNodeIds = [this.config.startId, ...this.selectedNodes.map(item => item.id)];
+      const mainNodeIds = [...this.selectedNodes.map(item => item.id)];
 
       let nodes = [this.startNode];
 
@@ -181,6 +188,11 @@ export default {
       }
     });
 
+    // mainNodes の変更を検知して、App.vue 側の mainNodes も変更する
+    this.$watch('mainNodes', () => {
+      this.$emit('update:mainNodes', this.mainNodes);
+    });
+
     // routes の変更を検知して parentRoutes も変更する
     this.$watch('routes', () => {
       this.$emit('update:parentRoutes', this.routes);
@@ -189,6 +201,7 @@ export default {
 
   methods: {
     initialize: function() {
+      this.nodeId = 0;
       this.selectedNodes = [];
 
       this.history.clear();
@@ -198,8 +211,8 @@ export default {
         this.hasRedo = this.history.hasRedo();
       });
 
-      this.robofork.x = this.startNode.x;
-      this.robofork.y = this.startNode.y;
+      this.robofork.x = 0;// this.startNode.x;
+      this.robofork.y = 0;// this.startNode.y;
     },
 
     add: function(node) {
@@ -227,6 +240,61 @@ export default {
       }
 
       this.add(this.mainNodes.find(item => item.id === node.id));
+    },
+
+    generateId() {
+      return this.nodeId++;
+    },
+
+    mark(x, y) {
+      const markedX = this.unmappedX(x);
+      const markedY = this.unmappedY(y);
+
+      let nodes;
+      if (this.mainNodes.length > 0) {
+        nodes = this.path(this.currentNode.x, this.currentNode.y, markedX, markedY);
+      }
+
+      const newNode = {
+        id: this.generateId(),
+        x: markedX,
+        y: markedY
+      };
+
+      this.mainNodes.push(newNode);
+      if (nodes) {
+        this.subNodes.push({
+          path: [this.currentNode.id, newNode.id],
+          nodes: nodes
+        });
+      }
+      this.add(newNode);
+    },
+
+    path(startX, startY, endX, endY) {
+      const width = Number(endX) - Number(startX);
+      const height = Number(endY) - Number(startY);
+      const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
+
+      const unitX = 0.1 * width / hypotenuse;
+      const unitY = 0.1 * height / hypotenuse;
+
+      let subNodes = [];
+      let diffX = 0;
+      let diffY = 0;
+      while(Math.abs(diffX) < Math.abs(width) && Math.abs(diffY) < Math.abs(height)) {
+        console.log(width, diffX, height, diffY);
+        subNodes.push(
+          {
+            id: this.generateId(),
+            x: Number(startX) + diffX,
+            y: Number(startY) + diffY,
+          }
+        );
+        diffX += unitX;
+        diffY += unitY;
+      }
+      return subNodes;
     },
 
     undo: function() {
@@ -262,16 +330,37 @@ export default {
       return String(-offsetY * this.unitY);
     },
 
+    unmappedX: function(x) {
+      const offsetMappedX = (Number(x) - this.config.imageWidth) / this.unitX;
+      console.log(`x = ${x}`);
+      console.log(`Number(x) - this.config.imageWidth = ${Number(x) - this.config.imageWidth}`);
+      console.log(`this.unitX = ${this.unitX}`);
+      console.log(`offsetMappedX = ${offsetMappedX}`);
+      return String(offsetMappedX - Number(this.config.offsetX));
+    },
+
+    unmappedY: function(y) {
+      const offsetMappedY = -Number(y) / this.unitY;
+      return String(offsetMappedY - Number(this.config.offsetY));
+    },
+
     isCurrent: function(id) {
       return this.currentId === id;
     },
 
     isNeighbor: function(id) {
-      const targetNode = this.mainNodes.find(item => item.id === this.currentId);
-      if (!targetNode) {
-        return false;
+      if (this.mainNodes.length >= 2 && this.mainNodes[this.mainNodes.length -2].id === id) {
+        return true;
       }
-      return targetNode.neighbors.includes(id);
+
+      return false;
+
+      // const targetNode = this.mainNodes.find(item => item.id === this.currentId);
+      // if (!targetNode) {
+      //   return false;
+      // }
+
+      // return targetNode.neighbors.includes(id);
     },
 
     start: function() {
