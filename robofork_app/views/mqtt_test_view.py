@@ -12,7 +12,7 @@ import time
 
 # 定数
 MQTT_SERVER = '192.168.13.101'
-
+MQTT_PORT = 1883
 
 def index(request):
     return render(request, 'robofork_app/mqtt_test.html', None)
@@ -35,7 +35,7 @@ def send(request):
 
     # MQTT送信
     client = mqtt.Client()
-    client.connect(MQTT_SERVER, 1883, 60)
+    client.connect(MQTT_SERVER, MQTT_PORT, 60)
     client.publish("Robofork/" + serial_number + "/toR", payload_json)
     client.disconnect()
 
@@ -43,9 +43,12 @@ def send(request):
 
 
 def route_execute(request):
+    wait_time_sec = 0.025
+    sign_offset = 32768
+
     # MQTT
     client = mqtt.Client()
-    client.connect(MQTT_SERVER, 1883, 60)
+    client.connect(MQTT_SERVER, MQTT_PORT, 60)
 
     # ルート情報CSVファイルを開く
     with open(path.join(settings.BASE_DIR, "test_route.csv")) as f:
@@ -67,13 +70,14 @@ def route_execute(request):
             # 102
             data = to_can_data(
                 to_hex(index) +
-                to_hex(int(float(row[1]) * 1000) + 32768) +
-                to_hex(int(float(row[2]) * 1000) + 32768) +
-                to_hex(int(float(row[4])) + 32768)
+                to_hex(int(float(row[1]) * 1000) + sign_offset) +
+                to_hex(int(float(row[2]) * 1000) + sign_offset) +
+                to_hex(int(float(row[4])) + sign_offset)
             )
             print(data)
-            time.sleep(0.02)
-            client.connect(MQTT_SERVER, 1883, 60)
+
+            time.sleep(wait_time_sec)
+            client.connect(MQTT_SERVER, MQTT_PORT, 60)
             client.publish("Robofork/1/toR", json.dumps({
                 'serial_number': '1',
                 'id': '102',
@@ -85,12 +89,13 @@ def route_execute(request):
                 to_hex(index) +
                 to_hex_2(int(row[3])) +
                 to_hex_2(int(row[5])) +
-                to_hex(int(float(row[6]) * 1000) + 32768) +
-                to_hex(int(float(row[7]) * 1000) + 32768)
+                to_hex(int(float(row[6]) * 1000) + sign_offset) +
+                to_hex(int(float(row[7]) * 1000) + sign_offset)
             )
             print(data)
-            time.sleep(0.02)
-            client.connect(MQTT_SERVER, 1883, 60)
+
+            time.sleep(wait_time_sec)
+            client.connect(MQTT_SERVER, MQTT_PORT, 60)
             client.publish("Robofork/1/toR", json.dumps({
                 'serial_number': '1',
                 'id': '103',
@@ -99,8 +104,8 @@ def route_execute(request):
 
             index += 1
         
-        time.sleep(0.02)
-        client.connect(MQTT_SERVER, 1883, 60)
+        time.sleep(wait_time_sec)
+        client.connect(MQTT_SERVER, MQTT_PORT, 60)
         client.publish("Robofork/1/toR", json.dumps({
             'serial_number': '1',
             'id': '104',
