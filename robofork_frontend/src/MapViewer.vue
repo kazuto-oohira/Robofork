@@ -3,44 +3,54 @@
     <div class="row">
       <div class="map-container" :style="containerStyles">
         <img v-if="config" class="map-image" :src="config.imageUrl">
-        <svg class="map-draw-layer">
+        <div class="map-draw-layer">
           <!-- subNodes -->
           <template v-for="subNode in subNodes">
-          <circle
-          v-for="node in subNode.nodes"
-          v-if="showAll || animate"
-          :cx="mappedX(node.x)"
-          :cy="mappedY(node.y)"
-          class="subnode"
-          :title="node.id">
-          </circle>
+          <div
+            v-for="node in subNode.nodes"
+            v-if="showAll || animate"
+            class="subnode"
+            :style="{
+              left: `${mappedX(node.x)}px`,
+              top: `${mappedY(node.y)}px`
+            }"
+            :title="node.id"
+          >
+          </div>
           </template>
 
           <!-- mainNodes -->
-          <circle
-          v-for="node in mainNodes"
-          :cx="mappedX(node.x)"
-          :cy="mappedY(node.y)"
-          @click="select(node)"
-          :class="{
-          current: isCurrent(node.id),
-          neighbor: isNeighbor(node.id),
-          }"
-          :title="node.id">
-          </circle>
+          <div
+            v-for="node in mainNodes"
+            class="mainnode"
+            :class="{
+              current: isCurrent(node.id),
+              neighbor: isNeighbor(node.id),
+            }"
+            :style="{
+              left: `${mappedX(node.x)}px`,
+              top: `${mappedY(node.y)}px`
+            }"
+            @click="select(node)"
+            :title="node.id"
+          >
+          </div>
 
           <!-- roboork -->
-          <image
-          v-if="animate"
-          class="self"
-          :class="{ animate: animate }"
-          transform="translate(-15, -15)"
-          xlink:href="/static/robofork_app/img/robofork.svg"
-          :x="mappedX(robofork.x)"
-          :y="mappedY(robofork.y)"
-          width="30"
-          height="30" />
-        </svg>
+          <img
+            v-if="animate"
+            src="/static/robofork_app/img/robofork.svg"
+            alt=""
+            width="30"
+            height="30"
+            class="robofork"
+            :class="{ animate: animate }"
+            :style="{
+              left: `${mappedX(robofork.x)}px`,
+              top: `${mappedY(robofork.y)}px`
+            }"
+          >
+        </div>
       </div>
     </div>
     <div class="row">
@@ -285,6 +295,7 @@ export default {
 .row {
   margin-bottom: 20px;
 }
+
 .map-container {
   position: relative;
   user-select: none;
@@ -304,42 +315,46 @@ export default {
   top: 0;
 }
 
-.map-draw-layer g {
-  width: 100%;
-  height: 100%;
-}
-.map-draw-layer circle {
-  r: 8;
-  fill: blue;
+.map-draw-layer .mainnode {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  transform: translate(-8px, -8px);
+  background: blue;
+  border-radius: 8px;
   opacity: 0.5;
-  cursor: default;
 }
 
-.map-draw-layer circle.current {
-  fill: red;
+.map-draw-layer .mainnode.current {
+  background: red;
   opacity: 1;
   cursor: pointer;
 }
 
-.map-draw-layer circle.neighbor {
+.map-draw-layer .mainnode.neighbor {
   opacity: 1;
   cursor: pointer;
 }
 
-.map-draw-layer circle.subnode {
-  r: 4;
-  fill: yellow;
+.map-draw-layer .subnode {
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  transform: translate(-4px, -4px);
+  background: yellow;
+  border-radius: 4px;
+  opacity: 0.5;
 }
 
-.map-draw-layer circle.current-path {
-  fill: red;
+.map-draw-layer .robofork {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  transform: translate(-15px, -15px);
 }
 
-.map-draw-layer .self {
-}
-
-.map-draw-layer .self.animate {
-  transition: x linear 100ms, y linear 100ms;
+.map-draw-layer .robofork.animate {
+  transition: left linear 100ms, top linear 100ms;
 }
 
 .btn-group + .btn-group {
