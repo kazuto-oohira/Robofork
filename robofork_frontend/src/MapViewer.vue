@@ -60,7 +60,7 @@
         <button @click="clear()":disabled="selectedNodes.length <= 0" class="btn btn-warning">clear</button>
       </div>
       <div class="btn-group">
-        <button @click="start()" :disabled="animate" class="btn btn-primary">Start</button>
+        <button @click="start()" :disabled="selectedNodes.length <= 0 || animate" class="btn btn-primary">Start</button>
         <button @click="stop()" :disabled="!animate" class="btn btn-danger">Stop</button>
       </div>
     </div>
@@ -346,6 +346,11 @@ export default {
     },
 
     start() {
+      // startNode すらない場合は start できない
+      if (this.selectedNodes.length <= 0) {
+        return;
+      }
+
       this.robofork.x = this.startNode.x;
       this.robofork.y = this.startNode.y;
 
