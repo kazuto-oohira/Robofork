@@ -11,8 +11,7 @@
             v-if="showAll || animate"
             class="subnode"
             :style="{
-              left: `${mappedX(node.x)}px`,
-              top: `${mappedY(node.y)}px`
+              transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
             :title="node.id"
           ></div>
@@ -27,8 +26,7 @@
               neighbor: isNeighbor(node.id),
             }"
             :style="{
-              left: `${mappedX(node.x)}px`,
-              top: `${mappedY(node.y)}px`
+              transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
             @click="select(node)"
             :title="node.id"
@@ -444,10 +442,12 @@ export default {
   width: 16px;
   height: 16px;
   position: absolute;
-  transform: translate(-8px, -8px);
+  left: 0;
+  top: 0;
+  margin: -8px 0 0 -8px;
   background: blue;
   border-radius: 8px;
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .map-draw-layer .mainnode.current {
@@ -456,16 +456,13 @@ export default {
   cursor: pointer;
 }
 
-.map-draw-layer .mainnode.neighbor {
-  opacity: 1;
-  cursor: pointer;
-}
-
 .map-draw-layer .subnode {
   width: 8px;
   height: 8px;
   position: absolute;
-  transform: translate(-4px, -4px);
+  left: 0;
+  top: 0;
+  margin: -4px 0 0 -4px;
   background: yellow;
   border-radius: 4px;
   opacity: 0.5;
