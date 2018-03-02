@@ -28,7 +28,6 @@
             :style="{
               transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
-            @click="select(node)"
             :title="node.id"
           ></div>
 
@@ -247,20 +246,6 @@ export default {
       });
     },
 
-    select: function(node) {
-      // 現在のノードか隣り合ったノードのどちらでもない場合
-      if (!this.isCurrent(node.id) && !this.isNeighbor(node.id)) {
-        return;
-      }
-
-      // アニメーション途中は選択できない
-      if (this.animate) {
-        return;
-      }
-
-      this.add(this.mainNodes.find(item => item.id === node.id));
-    },
-
     generateId() {
       return this.nodeId++;
     },
@@ -453,7 +438,6 @@ export default {
 .map-draw-layer .mainnode.current {
   background: red;
   opacity: 1;
-  cursor: pointer;
 }
 
 .map-draw-layer .subnode {
