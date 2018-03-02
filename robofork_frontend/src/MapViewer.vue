@@ -15,8 +15,7 @@
               top: `${mappedY(node.y)}px`
             }"
             :title="node.id"
-          >
-          </div>
+          ></div>
           </template>
 
           <!-- mainNodes -->
@@ -33,16 +32,11 @@
             }"
             @click="select(node)"
             :title="node.id"
-          >
-          </div>
+          ></div>
 
           <!-- roboork -->
-          <img
+          <div
             v-if="animate"
-            src="/static/robofork_app/img/robofork.svg"
-            alt=""
-            width="30"
-            height="30"
             class="robofork"
             :class="{ animate: animate }"
             :style="{
@@ -50,6 +44,16 @@
               top: `${mappedY(robofork.y)}px`
             }"
           >
+            <img
+              src="/static/robofork_app/img/robofork.svg"
+              alt=""
+              width="30"
+              height="30"
+              :style="{
+                transform: `rotate(${degree}deg)`
+              }"
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -106,6 +110,7 @@ export default {
       hasRedo: false,
       showAll: false,
       animate: false,
+      animatePointer: null,
       robofork: {
         x: 0,
         y: 0,
@@ -178,6 +183,22 @@ export default {
       });
 
       return nodes;
+    },
+
+    degree: function() {
+      if (!this.animate || !this.animatePointer) {
+        return 90;
+      }
+
+      let prev = this.routes[this.animatePointer - 1];
+      let current = this.routes[this.animatePointer];
+
+      if (this.routes.length <= this.animatePointer) {
+        prev = this.routes[this.routes.length - 2]
+        current = this.routes[this.routes.length - 1]
+      }
+
+      return this.config.startDir * 90 + 90 + Math.atan2(current.x - prev.x, current.y - prev.y) * 180 / Math.PI;
     },
   },
 
@@ -364,26 +385,30 @@ export default {
     },
 
     start: function() {
+      this.robofork.x = this.startNode.x;
+      this.robofork.y = this.startNode.y;
+
       this.animate = true;
+      this.animatePointer = 0;
       this.animateTimer = null;
 
-      let animatePointer = 0;
       this.animateTimer = setInterval(() => {
-        if (animatePointer >= this.routes.length) {
+        if (this.animatePointer >= this.routes.length) {
           setTimeout(this.stop, 1000);
           return;
         }
 
-        this.robofork.x = this.routes[animatePointer].x;
-        this.robofork.y = this.routes[animatePointer].y;
+        this.robofork.x = this.routes[this.animatePointer].x;
+        this.robofork.y = this.routes[this.animatePointer].y;
 
-        animatePointer++;
+        this.animatePointer++;
       }, 100);
     },
 
     stop: function() {
       clearInterval(this.animateTimer);
       this.animate = false;
+      this.animatePointer = null;
       this.robofork.x = this.startNode.x;
       this.robofork.y = this.startNode.y;
     },
@@ -455,6 +480,10 @@ export default {
 
 .map-draw-layer .robofork.animate {
   transition: left linear 100ms, top linear 100ms;
+}
+
+.map-draw-layer .robofork img {
+  transform-origin: 50% 50%;
 }
 
 .btn-group + .btn-group {
