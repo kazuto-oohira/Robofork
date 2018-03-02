@@ -23,7 +23,6 @@
             class="mainnode"
             :class="{
               current: isCurrent(node.id),
-              neighbor: isNeighbor(node.id),
             }"
             :style="{
               transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
@@ -116,36 +115,35 @@ export default {
   },
 
   computed: {
-    containerStyles: function() {
+    containerStyles() {
       return {
         width: `${this.config.imageWidth}px`,
         height: `${this.config.imageHeight}px`,
       };
     },
 
-    unitX: function() {
+    unitX() {
       return this.config.imageWidth / Number(this.config.scaleX);
     },
 
-    unitY: function() {
+    unitY() {
       return this.config.imageHeight / Number(this.config.scaleY);
     },
 
-    startNode: function() {
+    startNode() {
       return this.mainNodes.find(item => item.id === this.config.startId);
     },
 
-    currentNode: function() {
+    currentNode() {
       return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1] : null;
     },
 
-    currentId: function() {
+    currentId() {
       return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : null;
-      // return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : this.config.startId;
     },
 
     // selectedNodes から subNodes 含めたノードリストを自動計算する
-    routes: function() {
+    routes() {
       if (!this.startNode) {
         return [];
       }
@@ -153,7 +151,7 @@ export default {
         return [this.startNode];
       }
 
-      const mainNodeIds = [...this.selectedNodes.map(item => item.id)];
+      const mainNodeIds = this.selectedNodes.map(item => item.id);
 
       let nodes = [this.startNode];
 
@@ -182,7 +180,7 @@ export default {
       return nodes;
     },
 
-    degree: function() {
+    degree() {
       if (!this.animate || !this.animatePointer) {
         return 90;
       }
@@ -218,7 +216,7 @@ export default {
   },
 
   methods: {
-    initialize: function() {
+    initialize() {
       this.nodeId = 0;
       this.selectedNodes = [];
 
@@ -233,7 +231,7 @@ export default {
       this.robofork.y = 0;// this.startNode.y;
     },
 
-    add: function(node) {
+    add(node) {
       this.selectedNodes.push(node);
 
       this.history.add({
@@ -287,7 +285,6 @@ export default {
       let diffX = 0;
       let diffY = 0;
       while(Math.abs(diffX) < Math.abs(width) && Math.abs(diffY) < Math.abs(height)) {
-        console.log(width, diffX, height, diffY);
         subNodes.push(
           {
             id: this.generateId(),
@@ -301,7 +298,7 @@ export default {
       return subNodes;
     },
 
-    undo: function() {
+    undo() {
       // アニメーション途中は選択できない
       if (this.animate) {
         return;
@@ -310,7 +307,7 @@ export default {
       this.history.undo();
     },
 
-    redo: function() {
+    redo() {
       // アニメーション途中は選択できない
       if (this.animate) {
         return;
@@ -319,55 +316,36 @@ export default {
       this.history.redo();
     },
 
-    clear: function() {
+    clear() {
       this.animate = false;
       this.initialize();
     },
 
-    mappedX: function(x) {
+    mappedX(x) {
       const offsetX = Number(x) + Number(this.config.offsetX);
       return String(offsetX * this.unitX + this.config.imageWidth);
     },
 
-    mappedY: function(y) {
+    mappedY(y) {
       const offsetY = Number(y) + Number(this.config.offsetY);
       return String(-offsetY * this.unitY);
     },
 
-    unmappedX: function(x) {
+    unmappedX(x) {
       const offsetMappedX = (Number(x) - this.config.imageWidth) / this.unitX;
-      console.log(`x = ${x}`);
-      console.log(`Number(x) - this.config.imageWidth = ${Number(x) - this.config.imageWidth}`);
-      console.log(`this.unitX = ${this.unitX}`);
-      console.log(`offsetMappedX = ${offsetMappedX}`);
       return String(offsetMappedX - Number(this.config.offsetX));
     },
 
-    unmappedY: function(y) {
+    unmappedY(y) {
       const offsetMappedY = -Number(y) / this.unitY;
       return String(offsetMappedY - Number(this.config.offsetY));
     },
 
-    isCurrent: function(id) {
+    isCurrent(id) {
       return this.currentId === id;
     },
 
-    isNeighbor: function(id) {
-      if (this.mainNodes.length >= 2 && this.mainNodes[this.mainNodes.length -2].id === id) {
-        return true;
-      }
-
-      return false;
-
-      // const targetNode = this.mainNodes.find(item => item.id === this.currentId);
-      // if (!targetNode) {
-      //   return false;
-      // }
-
-      // return targetNode.neighbors.includes(id);
-    },
-
-    start: function() {
+    start() {
       this.robofork.x = this.startNode.x;
       this.robofork.y = this.startNode.y;
 
@@ -388,7 +366,7 @@ export default {
       }, 100);
     },
 
-    stop: function() {
+    stop() {
       clearInterval(this.animateTimer);
       this.animate = false;
       this.animatePointer = null;
