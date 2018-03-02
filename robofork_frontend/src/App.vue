@@ -5,8 +5,6 @@
         <h2>マップ画面</h2>
         <map-viewer
           :config="config"
-          :mainNodes.sync="mainNodes"
-          :subNodes="subNodes"
           :history="history"
           :parentRoutes.sync="routes"
           :loaded="loaded"
@@ -15,7 +13,6 @@
       <div class="col-xs-6">
         <h2>指示画面</h2>
         <command-viewer
-          :mainNodes="mainNodes"
           :routes="routes"
         ></command-viewer>
       </div>
@@ -44,8 +41,6 @@ export default {
   data () {
     return {
       loaded: false,
-      mainNodes: [],
-      subNodes: [],
       config: {},
       routes: [],
       history: null,
@@ -59,13 +54,6 @@ export default {
       .then((resp) => {
         if ('config' in resp.data) {
           this.config = resp.data.config;
-          this.config.startId = 0; // dummy
-        }
-        if ('mainNodes' in resp.data) {
-          this.mainNodes = [1];// resp.data.mainNodes;
-        }
-        if ('subNodes' in resp.data) {
-          this.subNodes = [];// resp.data.subNodes;
         }
 
         // lazy load はめんどそうなので loaded でチェック

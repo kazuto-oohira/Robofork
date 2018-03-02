@@ -42,7 +42,6 @@
 export default {
   name: 'command-viewer',
   props: [
-    'mainNodes',
     'routes',
   ],
 
@@ -54,7 +53,7 @@ export default {
 
   methods: {
     isMainNode: function(node) {
-      return this.mainNodes.map(item => item.id).includes(node.id);
+      return !!node.isMain;
     },
   },
 }

@@ -36,8 +36,7 @@
             class="robofork"
             :class="{ animate: animate }"
             :style="{
-              left: `${mappedX(robofork.x)}px`,
-              top: `${mappedY(robofork.y)}px`
+              transform: `translate(${mappedX(robofork.x)}px, ${mappedY(robofork.y)}px)`
             }"
           >
             <img
@@ -57,10 +56,10 @@
       <div class="btn-group">
         <button @click="undo()" :disabled="!hasUndo || animate" class="btn btn-default">undo</button>
         <button @click="redo()" :disabled="!hasRedo || animate" class="btn btn-default">redo</button>
-        <button @click="clear()":disabled="selectedNodes.length <= 0" class="btn btn-warning">clear</button>
+        <button @click="clear()":disabled="mainNodes.length <= 0" class="btn btn-warning">clear</button>
       </div>
       <div class="btn-group">
-        <button @click="start()" :disabled="selectedNodes.length <= 0 || animate" class="btn btn-primary">Start</button>
+        <button @click="start()" :disabled="mainNodes.length <= 0 || animate" class="btn btn-primary">Start</button>
         <button @click="stop()" :disabled="!animate" class="btn btn-danger">Stop</button>
       </div>
     </div>
@@ -78,21 +77,22 @@
         <p>currentId: {{ currentId }}</p>
         <p>hasUndo: {{ hasUndo }}</p>
         <p>hasRedo: {{ hasRedo }}</p>
-        <p>selectedNodes: {{ selectedNodes.map(n => n.id).join(', ') }}</p>
+        <p>selectedPoints: {{ selectedPoints }}</p>
         <p>routes: {{ routes.map(i => i.id).join(', ') }}</p>
-        <p>subNodes: {{ subNodes }}</p>
+        <p>mainNodes: {{ mainNodes.map(i => i.id).join(', ') }}</p>
+        <p>subNodes: {{ subNodes.map(i => `[${i.path.toString()}]`).join(', ') }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+const startId = 0;
+
 export default {
   name: 'map-viewer',
 
   props: [
-    'mainNodes',
-    'subNodes',
     'config',
     'history',
     'parentRoutes',
@@ -101,12 +101,12 @@ export default {
 
   data() {
     return {
-      selectedNodes: [],
+      selectedPoints: [],
       hasUndo: false,
       hasRedo: false,
-      showAll: false,
+      showAll: true,
       animate: false,
-      animatePointer: null,
+      animateIndex: null,
       robofork: {
         x: 0,
         y: 0,
@@ -130,28 +130,62 @@ export default {
       return this.config.imageHeight / Number(this.config.scaleY);
     },
 
+    mainNodes() {
+      // selectedPoints から自動算出する
+      if (this.selectedPoints.length <= 0) {
+        return [];
+      }
+
+      this.nodeId = 0;
+      return this.selectedPoints.map(item => {
+        return {
+          id: this.generateId(),
+          x: item.x,
+          y: item.y,
+          isMain: true,
+        };
+      });
+    },
+
+    subNodes() {
+      // mainNodes から自動算出する
+      if (this.mainNodes.length <= 1) {
+        return [];
+      }
+
+      let nodes = [];
+      this.mainNodes.reduce((prev, current) => {
+        nodes.push({
+          path: [prev.id, current.id].sort(),
+          nodes: this.path(prev.x, prev.y, current.x, current.y)
+        });
+        return current;
+      });
+      return nodes;
+    },
+
     startNode() {
-      return this.mainNodes.find(item => item.id === this.config.startId);
+      return this.mainNodes.find(item => item.id === startId);
     },
 
     currentNode() {
-      return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1] : null;
+      return this.mainNodes.length > 0 ? this.mainNodes[this.mainNodes.length - 1] : null;
     },
 
     currentId() {
-      return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : null;
+      return this.mainNodes.length > 0 ? this.mainNodes[this.mainNodes.length - 1].id : null;
     },
 
-    // selectedNodes から subNodes 含めたノードリストを自動計算する
     routes() {
+      // mainNodes, subNodes から自動算出する
       if (!this.startNode) {
         return [];
       }
-      if (this.selectedNodes.length <= 0) {
+      if (this.mainNodes.length <= 0) {
         return [this.startNode];
       }
 
-      const mainNodeIds = this.selectedNodes.map(item => item.id);
+      const mainNodeIds = this.mainNodes.map(item => item.id);
 
       let nodes = [this.startNode];
 
@@ -181,19 +215,26 @@ export default {
     },
 
     degree() {
-      if (!this.animate || !this.animatePointer) {
-        return 90;
+      // routes, animate, animateIndex から自動算出する
+      if (!this.animate || this.animateIndex === null || this.routes.length <= 1) {
+        return 0;
       }
 
-      let prev = this.routes[this.animatePointer - 1];
-      let current = this.routes[this.animatePointer];
+      let prev, current;
 
-      if (this.routes.length <= this.animatePointer) {
-        prev = this.routes[this.routes.length - 2]
-        current = this.routes[this.routes.length - 1]
+      if (this.animateIndex === 0) {
+        prev = this.routes[this.animateIndex];
+        current = this.routes[this.animateIndex + 1];
+      } else if (this.routes.length - 1 <= this.animateIndex) {
+        prev = this.routes[this.routes.length - 2];
+        current = this.routes[this.routes.length - 1];
+      } else {
+        prev = this.routes[this.animateIndex - 1];
+        current = this.routes[this.animateIndex];
       }
+      const degree = Math.atan2(Number(current.x) - Number(prev.x), Number(current.y) - Number(prev.y)) * 180 / Math.PI;
 
-      return this.config.startDir * 90 + 90 + Math.atan2(current.x - prev.x, current.y - prev.y) * 180 / Math.PI;
+      return this.config.startDir * 90 + 90 + degree;
     },
   },
 
@@ -209,7 +250,7 @@ export default {
       this.$emit('update:mainNodes', this.mainNodes);
     });
 
-    // routes の変更を検知して parentRoutes も変更する
+    // routes の変更を検知して App.vue 側の parentRoutes も変更する
     this.$watch('routes', () => {
       this.$emit('update:parentRoutes', this.routes);
     });
@@ -218,29 +259,13 @@ export default {
   methods: {
     initialize() {
       this.nodeId = 0;
-      this.selectedNodes = [];
+      this.selectedPoints = [];
 
       this.history.clear();
       // history のバインディングできないところを callback でカバー
       this.history.setCallback(() => {
         this.hasUndo = this.history.hasUndo();
         this.hasRedo = this.history.hasRedo();
-      });
-
-      this.robofork.x = 0;// this.startNode.x;
-      this.robofork.y = 0;// this.startNode.y;
-    },
-
-    add(node) {
-      this.selectedNodes.push(node);
-
-      this.history.add({
-        undo: () => {
-          this.selectedNodes.pop()
-        },
-        redo: () => {
-          this.selectedNodes.push(node);
-        },
       });
     },
 
@@ -249,28 +274,22 @@ export default {
     },
 
     mark(x, y) {
+      if (this.animate) {
+        return;
+      }
+
       const markedX = this.unmappedX(x);
       const markedY = this.unmappedY(y);
 
-      let nodes;
-      if (this.mainNodes.length > 0) {
-        nodes = this.path(this.currentNode.x, this.currentNode.y, markedX, markedY);
-      }
-
-      const newNode = {
-        id: this.generateId(),
-        x: markedX,
-        y: markedY
-      };
-
-      this.mainNodes.push(newNode);
-      if (nodes) {
-        this.subNodes.push({
-          path: [this.currentNode.id, newNode.id],
-          nodes: nodes
-        });
-      }
-      this.add(newNode);
+      this.selectedPoints.push({ x: markedX, y: markedY });
+      this.history.add({
+        undo: () => {
+          this.selectedPoints.pop()
+        },
+        redo: () => {
+          this.selectedPoints.push({ x: markedX, y: markedY });
+        },
+      });
     },
 
     path(startX, startY, endX, endY) {
@@ -282,14 +301,14 @@ export default {
       const unitY = 0.1 * height / hypotenuse;
 
       let subNodes = [];
-      let diffX = 0;
-      let diffY = 0;
-      while(Math.abs(diffX) < Math.abs(width) && Math.abs(diffY) < Math.abs(height)) {
+      let diffX = unitX;
+      let diffY = unitY;
+      while(Math.abs(diffX) < Math.abs(width) || Math.abs(diffY) < Math.abs(height)) {
         subNodes.push(
           {
             id: this.generateId(),
-            x: Number(startX) + diffX,
-            y: Number(startY) + diffY,
+            x: String(Number(startX) + diffX),
+            y: String(Number(startY) + diffY),
           }
         );
         diffX += unitX;
@@ -346,8 +365,8 @@ export default {
     },
 
     start() {
-      // startNode すらない場合は start できない
-      if (this.selectedNodes.length <= 0) {
+      // routes が空のときはアニメーションできない
+      if (this.routes.length <= 0) {
         return;
       }
 
@@ -355,26 +374,29 @@ export default {
       this.robofork.y = this.startNode.y;
 
       this.animate = true;
-      this.animatePointer = 0;
-      this.animateTimer = null;
+      this.animateIndex = 0;
 
-      this.animateTimer = setInterval(() => {
-        if (this.animatePointer >= this.routes.length) {
-          setTimeout(this.stop, 1000);
-          return;
-        }
+      clearTimeout(this.animateTimer);
+      this.animateTimer = setTimeout(this.next, 1000);
+    },
 
-        this.robofork.x = this.routes[this.animatePointer].x;
-        this.robofork.y = this.routes[this.animatePointer].y;
+    next() {
+      this.animateIndex++;
+      if (this.routes.length < this.animateIndex + 1) {
+        this.stop();
+        return;
+      }
 
-        this.animatePointer++;
-      }, 100);
+      this.robofork.x = this.routes[this.animateIndex].x;
+      this.robofork.y = this.routes[this.animateIndex].y;
+
+      this.animateTimer = setTimeout(this.next, this.routes[this.animateIndex].isMain ? 1000 : 100);
     },
 
     stop() {
       clearInterval(this.animateTimer);
       this.animate = false;
-      this.animatePointer = null;
+      this.animateIndex = null;
       this.robofork.x = this.startNode.x;
       this.robofork.y = this.startNode.y;
     },
@@ -439,11 +461,13 @@ export default {
   width: 30px;
   height: 30px;
   position: absolute;
-  transform: translate(-15px, -15px);
+  left: 0;
+  top: 0;
+  margin: -15px 0 0 -15px;
 }
 
 .map-draw-layer .robofork.animate {
-  transition: left linear 100ms, top linear 100ms;
+  transition: transform linear 100ms;
 }
 
 .map-draw-layer .robofork img {
