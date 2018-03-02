@@ -71,8 +71,8 @@ def route_execute(request):
             # 102
             data = to_can_data(
                 to_hex(index) +
-                to_hex(int(float(row[1]) * 1000) + sign_offset) +
-                to_hex(int(float(row[2]) * 1000) + sign_offset) +
+                to_hex(int(float(row[1])) + sign_offset) +
+                to_hex(int(float(row[2])) + sign_offset) +
                 to_hex(int(float(row[4])) + sign_offset)
             )
             print(data)
@@ -90,8 +90,8 @@ def route_execute(request):
                 to_hex(index) +
                 to_hex_2(int(row[3])) +
                 to_hex_2(int(row[5])) +
-                to_hex(int(float(row[6]) * 1000) + sign_offset) +
-                to_hex(int(float(row[7]) * 1000) + sign_offset)
+                to_hex(int(float(row[6])) + sign_offset) +
+                to_hex(int(float(row[7])) + sign_offset)
             )
             print(data)
 
