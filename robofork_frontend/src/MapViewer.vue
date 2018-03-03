@@ -53,14 +53,29 @@
       </div>
     </div>
     <div class="row">
-      <div class="btn-group">
+      <div class="col-sm-6 btn-group">
         <button @click="undo()" :disabled="!hasUndo || animate" class="btn btn-default">undo</button>
         <button @click="redo()" :disabled="!hasRedo || animate" class="btn btn-default">redo</button>
         <button @click="clear()":disabled="mainNodes.length <= 0" class="btn btn-warning">clear</button>
       </div>
-      <div class="btn-group">
+      <div class="col-sm-6 btn-group">
         <button @click="start()" :disabled="mainNodes.length <= 0 || animate" class="btn btn-primary">Start</button>
         <button @click="stop()" :disabled="!animate" class="btn btn-danger">Stop</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <button @click="reverse()" :disabled="mainNodes.length <= 0 || animate" class="btn btn-default">向きを反転する</button>
+        <p style="margin-top: 10px">今の向き: {{ config.startDir ? 'バック方向' : '前進方向'}}</p>
+      </div>
+      <div class="col-sm-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="高さ(mm)" v-model="height">
+          <span class="input-group-btn">
+            <button @click="up()" :disabled="!height || animate" class="btn btn-default" type="button">荷上げ</button>
+            <button @click="down()" :disabled="!height || animate" class="btn btn-default" type="button">荷下げ</button>
+          </span>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -75,6 +90,7 @@
         <p>startNode: {{ startNode }}</p>
         <p>currentNode: {{ currentNode }}</p>
         <p>currentId: {{ currentId }}</p>
+        <p>currentDir: {{ currentDir }}</p>
         <p>hasUndo: {{ hasUndo }}</p>
         <p>hasRedo: {{ hasRedo }}</p>
         <p>selectedPoints: {{ selectedPoints }}</p>
@@ -111,6 +127,7 @@ export default {
         x: 0,
         y: 0,
       },
+      height: null,
     }
   },
 
@@ -142,6 +159,9 @@ export default {
           id: this.generateId(),
           x: item.x,
           y: item.y,
+          dir: item.dir,
+          up: item.up,
+          down: item.down,
           isMain: true,
         };
       });
@@ -157,7 +177,7 @@ export default {
       this.mainNodes.reduce((prev, current) => {
         nodes.push({
           path: [prev.id, current.id].sort(),
-          nodes: this.path(prev.x, prev.y, current.x, current.y)
+          nodes: this.path(prev.x, prev.y, current.x, current.y, { dir: current.dir }),
         });
         return current;
       });
@@ -169,11 +189,24 @@ export default {
     },
 
     currentNode() {
-      return this.mainNodes.length > 0 ? this.mainNodes[this.mainNodes.length - 1] : null;
+      if (this.mainNodes.length <= 0) {
+        return null;
+      }
+      return this.mainNodes[this.mainNodes.length - 1];
     },
 
     currentId() {
-      return this.mainNodes.length > 0 ? this.mainNodes[this.mainNodes.length - 1].id : null;
+      if (this.mainNodes.length <= 0) {
+        return null;
+      }
+      return this.mainNodes[this.mainNodes.length - 1].id;
+    },
+
+    currentDir() {
+      if (this.mainNodes.length <= 0) {
+        return this.config.startDir;
+      }
+      return this.mainNodes[this.mainNodes.length - 1].dir;
     },
 
     routes() {
@@ -234,7 +267,7 @@ export default {
       }
       const degree = Math.atan2(Number(current.x) - Number(prev.x), Number(current.y) - Number(prev.y)) * 180 / Math.PI;
 
-      return this.config.startDir * 90 + 90 + degree;
+      return current.dir * 180 + degree;
     },
   },
 
@@ -280,19 +313,44 @@ export default {
 
       const markedX = this.unmappedX(x);
       const markedY = this.unmappedY(y);
+      const newNode = {
+        x: markedX,
+        y: markedY,
+        dir: Object.freeze(this.config.startDir),
+        up: null,
+        down: null,
+      };
 
-      this.selectedPoints.push({ x: markedX, y: markedY });
+      this.selectedPoints.push(newNode);
       this.history.add({
         undo: () => {
           this.selectedPoints.pop()
         },
         redo: () => {
-          this.selectedPoints.push({ x: markedX, y: markedY });
+          this.selectedPoints.push(newNode);
         },
       });
     },
 
-    path(startX, startY, endX, endY) {
+    up() {
+      if (this.selectedPoints.length <= 0) {
+        return;
+      }
+
+      this.selectedPoints[this.selectedPoints.length - 1].up = Object.freeze(this.height);
+      this.height = null;
+    },
+
+    down() {
+      if (this.selectedPoints.length <= 0) {
+        return;
+      }
+
+      this.selectedPoints[this.selectedPoints.length - 1].down = Object.freeze(this.height);
+      this.height = null;
+    },
+
+    path(startX, startY, endX, endY, optional = null) {
       const width = Number(endX) - Number(startX);
       const height = Number(endY) - Number(startY);
       const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
@@ -304,12 +362,13 @@ export default {
       let diffX = unitX;
       let diffY = unitY;
       while(Math.abs(diffX) < Math.abs(width) || Math.abs(diffY) < Math.abs(height)) {
+        const basic = {
+          id: this.generateId(),
+          x: String(Number(startX) + diffX),
+          y: String(Number(startY) + diffY),
+        };
         subNodes.push(
-          {
-            id: this.generateId(),
-            x: String(Number(startX) + diffX),
-            y: String(Number(startY) + diffY),
-          }
+          Object.assign(basic, optional)
         );
         diffX += unitX;
         diffY += unitY;
@@ -338,6 +397,14 @@ export default {
     clear() {
       this.animate = false;
       this.initialize();
+    },
+
+    reverse() {
+      if (this.selectedPoints.length <= 0) {
+        return;
+      }
+      this.config.startDir = 1 - this.config.startDir;
+      // this.selectedPoints[this.selectedPoints.length - 1].dir = 1 - this.selectedPoints[this.selectedPoints.length - 1].dir;
     },
 
     mappedX(x) {
@@ -472,10 +539,6 @@ export default {
 
 .map-draw-layer .robofork img {
   transform-origin: 50% 50%;
-}
-
-.btn-group + .btn-group {
-  margin-left: 20px;
 }
 
 .checkbox label {
