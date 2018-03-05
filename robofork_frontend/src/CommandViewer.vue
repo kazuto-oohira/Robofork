@@ -17,10 +17,10 @@
         <tbody>
           <tr v-for="(node, index) in routes" v-if="showAll || isMainNode(node)">
             <th scope="row">{{ index + 1 }}</th>
-            <td>Move</td>
+            <td>{{ task[index] }}</td>
             <td>1000</td>
             <td>0</td>
-            <td>0</td>
+            <td>{{ height[index] }}</td>
             <td>{{ node.id }}</td>
             <td>{{ node.x }}</td>
             <td>{{ node.y }}</td>
@@ -42,7 +42,6 @@
 export default {
   name: 'command-viewer',
   props: [
-    'mainNodes',
     'routes',
   ],
 
@@ -52,9 +51,37 @@ export default {
     }
   },
 
+  computed: {
+    task() {
+      return this.routes.map(item => {
+        if (item.up !== null) {
+          return '荷上げ';
+        }
+        if (item.down !== null) {
+          return '荷下げ';
+        }
+
+        return item.dir === 0 ? '前進' : 'バック';
+      });
+    },
+
+    height() {
+      return this.routes.map(item => {
+        if (item.up !== null) {
+          return item.up;
+        }
+        if (item.down !== null) {
+          return item.down;
+        }
+
+        return 0;
+      });
+    },
+  },
+
   methods: {
     isMainNode: function(node) {
-      return this.mainNodes.map(item => item.id).includes(node.id);
+      return !!node.isMain;
     },
   },
 }

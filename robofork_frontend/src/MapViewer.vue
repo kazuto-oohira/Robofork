@@ -3,55 +3,79 @@
     <div class="row">
       <div class="map-container" :style="containerStyles">
         <img v-if="config" class="map-image" :src="config.imageUrl">
-        <svg class="map-draw-layer">
+        <div class="map-draw-layer" @click="mark($event.offsetX, $event.offsetY)">
           <!-- subNodes -->
           <template v-for="subNode in subNodes">
-          <circle
-          v-for="node in subNode.nodes"
-          v-if="showAll || animate"
-          :cx="mappedX(node.x)"
-          :cy="mappedY(node.y)"
-          class="subnode"
-          :title="node.id">
-          </circle>
+          <div
+            v-for="node in subNode.nodes"
+            v-if="showAll || animate"
+            class="subnode"
+            :style="{
+              transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
+            }"
+            :title="node.id"
+          ></div>
           </template>
 
           <!-- mainNodes -->
-          <circle
-          v-for="node in mainNodes"
-          :cx="mappedX(node.x)"
-          :cy="mappedY(node.y)"
-          @click="select(node)"
-          :class="{
-          current: isCurrent(node.id),
-          neighbor: isNeighbor(node.id),
-          }"
-          :title="node.id">
-          </circle>
+          <div
+            v-for="node in mainNodes"
+            class="mainnode"
+            :class="{
+              current: isCurrent(node.id),
+            }"
+            :style="{
+              transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
+            }"
+            :title="node.id"
+          ></div>
 
           <!-- roboork -->
-          <image
-          v-if="animate"
-          class="self"
-          :class="{ animate: animate }"
-          transform="translate(-15, -15)"
-          xlink:href="/static/robofork_app/img/robofork.svg"
-          :x="mappedX(robofork.x)"
-          :y="mappedY(robofork.y)"
-          width="30"
-          height="30" />
-        </svg>
+          <div
+            v-if="animate"
+            class="robofork"
+            :class="{ animate: animate }"
+            :style="{
+              transform: `translate(${mappedX(robofork.x)}px, ${mappedY(robofork.y)}px)`
+            }"
+          >
+            <img
+              src="/static/robofork_app/img/robofork.svg"
+              alt=""
+              width="30"
+              height="30"
+              :style="{
+                transform: `rotate(${degree}deg)`
+              }"
+            >
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
-      <div class="btn-group">
-        <button @click="undo()" :disabled="!hasUndo" class="btn btn-default">undo</button>
-        <button @click="redo()" :disabled="!hasRedo" class="btn btn-default">redo</button>
-        <button @click="clear()":disabled="selectedNodes.length <= 0" class="btn btn-warning">clear</button>
+      <div class="col-sm-6 btn-group">
+        <button @click="undo()" :disabled="!hasUndo || animate" class="btn btn-default">undo</button>
+        <button @click="redo()" :disabled="!hasRedo || animate" class="btn btn-default">redo</button>
+        <button @click="clear()":disabled="mainNodes.length <= 0" class="btn btn-warning">clear</button>
       </div>
-      <div class="btn-group">
-        <button @click="start()" :disabled="animate" class="btn btn-primary">Start</button>
+      <div class="col-sm-6 btn-group">
+        <button @click="start()" :disabled="mainNodes.length <= 0 || animate" class="btn btn-primary">Start</button>
         <button @click="stop()" :disabled="!animate" class="btn btn-danger">Stop</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <button @click="reverse()" :disabled="mainNodes.length <= 0 || animate" class="btn btn-default">向きを反転する</button>
+        <p style="margin-top: 10px">今の向き: {{ config.startDir ? 'バック方向' : '前進方向'}}</p>
+      </div>
+      <div class="col-sm-6">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="高さ(mm)" v-model="height">
+          <span class="input-group-btn">
+            <button @click="up()" :disabled="!height || animate" class="btn btn-default" type="button">荷上げ</button>
+            <button @click="down()" :disabled="!height || animate" class="btn btn-default" type="button">荷下げ</button>
+          </span>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -64,23 +88,27 @@
     <div class="row">
       <div class="log col-sm-12">
         <p>startNode: {{ startNode }}</p>
+        <p>currentNode: {{ currentNode }}</p>
         <p>currentId: {{ currentId }}</p>
+        <p>currentDir: {{ currentDir }}</p>
         <p>hasUndo: {{ hasUndo }}</p>
         <p>hasRedo: {{ hasRedo }}</p>
-        <p>selectedNodes: {{ selectedNodes.map(n => n.id).join(', ') }}</p>
+        <p>selectedPoints: {{ selectedPoints }}</p>
         <p>routes: {{ routes.map(i => i.id).join(', ') }}</p>
+        <p>mainNodes: {{ mainNodes.map(i => i.id).join(', ') }}</p>
+        <p>subNodes: {{ subNodes.map(i => `[${i.path.toString()}]`).join(', ') }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+const startId = 0;
+
 export default {
   name: 'map-viewer',
 
   props: [
-    'mainNodes',
-    'subNodes',
     'config',
     'history',
     'parentRoutes',
@@ -89,52 +117,108 @@ export default {
 
   data() {
     return {
-      selectedNodes: [],
+      selectedPoints: [],
       hasUndo: false,
       hasRedo: false,
-      showAll: false,
+      showAll: true,
       animate: false,
+      animateIndex: null,
       robofork: {
         x: 0,
         y: 0,
       },
+      height: null,
     }
   },
 
   computed: {
-    containerStyles: function() {
+    containerStyles() {
       return {
         width: `${this.config.imageWidth}px`,
         height: `${this.config.imageHeight}px`,
       };
     },
 
-    unitX: function() {
+    unitX() {
       return this.config.imageWidth / Number(this.config.scaleX);
     },
 
-    unitY: function() {
+    unitY() {
       return this.config.imageHeight / Number(this.config.scaleY);
     },
 
-    startNode: function() {
-      return this.mainNodes.find(item => item.id === this.config.startId);
+    mainNodes() {
+      // selectedPoints から自動算出する
+      if (this.selectedPoints.length <= 0) {
+        return [];
+      }
+
+      this.nodeId = 0;
+      return this.selectedPoints.map(item => {
+        return {
+          id: this.generateId(),
+          x: item.x,
+          y: item.y,
+          dir: item.dir,
+          up: item.up,
+          down: item.down,
+          isMain: true,
+        };
+      });
     },
 
-    currentId: function() {
-      return this.selectedNodes.length > 0 ? this.selectedNodes[this.selectedNodes.length - 1].id : this.config.startId;
+    subNodes() {
+      // mainNodes から自動算出する
+      if (this.mainNodes.length <= 1) {
+        return [];
+      }
+
+      let nodes = [];
+      this.mainNodes.reduce((prev, current) => {
+        nodes.push({
+          path: [prev.id, current.id].sort(),
+          nodes: this.path(prev.x, prev.y, current.x, current.y, { dir: current.dir }),
+        });
+        return current;
+      });
+      return nodes;
     },
 
-    // selectedNodes から subNodes 含めたノードリストを自動計算する
-    routes: function() {
+    startNode() {
+      return this.mainNodes.find(item => item.id === startId);
+    },
+
+    currentNode() {
+      if (this.mainNodes.length <= 0) {
+        return null;
+      }
+      return this.mainNodes[this.mainNodes.length - 1];
+    },
+
+    currentId() {
+      if (this.mainNodes.length <= 0) {
+        return null;
+      }
+      return this.mainNodes[this.mainNodes.length - 1].id;
+    },
+
+    currentDir() {
+      if (this.mainNodes.length <= 0) {
+        return this.config.startDir;
+      }
+      return this.mainNodes[this.mainNodes.length - 1].dir;
+    },
+
+    routes() {
+      // mainNodes, subNodes から自動算出する
       if (!this.startNode) {
         return [];
       }
-      if (this.selectedNodes.length <= 0) {
+      if (this.mainNodes.length <= 0) {
         return [this.startNode];
       }
 
-      const mainNodeIds = [this.config.startId, ...this.selectedNodes.map(item => item.id)];
+      const mainNodeIds = this.mainNodes.map(item => item.id);
 
       let nodes = [this.startNode];
 
@@ -162,6 +246,29 @@ export default {
 
       return nodes;
     },
+
+    degree() {
+      // routes, animate, animateIndex から自動算出する
+      if (!this.animate || this.animateIndex === null || this.routes.length <= 1) {
+        return 0;
+      }
+
+      let prev, current;
+
+      if (this.animateIndex === 0) {
+        prev = this.routes[this.animateIndex];
+        current = this.routes[this.animateIndex + 1];
+      } else if (this.routes.length - 1 <= this.animateIndex) {
+        prev = this.routes[this.routes.length - 2];
+        current = this.routes[this.routes.length - 1];
+      } else {
+        prev = this.routes[this.animateIndex - 1];
+        current = this.routes[this.animateIndex];
+      }
+      const degree = Math.atan2(Number(current.x) - Number(prev.x), Number(current.y) - Number(prev.y)) * 180 / Math.PI;
+
+      return current.dir * 180 + degree;
+    },
   },
 
   created() {
@@ -171,15 +278,21 @@ export default {
       }
     });
 
-    // routes の変更を検知して parentRoutes も変更する
+    // mainNodes の変更を検知して、App.vue 側の mainNodes も変更する
+    this.$watch('mainNodes', () => {
+      this.$emit('update:mainNodes', this.mainNodes);
+    });
+
+    // routes の変更を検知して App.vue 側の parentRoutes も変更する
     this.$watch('routes', () => {
       this.$emit('update:parentRoutes', this.routes);
     });
   },
 
   methods: {
-    initialize: function() {
-      this.selectedNodes = [];
+    initialize() {
+      this.nodeId = 0;
+      this.selectedPoints = [];
 
       this.history.clear();
       // history のバインディングできないところを callback でカバー
@@ -187,93 +300,170 @@ export default {
         this.hasUndo = this.history.hasUndo();
         this.hasRedo = this.history.hasRedo();
       });
-
-      this.robofork.x = this.startNode.x;
-      this.robofork.y = this.startNode.y;
     },
 
-    add: function(node) {
-      this.selectedNodes.push(node);
+    generateId() {
+      return this.nodeId++;
+    },
 
+    mark(x, y) {
+      if (this.animate) {
+        return;
+      }
+
+      const markedX = this.unmappedX(x);
+      const markedY = this.unmappedY(y);
+      const newNode = {
+        x: markedX,
+        y: markedY,
+        dir: Object.freeze(this.config.startDir),
+        up: null,
+        down: null,
+      };
+
+      this.selectedPoints.push(newNode);
       this.history.add({
         undo: () => {
-          this.selectedNodes.pop()
+          this.selectedPoints.pop()
         },
         redo: () => {
-          this.selectedNodes.push(node);
+          this.selectedPoints.push(newNode);
         },
       });
     },
 
-    select: function(node) {
-      // 現在のノードか隣り合ったノードのどちらでもない場合
-      if (!this.isCurrent(node.id) && !this.isNeighbor(node.id)) {
+    up() {
+      if (this.selectedPoints.length <= 0) {
         return;
       }
 
+      this.selectedPoints[this.selectedPoints.length - 1].up = Object.freeze(this.height);
+      this.height = null;
+    },
+
+    down() {
+      if (this.selectedPoints.length <= 0) {
+        return;
+      }
+
+      this.selectedPoints[this.selectedPoints.length - 1].down = Object.freeze(this.height);
+      this.height = null;
+    },
+
+    path(startX, startY, endX, endY, optional = null) {
+      const width = Number(endX) - Number(startX);
+      const height = Number(endY) - Number(startY);
+      const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
+
+      const unitX = 0.1 * width / hypotenuse;
+      const unitY = 0.1 * height / hypotenuse;
+
+      let subNodes = [];
+      let diffX = unitX;
+      let diffY = unitY;
+      while(Math.abs(diffX) < Math.abs(width) || Math.abs(diffY) < Math.abs(height)) {
+        const basic = {
+          id: this.generateId(),
+          x: String(Number(startX) + diffX),
+          y: String(Number(startY) + diffY),
+        };
+        subNodes.push(
+          Object.assign(basic, optional)
+        );
+        diffX += unitX;
+        diffY += unitY;
+      }
+      return subNodes;
+    },
+
+    undo() {
       // アニメーション途中は選択できない
       if (this.animate) {
         return;
       }
 
-      this.add(this.mainNodes.find(item => item.id === node.id));
-    },
-
-    undo: function() {
       this.history.undo();
     },
 
-    redo: function() {
+    redo() {
+      // アニメーション途中は選択できない
+      if (this.animate) {
+        return;
+      }
+
       this.history.redo();
     },
 
-    clear: function() {
+    clear() {
+      this.animate = false;
       this.initialize();
     },
 
-    mappedX: function(x) {
+    reverse() {
+      if (this.selectedPoints.length <= 0) {
+        return;
+      }
+      this.config.startDir = 1 - this.config.startDir;
+      // this.selectedPoints[this.selectedPoints.length - 1].dir = 1 - this.selectedPoints[this.selectedPoints.length - 1].dir;
+    },
+
+    mappedX(x) {
       const offsetX = Number(x) + Number(this.config.offsetX);
       return String(offsetX * this.unitX + this.config.imageWidth);
     },
 
-    mappedY: function(y) {
+    mappedY(y) {
       const offsetY = Number(y) + Number(this.config.offsetY);
       return String(-offsetY * this.unitY);
     },
 
-    isCurrent: function(id) {
+    unmappedX(x) {
+      const offsetMappedX = (Number(x) - this.config.imageWidth) / this.unitX;
+      return String(offsetMappedX - Number(this.config.offsetX));
+    },
+
+    unmappedY(y) {
+      const offsetMappedY = -Number(y) / this.unitY;
+      return String(offsetMappedY - Number(this.config.offsetY));
+    },
+
+    isCurrent(id) {
       return this.currentId === id;
     },
 
-    isNeighbor: function(id) {
-      const targetNode = this.mainNodes.find(item => item.id === this.currentId);
-      if (!targetNode) {
-        return false;
+    start() {
+      // routes が空のときはアニメーションできない
+      if (this.routes.length <= 0) {
+        return;
       }
-      return targetNode.neighbors.includes(id);
-    },
 
-    start: function() {
+      this.robofork.x = this.startNode.x;
+      this.robofork.y = this.startNode.y;
+
       this.animate = true;
-      this.animateTimer = null;
+      this.animateIndex = 0;
 
-      let animatePointer = 0;
-      this.animateTimer = setInterval(() => {
-        if (animatePointer >= this.routes.length) {
-          setTimeout(this.stop, 1000);
-          return;
-        }
-
-        this.robofork.x = this.routes[animatePointer].x;
-        this.robofork.y = this.routes[animatePointer].y;
-
-        animatePointer++;
-      }, 100);
+      clearTimeout(this.animateTimer);
+      this.animateTimer = setTimeout(this.next, 1000);
     },
 
-    stop: function() {
+    next() {
+      this.animateIndex++;
+      if (this.routes.length < this.animateIndex + 1) {
+        this.stop();
+        return;
+      }
+
+      this.robofork.x = this.routes[this.animateIndex].x;
+      this.robofork.y = this.routes[this.animateIndex].y;
+
+      this.animateTimer = setTimeout(this.next, this.routes[this.animateIndex].isMain ? 1000 : 100);
+    },
+
+    stop() {
       clearInterval(this.animateTimer);
       this.animate = false;
+      this.animateIndex = null;
       this.robofork.x = this.startNode.x;
       this.robofork.y = this.startNode.y;
     },
@@ -285,6 +475,7 @@ export default {
 .row {
   margin-bottom: 20px;
 }
+
 .map-container {
   position: relative;
   user-select: none;
@@ -304,46 +495,50 @@ export default {
   top: 0;
 }
 
-.map-draw-layer g {
-  width: 100%;
-  height: 100%;
+.map-draw-layer .mainnode {
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -8px 0 0 -8px;
+  background: blue;
+  border-radius: 8px;
+  opacity: 1;
 }
-.map-draw-layer circle {
-  r: 8;
-  fill: blue;
+
+.map-draw-layer .mainnode.current {
+  background: red;
+  opacity: 1;
+}
+
+.map-draw-layer .subnode {
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -4px 0 0 -4px;
+  background: yellow;
+  border-radius: 4px;
   opacity: 0.5;
-  cursor: default;
 }
 
-.map-draw-layer circle.current {
-  fill: red;
-  opacity: 1;
-  cursor: pointer;
+.map-draw-layer .robofork {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: -15px 0 0 -15px;
 }
 
-.map-draw-layer circle.neighbor {
-  opacity: 1;
-  cursor: pointer;
+.map-draw-layer .robofork.animate {
+  transition: transform linear 100ms;
 }
 
-.map-draw-layer circle.subnode {
-  r: 4;
-  fill: yellow;
-}
-
-.map-draw-layer circle.current-path {
-  fill: red;
-}
-
-.map-draw-layer .self {
-}
-
-.map-draw-layer .self.animate {
-  transition: x linear 100ms, y linear 100ms;
-}
-
-.btn-group + .btn-group {
-  margin-left: 20px;
+.map-draw-layer .robofork img {
+  transform-origin: 50% 50%;
 }
 
 .checkbox label {
