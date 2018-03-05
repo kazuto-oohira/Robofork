@@ -1,13 +1,17 @@
 var path = require('path')
 var webpack = require('webpack')
+var bundleTracker = require('webpack-bundle-tracker')
 
 module.exports = {
   entry: './src/main.js',
   output: {
     path: path.resolve(__dirname, '../robofork_app/static/robofork_app/js/'),
-    publicPath: '/static/robofork_app/js/',
+    publicPath: 'http://localhost:8001/static/robofork_app/js/',
     filename: 'operation_plan_detail.js'
   },
+  plugins: [
+    new bundleTracker({filename: './webpack-stats.json'}),
+  ],
   module: {
     rules: [
       {

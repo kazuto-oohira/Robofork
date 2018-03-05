@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
 {% block title %}運用 | Robofork{% endblock %}
 
 {% block page_style_sheets %}
@@ -7,8 +8,7 @@
     -->
 {% endblock %}
 {% block page_scripts %}
-    <script src="{{ STATIC_URL }}robofork_app/vendor/d3.v3.min.js"></script>
-    <script src="{{ STATIC_URL }}robofork_app/js/operation_plan_detail.js"></script>
+    {% render_bundle 'main' 'js' %}
 {% endblock %}
 
 {% block content %}

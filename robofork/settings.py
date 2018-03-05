@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # 'debug_toolbar',
     'robofork_app.apps.RoboforkAppConfig',
     'channels',
+    'webpack_loader',
 ]
 
 CHANNEL_LAYERS = {
@@ -137,3 +138,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+# webpack integration
+# see robofork_frontend/README.md
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': False,
+        'STATS_FILE': os.path.join(BASE_DIR, 'robofork_frontend/webpack-stats.json'),
+    }
+}

@@ -66,3 +66,49 @@ npm run build
 
 開発環境の関連ファイルとして `webpack.config.js`, `index.html` の2ファイル、
 ビルドの際の関連ファイルとして `webpack.config.js` の1ファイルを編集する必要があります。
+
+
+
+## （参考）robofork_app と robofork_frontend との統合について
+
+それぞれの開発環境は独立しているため、
+本来 frontend 側のものを毎回ビルドして robofork_app 側に持ってくる必要があります。
+
+それでは手間であるため、django 側からフロントエンドのファイルを
+リアルタイムで表示確認できるよう開発環境を統合しています。
+
+なお、すでに環境構築済みであるため、
+通常の構築手順を踏んだ場合は特別な手順は不要です。
+そうでない場合は、以下の手順でアップデートしてください。
+
+1. robofork_frontend ディレクトリ上で `npm update`
+2. robofork_app ディレクトリ上で `pip install -r requirements.txt`
+
+参考までに導入手順を記載しておきます。
+
+1. robofork_frontend 側に、変更検知のための `webpack-bundle-tracker` を導入
+  * `npm i --save-dev webpack-bundle-tracker`
+2. webpack.config.js にプラグインとして読み込む記述を追加する
+  * <http://owaislone.org/blog/webpack-plus-reactjs-and-django/> などを参照
+  * 変更があった場合に `webpack-stats.json` というファイルで変更点を伝達する
+  * `/static/robofork_app/js/` を `http://localhost:8001/static/robofork_app/js/` に変更
+3. robofork_frontend のみで `webpack-stats.json` ファイルに変更があるか検証する
+  * `npm run dev` で robofork_frontend 側の開発環境を立ち上げる
+  * 適当にファイルを変更して、 `webpack-stats.json` に変化があることを確認する
+4. robofork_app 側に、 webpack から動的に生成されたファイルを読み込む `django-webpack-loader` を導入
+  * `pip install django-webpack-loader`
+  * `pip freeze > requirements.txt` で変更ライブラリを requirements.txt に反映しておく
+5. robofork/settings.py を編集する
+  * INSTALLED_APPS に `webpack_loader` を追記する
+  * WEBPACK_LOADER の記述を一番下に追加する
+6. robofork_app 側のテンプレートを編集し、 robofork_frontend 側の変更を取り入れられるようにする
+  * <http://owaislone.org/blog/webpack-plus-reactjs-and-django/> などを参照
+  * `{% load render_bundle from webpack_loader %}` の行を上部に追加
+  * `{% render_bundle 'main' 'js' %}` などで JavaScript ファイルの読み込み
+7. robofork_app 側にて表示確認
+
+### 参考 URL
+
+* <http://owaislone.org/blog/webpack-plus-reactjs-and-django/>
+* <https://github.com/ezhome/webpack-bundle-tracker>
+* <https://github.com/ezhome/django-webpack-loader>
