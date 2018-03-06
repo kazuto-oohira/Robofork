@@ -21,10 +21,14 @@ robofork_app で django が管理しているビューをそのまま利用し�
 	* `node -v`
 2. package.json の依存パッケージをインストールする
 	* `npm install`
-3. ローカルの開発サーバを起動する
+3. ローカルの開発サーバ(frontend側)を起動する
+  * `cd robofork_frontend`
 	* `npm run dev`
 	* 8001 番ポートをすでに使用している場合は webpack.config.js の port 部分を変更する
 	* access <http://127.0.0.1:8001>
+4. Pythonの開発サーバを起動する
+ 	* `python manage.py runserver 0.0.0.0:8000`
+	* access <http://127.0.0.1:8000>
 
 `src/main.js` をエントリーポイントにして、
 index.html から呼ばれたコンポーネントを表示しています。
