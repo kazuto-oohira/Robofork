@@ -28,7 +28,18 @@
               transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
             :title="node.id"
-          ></div>
+          >
+            <img
+              src="/static/robofork_app/img/robofork.svg"
+              alt=""
+              width="30"
+              height="30"
+              v-if="isCurrent(node.id)"
+              :style="{
+                transform: `rotate(${currentDegree}deg)`
+              }"
+            >
+          </div>
 
           <!-- roboork -->
           <div
@@ -207,6 +218,19 @@ export default {
         return this.config.startDir;
       }
       return this.mainNodes[this.mainNodes.length - 1].dir;
+    },
+
+    currentDegree() {
+      // routes から自動算出する
+      let degree = 0;
+
+      if (this.routes.length >= 2) {
+        const current = this.routes[this.routes.length - 1];
+        const prev = this.routes[this.routes.length - 2];
+        degree = Math.atan2(Number(current.x) - Number(prev.x), Number(current.y) - Number(prev.y)) * 180 / Math.PI;
+      }
+
+      return this.currentDir * 180 + degree;
     },
 
     routes() {
@@ -508,8 +532,14 @@ export default {
 }
 
 .map-draw-layer .mainnode.current {
-  background: red;
-  opacity: 1;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  background: transparent;
+  border-radius: 15px;
+}
+.map-draw-layer .mainnode.current img {
+  transform-origin: 50% 50%;
 }
 
 .map-draw-layer .subnode {
