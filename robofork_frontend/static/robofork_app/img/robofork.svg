@@ -1,1 +1,27 @@
-<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#6c802b;}.cls-3{fill:#6b802a;}</style></defs><title>robofork</title><circle class="cls-1" cx="50" cy="50" r="45"/><path class="cls-2" d="M50,10A40,40,0,1,1,10,50,40,40,0,0,1,50,10M50,0a50,50,0,1,0,50,50A50,50,0,0,0,50,0Z"/><polygon class="cls-3" points="50 24 70 72 50 61 30 72 50 24"/></svg>
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="30px" height="30px" viewBox="0 0 30 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
+    <title>robofork</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <circle id="path-1" cx="15" cy="15" r="15"></circle>
+        <rect id="path-2" x="10" y="20" width="3" height="8"></rect>
+        <rect id="path-3" x="17" y="20" width="3" height="8"></rect>
+    </defs>
+    <g id="robofork" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Oval">
+            <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+            <circle stroke="#7ED321" stroke-width="3" cx="15" cy="15" r="13.5"></circle>
+        </g>
+        <rect id="Rectangle" stroke="#4A4A4A" stroke-width="2" fill="#F8E71C" x="8" y="3" width="14" height="17"></rect>
+        <g id="Rectangle-2">
+            <use fill="#4A4A4A" fill-rule="evenodd" xlink:href="#path-2"></use>
+            <rect stroke="#4A4A4A" stroke-width="1" x="10.5" y="20.5" width="2" height="7"></rect>
+        </g>
+        <g id="Rectangle-2-Copy">
+            <use fill="#4A4A4A" fill-rule="evenodd" xlink:href="#path-3"></use>
+            <rect stroke="#4A4A4A" stroke-width="1" x="17.5" y="20.5" width="2" height="7"></rect>
+        </g>
+        <polygon id="Path-2" stroke="#5EAD08" fill="#5EAD08" points="15.0460372 7.15105874 19.0353015 16.0384957 15.0460372 13.9112521 10.9742649 16.0384957"></polygon>
+    </g>
+</svg>
