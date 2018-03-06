@@ -187,7 +187,7 @@ export default {
       let nodes = [];
       this.mainNodes.reduce((prev, current) => {
         nodes.push({
-          path: [prev.id, current.id].sort(),
+          path: [prev.id, current.id],
           nodes: this.path(prev.x, prev.y, current.x, current.y, { dir: current.dir }),
         });
         return current;
