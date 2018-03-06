@@ -54,10 +54,10 @@ export default {
   computed: {
     task() {
       return this.routes.map(item => {
-        if (item.up !== null) {
+        if (item.isMain && item.up !== null) {
           return '荷上げ';
         }
-        if (item.down !== null) {
+        if (item.isMain && item.down !== null) {
           return '荷下げ';
         }
 
@@ -67,6 +67,9 @@ export default {
 
     height() {
       return this.routes.map(item => {
+        if (!item.isMain) {
+          return 0;
+        }
         if (item.up !== null) {
           return item.up;
         }
