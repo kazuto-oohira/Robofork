@@ -1,5 +1,5 @@
 <template>
-  <div class="container-fluid">
+  <div class="container-fluid" id="command-viewer">
     <div class="row table-container pre-scrollable">
       <table class="table table-striped">
         <thead>
@@ -9,7 +9,7 @@
             <th>Speed</th>
             <th>Angle</th>
             <th>Lift</th>
-            <th>NodeNo</th>
+            <th>Stop</th>
             <th>X</th>
             <th>Y</th>
           </tr>
@@ -21,9 +21,9 @@
             <td>1000</td>
             <td>0</td>
             <td>{{ height[index] }}</td>
-            <td>{{ node.id }}</td>
-            <td>{{ node.x }}</td>
-            <td>{{ node.y }}</td>
+            <td>{{ flagStop[index] }}</td>
+            <td>{{ node.x | rounded }}</td>
+            <td>{{ node.y | rounded }}</td>
           </tr>
         </tbody>
       </table>
@@ -54,12 +54,12 @@ export default {
   computed: {
     task() {
       return this.routes.map(item => {
-        if (item.isMain && item.up !== null) {
-          return '荷上げ';
-        }
-        if (item.isMain && item.down !== null) {
-          return '荷下げ';
-        }
+        // if (item.isMain && item.up !== null) {
+        //   return '荷上げ';
+        // }
+        // if (item.isMain && item.down !== null) {
+        //   return '荷下げ';
+        // }
 
         return item.dir === 0 ? '前進' : 'バック';
       });
@@ -70,21 +70,33 @@ export default {
         if (!item.isMain) {
           return 0;
         }
-        if (item.up !== null) {
-          return item.up;
-        }
-        if (item.down !== null) {
-          return item.down;
-        }
+        // if (item.up !== null) {
+        //   return item.up;
+        // }
+        // if (item.down !== null) {
+        //   return item.down;
+        // }
 
         return 0;
       });
     },
+
+    flagStop() {
+      return this.routes.map(item => {
+        return 0;
+      });
+    }
   },
 
   methods: {
     isMainNode: function(node) {
       return !!node.isMain;
+    },
+  },
+
+  filters: {
+    rounded(point) {
+      return String(point).substr(0, 7);
     },
   },
 }
