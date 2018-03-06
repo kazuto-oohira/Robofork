@@ -1,9 +1,9 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="map-container" :style="containerStyles">
+      <div class="map-container" :style="containerStyles" @click.self="mark($event.offsetX, $event.offsetY)">
         <img v-if="config" class="map-image" :src="config.imageUrl">
-        <div class="map-draw-layer" @click="mark($event.offsetX, $event.offsetY)">
+        <div class="map-draw-layer">
           <!-- subNodes -->
           <template v-for="subNode in subNodes">
           <div
@@ -502,7 +502,18 @@ export default {
 
 .map-container {
   position: relative;
-  user-select: none;
+}
+
+.map-container:after {
+  width: 100%;
+  height: 100%;
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  display: block;
+  background: rgba(0, 0, 0, 0);
 }
 
 .map-image {
