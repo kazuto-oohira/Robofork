@@ -114,6 +114,8 @@
 </template>
 
 <script>
+import undo from 'undo-manager'
+
 const startId = 0;
 
 export default {
@@ -121,7 +123,6 @@ export default {
 
   props: [
     'config',
-    'history',
     'parentRoutes',
     'loaded',
   ],
@@ -139,6 +140,7 @@ export default {
         y: 0,
       },
       height: null,
+      history: null,
     }
   },
 
@@ -302,15 +304,12 @@ export default {
       }
     });
 
-    // mainNodes の変更を検知して、App.vue 側の mainNodes も変更する
-    this.$watch('mainNodes', () => {
-      this.$emit('update:mainNodes', this.mainNodes);
-    });
-
     // routes の変更を検知して App.vue 側の parentRoutes も変更する
     this.$watch('routes', () => {
       this.$emit('update:parentRoutes', this.routes);
     });
+
+    this.history = new undo();
   },
 
   methods: {

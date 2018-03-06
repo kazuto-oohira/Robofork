@@ -5,10 +5,9 @@
         <h2>マップ画面</h2>
         <map-viewer
           :config="config"
-          :history="history"
           :parentRoutes.sync="routes"
           :loaded="loaded"
-          ></map-viewer>
+        ></map-viewer>
       </div>
       <div class="col-xs-6">
         <h2>指示画面</h2>
@@ -22,7 +21,6 @@
 
 <script>
 import axios from 'axios'
-import undo from 'undo-manager'
 
 import MapViewer from './MapViewer.vue'
 import CommandViewer from './CommandViewer.vue'
@@ -43,13 +41,10 @@ export default {
       loaded: false,
       config: {},
       routes: [],
-      history: null,
     }
   },
 
   created() {
-    this.history = new undo();
-
     axios.get(OPERATION_ENDPOINT)
       .then((resp) => {
         if ('config' in resp.data) {
