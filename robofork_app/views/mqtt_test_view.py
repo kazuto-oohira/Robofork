@@ -8,6 +8,7 @@ from django.conf import settings
 from os import path
 import csv
 import time
+from robofork_app.libs import utility
 
 
 # 定数
@@ -28,7 +29,7 @@ def send(request):
     payload_data = {
         'serial_number': serial_number,
         'id': can_id,
-        'data': to_can_data(can_data)
+        'data':  utility.to_can_data(can_data)
     }
     payload_json = json.dumps(payload_data)
     
@@ -61,7 +62,7 @@ def route_execute(request):
         client.publish("Robofork/1/toR", json.dumps({
             'serial_number': '1',
             'id': '101',
-            'data': to_can_data(to_hex(999) + to_hex(row_count) + "00000000")
+            'data': utility.to_can_data(utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
         }))
         time.sleep(wait_time_sec)
         print("START " + str(row_count))
@@ -70,11 +71,11 @@ def route_execute(request):
         index = 1
         for row in reader:
             # 102
-            data = to_can_data(
-                to_hex(index) +
-                to_hex(int(float(row[1])) + sign_offset) +
-                to_hex(int(float(row[2])) + sign_offset) +
-                to_hex(int(float(row[4])) + sign_offset)
+            data = utility.to_can_data(
+                utility.to_hex(index) +
+                utility.to_hex(int(float(row[1])) + sign_offset) +
+                utility.to_hex(int(float(row[2])) + sign_offset) +
+                utility.to_hex(int(float(row[4])) + sign_offset)
             )
             print(data)
 
@@ -87,12 +88,12 @@ def route_execute(request):
             }))
 
             # 103
-            data = to_can_data(
-                to_hex(index) +
-                to_hex_2(int(row[3])) +
-                to_hex_2(int(row[5])) +
-                to_hex(int(float(row[6])) + sign_offset) +
-                to_hex(int(float(row[7])) + sign_offset)
+            data = utility.to_can_data(
+                utility.to_hex(index) +
+                utility.to_hex_2(int(row[3])) +
+                utility.to_hex_2(int(row[5])) +
+                utility.to_hex(int(float(row[6])) + sign_offset) +
+                utility.to_hex(int(float(row[7])) + sign_offset)
             )
             print(data)
 
@@ -111,7 +112,7 @@ def route_execute(request):
         client.publish("Robofork/1/toR", json.dumps({
             'serial_number': '1',
             'id': '104',
-            'data': to_can_data(to_hex(999) + to_hex_2(1) + to_hex_2(1) + "00000000")
+            'data': utility.to_can_data(utility.to_hex(999) + utility.to_hex_2(1) + utility.to_hex_2(1) + "00000000")
         }))
         print("END")
 
@@ -132,15 +133,3 @@ def ws_message(message):
     Group("can").send({
         "text": message.content['text'],
     })
-
-
-def to_hex(value):
-    return hex(value).split('x')[-1].zfill(4)
-
-
-def to_hex_2(value):
-    return hex(value).split('x')[-1].zfill(2)
-
-
-def to_can_data(value):
-    return [(i + j) for (i, j) in zip(value[::2], value[1::2])]

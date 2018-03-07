@@ -14,14 +14,16 @@
     <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/gentelella-alela/css/custom.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/nprogress/nprogress.css' %}" />
     {% block page_style_sheets %}{% endblock %}
+
+    {# Scripts(Requited to define first #}
+    <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
+    <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
     {# Contents #}
     {% block content %}{% endblock %}
 
     {# Scripts #}
-    <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
-    <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'robofork_app/vendor/gentelella-alela/js/custom.js' %}"></script>
     <script src="{% static 'robofork_app/vendor/nprogress/nprogress.js' %}"></script>
     {% block page_scripts %}{% endblock %}
