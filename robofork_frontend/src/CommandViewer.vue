@@ -140,7 +140,7 @@ export default {
   },
 
   methods: {
-    isMainNode: function(node) {
+    isMainNode(node) {
       return !!node.isMain;
     },
   },
