@@ -196,24 +196,6 @@ export default {
       });
     },
 
-    // up() {
-    //   if (this.selectedPoints.length <= 0) {
-    //     return;
-    //   }
-
-    //   this.selectedPoints[this.selectedPoints.length - 1].up = Object.freeze(this.height);
-    //   this.height = null;
-    // },
-
-    // down() {
-    //   if (this.selectedPoints.length <= 0) {
-    //     return;
-    //   }
-
-    //   this.selectedPoints[this.selectedPoints.length - 1].down = Object.freeze(this.height);
-    //   this.height = null;
-    // },
-
     mappedX(x) {
       const offsetX = Number(x) + this.offsetX;
       return String(offsetX * this.unitX + this.width);
