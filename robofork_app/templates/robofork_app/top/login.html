@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}滋賀工場ログイン{% endblock %}
+{% block body_class %}login{% endblock %}
+
+{% block content %}
+    <div>
+      <a class="hiddenanchor" id="signup"></a>
+      <a class="hiddenanchor" id="signin"></a>
+
+      <div class="login_wrapper">
+        <div class="animate form login_form">
+          <section class="login_content">
+            <form>
+              <h1>滋賀工場 ログイン</h1>
+              <div>
+                <input type="text" class="form-control" placeholder="ユーザー名" required="" />
+              </div>
+              <div>
+                <input type="password" class="form-control" placeholder="パスワード" required="" />
+              </div>
+              <div>
+                <a class="btn btn-large btn-primary submit" href="/top">ログイン</a>
+              </div>
+
+              <div class="clearfix"></div>
+            </form>
+          </section>
+        </div>
+
+      </div>
+    </div>
+
+{% endblock %}

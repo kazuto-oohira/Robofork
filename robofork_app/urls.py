@@ -4,7 +4,8 @@ from robofork_app.views.operation_plan.operation_plan_detail_view import *
 from robofork_app.views.vehicle_control_view import *
 
 urlpatterns = [
-    path('', top_view.index, name='top'),
+    path('', top_view.login),
+    path('top', top_view.index),
 
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
