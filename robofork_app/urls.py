@@ -5,6 +5,7 @@ from robofork_app.views.vehicle_control_view import *
 
 urlpatterns = [
     path('', top_view.index, name='top'),
+
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
     path('vehicle/save', vehicle_view.save, name='vehicle_save'),
