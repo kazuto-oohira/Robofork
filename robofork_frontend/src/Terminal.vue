@@ -43,7 +43,7 @@ export default {
 
   data() {
     return {
-      liftHeight: 0,
+      liftHeight: null,
     }
   },
 
@@ -93,10 +93,6 @@ export default {
     },
   },
 
-  created() {
-    console.log('terminal loaded!');
-  },
-
   methods: {
     undo() {
       this.$emit('undo');
@@ -120,6 +116,16 @@ export default {
 
     reverse() {
       this.$emit('update:currentDir', 1 - this.currentDir);
+    },
+
+    up() {
+      this.$emit('up', this.liftHeight);
+      this.liftHeight = null;
+    },
+
+    down() {
+      this.$emit('down', this.liftHeight);
+      this.liftHeight = null;
     },
   },
 }

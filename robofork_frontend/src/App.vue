@@ -22,7 +22,7 @@
       <div class="col-xs-6">
         <h2>指示画面</h2>
         <command-viewer
-          :routes="routes"
+          :commands="commands"
         ></command-viewer>
       </div>
     </div>
@@ -39,6 +39,8 @@
           @clear="clear"
           @start="start"
           @stop="stop"
+          @up="up"
+          @down="down"
         ></terminal>
 
         <div class="log">
@@ -47,8 +49,8 @@
           <p>hasUndo: {{ hasUndo }}</p>
           <p>hasRedo: {{ hasRedo }}</p>
           <p>marks: {{ marks }}</p>
-          <p>routes: {{ routes }}</p>
           <p>mainNodes: {{ mainNodes }}</p>
+          <p>commands: {{ commands }}</p>
         </div>
       </div>
     </div>
@@ -97,15 +99,12 @@ export default {
         return [];
       }
 
-      this.nodeId = 0;
+      this.nodeId = startId;
+
       return this.marks.map(item => {
-        return {
-          id: this.generateId(),
-          x: item.x,
-          y: item.y,
-          dir: item.dir,
-          isMain: true,
-        };
+        item.id = this.generateId();
+        item.isMain = true;
+        return item;
       });
     },
 
@@ -148,7 +147,7 @@ export default {
       return this.mainNodes[this.mainNodes.length - 1].id;
     },
 
-    routes() {
+    commands() {
       // mainNodes, subNodes から自動算出する
       if (!this.startNode) {
         return [];
@@ -168,14 +167,8 @@ export default {
           console.error(`subNode is not found: path = ${[prev, current]}`);
         }
 
-        if (current === subNode.path[1]) {
-          // forward
-          // array#sort などでソートしても、バインディングな要素で内部で入れ替えなどが発生するため、一度複製する
-          nodes.push(...Object.assign([], subNode.nodes));
-        } else {
-          // reverse
-          nodes.push(...Object.assign([], subNode.nodes).reverse());
-        }
+        // subNode
+        nodes.push(...subNode.nodes);
 
         // mainNode
         nodes.push(this.mainNodes.find(item => item.id === current));
@@ -184,6 +177,11 @@ export default {
       });
 
       return nodes;
+    },
+
+    routes() {
+      // commands から自動算出する（その場で行う命令をフィルタリングしたもの）
+      return this.commands.filter(item => item.lift !== true);
     },
   },
 
@@ -202,7 +200,6 @@ export default {
   methods: {
     initialize() {
       this.animate = false;
-      this.nodeId = startId;
       this.marks = [];
       this.history.clear();
 
@@ -305,6 +302,52 @@ export default {
       clearInterval(this.animateTimer);
       this.animate = false;
       this.animateIndex = null;
+    },
+
+    up(liftHeight) {
+      // 選択したポイントが1つもなければ、荷上げの基準点が算出できない
+      if (this.marks.length <= 0) {
+        return;
+      }
+
+      let mark = Object.assign({}, this.currentNode);
+      mark.lift = true;
+      mark.up = liftHeight;
+      // TODO:荷上げ荷下げを連続するとそれもコピーしてしまう、参照元を見直した方がいいかも
+      delete mark.down;
+
+      this.marks.push(mark);
+      this.history.add({
+        undo: () => {
+          this.marks.pop()
+        },
+        redo: () => {
+          this.marks.push(mark);
+        },
+      });
+    },
+
+    down(liftHeight) {
+      // 選択したポイントが1つもなければ、荷上げの基準点が算出できない
+      if (this.marks.length <= 0) {
+        return;
+      }
+
+      let mark = Object.assign({}, this.currentNode);
+      mark.lift = true;
+      // TODO:荷上げ荷下げを連続するとそれもコピーしてしまう、参照元を見直した方がいいかも
+      delete mark.up;
+      mark.down = liftHeight;
+
+      this.marks.push(mark);
+      this.history.add({
+        undo: () => {
+          this.marks.pop()
+        },
+        redo: () => {
+          this.marks.push(mark);
+        },
+      });
     },
   },
 }

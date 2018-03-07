@@ -15,12 +15,15 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(node, index) in routes" v-if="showAll || isMainNode(node)">
-            <th scope="row">{{ index + 1 }}</th>
-            <td>{{ task[index] }}</td>
+          <tr
+            v-for="(node, index) in commands"
+            v-if="enableCommand[index]"
+          >
+            <th scope="row">{{ commandIndex[index] }}</th>
+            <td>{{ taskIndex[index] | taskLabel }}</td>
             <td>1000</td>
             <td>0</td>
-            <td>{{ height[index] }}</td>
+            <td>{{ liftHeight[index] }}</td>
             <td>{{ flagStop[index] }}</td>
             <td>{{ node.x | rounded }}</td>
             <td>{{ node.y | rounded }}</td>
@@ -39,10 +42,21 @@
 </template>
 
 <script>
+const TASK_LABELS = {
+  0: '前進',
+  1: 'バック',
+  2: '旋回（回転）',
+  3: '荷上げ(旋回なし)',
+  4: '荷上げ(旋回あり)',
+  5: '荷下げ(旋回なし)',
+  6: '荷下げ(旋回あり)',
+  255: 'なにもしない',
+};
+
 export default {
   name: 'command-viewer',
   props: [
-    'routes',
+    'commands',
   ],
 
   data () {
@@ -52,37 +66,73 @@ export default {
   },
 
   computed: {
-    task() {
-      return this.routes.map(item => {
-        // if (item.isMain && item.up !== null) {
-        //   return '荷上げ';
-        // }
-        // if (item.isMain && item.down !== null) {
-        //   return '荷下げ';
-        // }
-
-        return item.dir === 0 ? '前進' : 'バック';
+    enableCommand() {
+      return this.commands.map(item => {
+        return this.showAll || this.isMainNode(item);
       });
     },
 
-    height() {
-      return this.routes.map(item => {
-        if (!item.isMain) {
+    commandIndex() {
+      let commandIndex = 1;
+
+      return this.commands.map((item, index) => {
+        if (index >= this.commands.length - 1) {
+          return commandIndex++;
+        }
+
+        const next = this.commands[index + 1];
+
+        if (next.lift) {
+          return commandIndex;
+        }
+
+        return commandIndex++;
+      });
+    },
+
+    taskIndex() {
+      return this.commands.map((item, index) => {
+        if (index === 0) {
+          return 255;
+        }
+        if (item.lift && 'up' in item) {
+          return 3;
+        } else if (item.lift && 'down' in item) {
+          return 5;
+        }
+
+        return item.dir === 0 ? 0 : 1;
+      });
+    },
+
+    liftHeight() {
+      return this.commands.map(item => {
+        if (!item.lift) {
           return 0;
         }
-        // if (item.up !== null) {
-        //   return item.up;
-        // }
-        // if (item.down !== null) {
-        //   return item.down;
-        // }
+        if ('up' in item) {
+          return item.up;
+        } else if ('down' in item) {
+          return item.down;
+        }
 
         return 0;
       });
     },
 
     flagStop() {
-      return this.routes.map(item => {
+      return this.commands.map((item, index) => {
+        if (index >= this.commands.length - 1) {
+          return 0;
+        }
+
+        const current = item;
+        const next = this.commands[index + 1];
+
+        if (!current.lift && next.lift) {
+          return 1;
+        }
+
         return 0;
       });
     }
@@ -97,6 +147,10 @@ export default {
   filters: {
     rounded(point) {
       return String(point).substr(0, 7);
+    },
+
+    taskLabel(taskIndex) {
+      return TASK_LABELS[taskIndex];
     },
   },
 }
