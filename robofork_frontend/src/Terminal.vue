@@ -14,7 +14,7 @@
     <div class="row">
       <div class="col-sm-6">
         <button @click="reverse()" :disabled="disableReverse" class="btn btn-default">向きを反転する</button>
-        <p style="margin-top: 10px">今の向き: {{ dirLabel }}</p>
+        <p style="margin-top: 10px">次の進行方向: {{ dirLabel }}</p>
       </div>
       <div class="col-sm-6">
         <div class="input-group">
@@ -30,6 +30,9 @@
 </template>
 
 <script>
+const DIR_FORWARD = '前進方向';
+const DIR_REVERSE = 'バック方向';
+
 export default {
   name: 'terminal',
 
@@ -89,7 +92,7 @@ export default {
         return '-';
       }
 
-      return this.currentDir ? 'バック方向' : '前進方向';
+      return this.currentDir ? DIR_REVERSE : DIR_FORWARD;
     },
   },
 

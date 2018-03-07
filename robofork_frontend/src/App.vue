@@ -66,8 +66,7 @@ import CommandViewer from './CommandViewer.vue'
 import Terminal from './Terminal.vue'
 
 const OPERATION_ENDPOINT = '/static/robofork_app/api/operation_control.json';
-
-const startId = 0;
+const START_ID = 0;
 
 export default {
   name: 'app',
@@ -99,7 +98,7 @@ export default {
         return [];
       }
 
-      this.nodeId = startId;
+      this.nodeId = START_ID;
 
       return this.marks.map(item => {
         item.id = this.generateId();
@@ -130,7 +129,7 @@ export default {
     },
 
     startNode() {
-      return this.mainNodes.find(item => item.id === startId);
+      return this.mainNodes.find(item => item.id === START_ID);
     },
 
     currentNode() {
@@ -190,6 +189,7 @@ export default {
       .then((resp) => {
         if ('config' in resp.data) {
           this.config = resp.data.config;
+          this.currentDir = Number(this.config.startDir);
         }
       });
 
@@ -230,6 +230,7 @@ export default {
       });
     },
 
+    // 2点間のサブノードを算出して返す
     path(startX, startY, endX, endY) {
       const width = Number(endX) - Number(startX);
       const height = Number(endY) - Number(startY);
@@ -241,6 +242,7 @@ export default {
       let subNodes = [];
       let diffX = unitX;
       let diffY = unitY;
+
       while(Math.abs(diffX) < Math.abs(width) || Math.abs(diffY) < Math.abs(height)) {
         subNodes.push({
           id: this.generateId(),
@@ -250,6 +252,7 @@ export default {
         diffX += unitX;
         diffY += unitY;
       }
+
       return subNodes;
     },
 
@@ -360,6 +363,7 @@ export default {
   padding: 0.5rem;
   background: #eee;
 }
+
 .log p {
   line-height: 1.1;
 }

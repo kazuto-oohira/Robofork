@@ -76,8 +76,6 @@
 </template>
 
 <script>
-const startId = 0;
-
 export default {
   name: 'map-viewer',
 
@@ -134,7 +132,7 @@ export default {
       if (this.routes.length >= 2) {
         const current = this.routes[this.routes.length - 1];
         const prev = this.routes[this.routes.length - 2];
-        degree = Math.atan2(Number(current.x) - Number(prev.x), Number(current.y) - Number(prev.y)) * 180 / Math.PI;
+        degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
       }
 
       return this.currentDir * 180 + degree;
@@ -182,7 +180,8 @@ export default {
         prev = this.routes[this.animateIndex - 1];
         current = this.routes[this.animateIndex];
       }
-      const degree = Math.atan2(Number(current.x) - Number(prev.x), Number(current.y) - Number(prev.y)) * 180 / Math.PI;
+
+      const degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
 
       return current.dir * 180 + degree;
     },
@@ -214,6 +213,10 @@ export default {
     unmappedY(y) {
       const offsetMappedY = -Number(y) / this.unitY;
       return String(offsetMappedY - this.offsetY);
+    },
+
+    degree(aX, aY, bX, bY) {
+      return Math.atan2(bX - aX, bY - aY) * 180 / Math.PI;
     },
 
     isCurrent(id) {

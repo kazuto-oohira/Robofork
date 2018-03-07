@@ -34,7 +34,7 @@
     <div class="row">
       <div class="checkbox">
         <label>
-          <input type="checkbox" v-model="showAll"> サブノードも含めて表示する
+          <input type="checkbox" v-model="checkSubNodes"> サブノードも含めて表示する
         </label>
       </div>
     </div>
@@ -55,20 +55,21 @@ const TASK_LABELS = {
 
 export default {
   name: 'command-viewer',
+
   props: [
     'commands',
   ],
 
   data () {
     return {
-      showAll: false,
+      checkSubNodes: false,
     }
   },
 
   computed: {
     enableCommand() {
       return this.commands.map(item => {
-        return this.showAll || this.isMainNode(item);
+        return this.checkSubNodes || this.isMainNode(item);
       });
     },
 
