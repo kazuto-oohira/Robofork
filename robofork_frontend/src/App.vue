@@ -190,6 +190,13 @@ export default {
         if ('config' in resp.data) {
           this.config = resp.data.config;
           this.currentDir = Number(this.config.startDir);
+
+          if ('startX' in resp.data.config && 'startY' in resp.data.config) {
+            this.addMark({
+              x: resp.data.config.startX,
+              y: resp.data.config.startY,
+            });
+          }
         }
       });
 
