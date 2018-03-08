@@ -6,10 +6,10 @@ from robofork_app.views.vehicle_control_view import *
 
 urlpatterns = [
     # ログイン
-    path('', LoginView.as_view()),
+    path('', LoginView.as_view(), name='login'),
 
     # NKC管理画面
-    path('admin/home', TemplateView.as_view(template_name='robofork_app/admin_home/home.html')),
+    path('admin/home', TemplateView.as_view(template_name='robofork_app/admin_home/home.html'), name='admin_home'),
 
     path('top', top_view.index),
 
