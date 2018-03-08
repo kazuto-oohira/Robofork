@@ -27,11 +27,4 @@ urlpatterns = [
     path('mqtt_test', mqtt_test_view.index),
     path('mqtt_test/send', mqtt_test_view.send),
     path('mqtt_test/route_execute', mqtt_test_view.route_execute),
-
-    # 奥田くんのやつは一旦コメントアウト
-    # path('redirect', views.redirect, name='redirect'),
-    # path('logout', views.logout, name='logout'),
-    # path('manage',views.index, name='manage'),
-    # path('usr',views.index, name='usr'),
-    # path('plan',views.index, name='plan'),
 ]
