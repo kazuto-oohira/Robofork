@@ -6,6 +6,7 @@
           <tr>
             <th>No</th>
             <th>Task</th>
+            <th>AfterTask</th>
             <th>Speed</th>
             <th>Angle</th>
             <th>Lift</th>
@@ -21,10 +22,11 @@
           >
             <th scope="row">{{ commandIndex[index] }}</th>
             <td>{{ taskIndex[index] | taskLabel }}</td>
+            <td>{{ afterTaskIndex[index] | taskLabel }}</td>
             <td>1000</td>
             <td>0</td>
             <td>{{ liftHeight[index] }}</td>
-            <td>{{ flagStop[index] }}</td>
+            <td>{{ node.lift ? '1' : '0' }}</td>
             <td>{{ node.x | rounded }}</td>
             <td>{{ node.y | rounded }}</td>
           </tr>
@@ -106,6 +108,21 @@ export default {
       });
     },
 
+    afterTaskIndex() {
+      return this.commands.map((item, index) => {
+        if (index === 0) {
+          return 255;
+        }
+        if (item.lift && 'up' in item) {
+          return 3;
+        } else if (item.lift && 'down' in item) {
+          return 5;
+        }
+
+        return item.dir === 0 ? 0 : 1;
+      });
+    },
+
     liftHeight() {
       return this.commands.map(item => {
         if (!item.lift) {
@@ -127,14 +144,7 @@ export default {
           return 0;
         }
 
-        const current = item;
-        const next = this.commands[index + 1];
-
-        if (!current.lift && next.lift) {
-          return 1;
-        }
-
-        return 0;
+        return item.lift ? 1 : 0;
       });
     }
   },

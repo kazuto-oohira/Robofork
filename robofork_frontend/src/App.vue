@@ -22,7 +22,7 @@
       <div class="col-xs-6">
         <h2>指示画面</h2>
         <command-viewer
-          :commands="commands"
+          :commands="routes"
         ></command-viewer>
       </div>
     </div>
@@ -50,7 +50,7 @@
           <p>hasRedo: {{ hasRedo }}</p>
           <p>marks: {{ marks }}</p>
           <p>mainNodes: {{ mainNodes }}</p>
-          <p>commands: {{ commands }}</p>
+          <p>routes: {{ routes }}</p>
         </div>
       </div>
     </div>
@@ -58,6 +58,7 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import axios from 'axios'
 import undoManager from 'undo-manager'
 
@@ -132,11 +133,12 @@ export default {
       return this.mainNodes.find(item => item.id === START_ID);
     },
 
-    currentNode() {
-      if (this.mainNodes.length <= 0) {
+    currentMark() {
+      if (this.marks.length <= 0) {
         return null;
       }
-      return this.mainNodes[this.mainNodes.length - 1];
+
+      return this.marks[this.marks.length - 1];
     },
 
     currentId() {
@@ -146,7 +148,7 @@ export default {
       return this.mainNodes[this.mainNodes.length - 1].id;
     },
 
-    commands() {
+    routes() {
       // mainNodes, subNodes から自動算出する
       if (!this.startNode) {
         return [];
@@ -176,11 +178,6 @@ export default {
       });
 
       return nodes;
-    },
-
-    routes() {
-      // commands から自動算出する（その場で行う命令をフィルタリングしたもの）
-      return this.commands.filter(item => item.lift !== true);
     },
   },
 
@@ -320,21 +317,9 @@ export default {
         return;
       }
 
-      let mark = Object.assign({}, this.currentNode);
-      mark.lift = true;
-      mark.up = liftHeight;
-      // TODO:荷上げ荷下げを連続するとそれもコピーしてしまう、参照元を見直した方がいいかも
-      delete mark.down;
-
-      this.marks.push(mark);
-      this.history.add({
-        undo: () => {
-          this.marks.pop()
-        },
-        redo: () => {
-          this.marks.push(mark);
-        },
-      });
+      // 追加プロパティをリアクティブにして、変更検知できるようにする
+      Vue.set(this.currentMark, 'lift', true);
+      Vue.set(this.currentMark, 'up', liftHeight);
     },
 
     down(liftHeight) {
@@ -343,21 +328,9 @@ export default {
         return;
       }
 
-      let mark = Object.assign({}, this.currentNode);
-      mark.lift = true;
-      // TODO:荷上げ荷下げを連続するとそれもコピーしてしまう、参照元を見直した方がいいかも
-      delete mark.up;
-      mark.down = liftHeight;
-
-      this.marks.push(mark);
-      this.history.add({
-        undo: () => {
-          this.marks.pop()
-        },
-        redo: () => {
-          this.marks.push(mark);
-        },
-      });
+      // 追加プロパティをリアクティブにして、変更検知できるようにする
+      Vue.set(this.currentMark, 'lift', true);
+      Vue.set(this.currentMark, 'down', liftHeight);
     },
   },
 }
