@@ -1,10 +1,16 @@
 from django.urls import path
 from robofork_app.views import top_view, vehicle_view, mqtt_test_view
+from robofork_app.views.login_view import *
 from robofork_app.views.operation_plan.operation_plan_detail_view import *
 from robofork_app.views.vehicle_control_view import *
 
 urlpatterns = [
-    path('', top_view.login),
+    # ログイン
+    path('', LoginView.as_view()),
+
+    # NKC管理画面
+    path('admin/home', TemplateView.as_view(template_name='robofork_app/admin_home/home.html')),
+
     path('top', top_view.index),
 
     path('vehicle', vehicle_view.index, name='vehicle_index'),
