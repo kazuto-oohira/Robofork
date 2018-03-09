@@ -3,6 +3,7 @@ from robofork_app.views import top_view, vehicle_view, mqtt_test_view
 from robofork_app.views.login_view import *
 from robofork_app.views.operation_plan.operation_plan_detail_view import *
 from robofork_app.views.vehicle_control_view import *
+from robofork_app.views.api import mqtt
 
 urlpatterns = [
     # ログイン
@@ -10,6 +11,7 @@ urlpatterns = [
 
     # NKC管理画面
     path('admin/home', TemplateView.as_view(template_name='robofork_app/admin_home/home.html'), name='admin_home'),
+
 
     path('top', top_view.index),
 
@@ -23,8 +25,10 @@ urlpatterns = [
 
     path('vehicle/control/<int:vehicle_id>', VehicleControlView.as_view(), name='vehicle_control'),
 
+    # API
+    path('api/mqtt/send', mqtt.send),
+
     # MQTT テスト
     path('mqtt_test', mqtt_test_view.index),
-    path('mqtt_test/send', mqtt_test_view.send),
     path('mqtt_test/route_execute', mqtt_test_view.route_execute),
 ]

@@ -149,16 +149,13 @@
                 // 0.0〜1.0を0.0度〜90.0度へ変換
                 sendData += toHex(Math.floor((horizontalForce * (90 - 0) * 10) * horizontalMinus + offset));
 
-                console.log(Math.round(verticalForce * 1000 * verticalMinus) + '/' + Math.floor((horizontalForce * (90 - 0) * 10) * horizontalMinus));
-                console.log(sendData + '0000');
-
                 $.ajax({
-                    url: '/mqtt_test/send',
+                    url: '/api/mqtt/send',
                     type: 'POST',
                     data: {
                         //can_id: '1E0',
                         can_id: '105',
-                        can_data: sendData + '0000'
+                        can_data: sendData + '000000'
                     }
                 });
             } else {
@@ -167,11 +164,11 @@
                 sendData += toHex(0 + offset) + toHex(0 + offset);
 
                 $.ajax({
-                    url: '/mqtt_test/send',
+                    url: '/api/mqtt/send',
                     type: 'POST',
                     data: {
                         can_id: '105',
-                        can_data: sendData + '0000'
+                        can_data: sendData + '000000'
                     }
                 });
             }
@@ -184,7 +181,7 @@
                 sendData = '0000000000000000'
             }
             $.ajax({
-                url: '/mqtt_test/send',
+                url: '/api/mqtt/send',
                 type: 'POST',
                 data: {
                     can_id: '104',

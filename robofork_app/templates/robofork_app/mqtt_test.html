@@ -41,7 +41,7 @@
         // 送信ボタンクリック
         $('#can_send').click(function() {
             $.ajax({
-                url: '/mqtt_test/send',
+                url: 'api/mqtt/send',
                 type: 'POST',
                 data: {
                     can_id: $('#can_id').val(),

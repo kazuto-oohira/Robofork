@@ -13,13 +13,6 @@ def index(request):
     return render(request, 'robofork_app/mqtt_test.html', None)
 
 
-@csrf_exempt
-def send(request):
-    # MQTT送信
-    ret = mqtt.send("1", request.POST['can_id'], request.POST['can_data'])
-    return JsonResponse({'result': ret})
-
-
 def route_execute(request):
     wait_time_sec = 0.025
     sign_offset = 32768
