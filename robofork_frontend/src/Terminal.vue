@@ -75,7 +75,7 @@ export default {
     },
 
     reverse() {
-      this.$emit('update:currentDir', 1 - this.currentDir);
+      this.$emit('update:currentDir', !this.currentDir);
     },
   },
 }
