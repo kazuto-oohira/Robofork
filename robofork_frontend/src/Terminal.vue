@@ -14,6 +14,9 @@
         <button @click="reverse()" :disabled="disableReverse" class="btn btn-default">向きを反転する</button>
         <p style="margin-top: 10px">次の進行方向: {{ dirLabel }}</p>
       </div>
+      <div class="col-sm-6">
+        <button @click="save()" class="btn btn-success">ルートを保存する</button>
+      </div>
     </div>
   </div>
 </template>
@@ -76,6 +79,10 @@ export default {
 
     reverse() {
       this.$emit('update:currentDir', !this.currentDir);
+    },
+
+    save() {
+      this.$emit('save');
     },
   },
 }

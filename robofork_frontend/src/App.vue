@@ -41,6 +41,7 @@
           @stop="stop"
           @up="up"
           @down="down"
+          @save="save"
         ></terminal>
 
         <div class="log">
@@ -309,6 +310,19 @@ export default {
       // 追加プロパティをリアクティブにして、変更検知できるようにする
       Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTDOWN);
       Vue.set(this.currentMark, 'liftHeight', liftHeight);
+    },
+
+    save() {
+      axios({
+        method: 'post',
+        url: `${window.location.href}/post`,
+        data: {
+          commands: this.commands,
+        },
+      })
+      .then(() => {
+        alert('保存しました');
+      });
     },
   },
 }
