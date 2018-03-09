@@ -39,8 +39,6 @@
           @clear="clear"
           @start="start"
           @stop="stop"
-          @up="up"
-          @down="down"
           @save="save"
         ></terminal>
 
@@ -288,28 +286,6 @@ export default {
       clearInterval(this.animateTimer);
       this.animate = false;
       this.animateIndex = null;
-    },
-
-    up(liftHeight) {
-      // 選択したポイントが1つもなければ、荷上げの基準点が算出できない
-      if (this.marks.length <= 0) {
-        return;
-      }
-
-      // 追加プロパティをリアクティブにして、変更検知できるようにする
-      Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTUP);
-      Vue.set(this.currentMark, 'liftHeight', liftHeight);
-    },
-
-    down(liftHeight) {
-      // 選択したポイントが1つもなければ、荷上げの基準点が算出できない
-      if (this.marks.length <= 0) {
-        return;
-      }
-
-      // 追加プロパティをリアクティブにして、変更検知できるようにする
-      Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTDOWN);
-      Vue.set(this.currentMark, 'liftHeight', liftHeight);
     },
 
     save() {
