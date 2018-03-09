@@ -29,7 +29,7 @@
             v-for="node in mainNodes"
             class="mainnode"
             :class="{
-              current: isCurrent(node.id),
+              latest: isLatest(node.id),
               selected: isSelectedCommand(node.id),
             }"
             :style="{
@@ -43,9 +43,9 @@
               alt=""
               width="30"
               height="30"
-              v-if="isCurrent(node.id)"
+              v-if="isLatest(node.id)"
               :style="{
-                transform: `rotate(${currentDegree}deg)`
+                transform: `rotate(${latestDegree}deg)`
               }"
             >
           </div>
@@ -55,7 +55,8 @@
             class="robofork"
             :class="{ animate: enableRobofork }"
             :style="{
-              transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`
+              transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`,
+              'transition-duration': `${animationSpeed}ms`
             }"
           >
             <img
@@ -121,6 +122,7 @@ export default {
     return {
       checkSubNodes: true,
       modeIndex: 0,
+      animationSpeed: Constants.ANIMATION_SPEED,
     }
   },
 
@@ -149,15 +151,15 @@ export default {
       return this.height / this.scaleY;
     },
 
-    currentDir() {
-      if (this.mainNodes.length <= 0) {
+    latestDir() {
+      if (this.commands.length <= 0) {
         return 0;
       }
 
-      return this.mainNodes[this.mainNodes.length - 1].task === Constants.TASK_FORWARD ? 0 : 1;
+      return this.commands[this.commands.length - 1].task === Constants.TASK_FORWARD ? 0 : 1;
     },
 
-    currentDegree() {
+    latestDegree() {
       // commands から自動算出する
       let degree = 0;
 
@@ -167,7 +169,7 @@ export default {
         degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
       }
 
-      return this.currentDir * 180 + degree;
+      return this.latestDir * 180 + degree;
     },
 
     roboforkX() {
@@ -260,12 +262,12 @@ export default {
       return Math.atan2(bX - aX, bY - aY) * 180 / Math.PI;
     },
 
-    isCurrent(id) {
-      if (this.mainNodes.length <= 0) {
+    isLatest(id) {
+      if (this.commands.length <= 0) {
         return false;
       }
 
-      return this.mainNodes[this.mainNodes.length - 1].id === id;
+      return this.commands[this.commands.length - 1].id === id;
     },
 
     isSelectedCommand(id) {
@@ -327,7 +329,7 @@ export default {
   cursor: pointer;
 }
 
-.map-draw-layer .mainnode.current img {
+.map-draw-layer .mainnode.latest img {
   width: 30px;
   height: 30px;
   position: absolute;
@@ -341,7 +343,7 @@ export default {
   background: red;
 }
 
-.map-container.point-edit .map-draw-layer .mainnode.current img {
+.map-container.point-edit .map-draw-layer .mainnode.latest img {
   display: none;
 }
 

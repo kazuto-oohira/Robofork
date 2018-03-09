@@ -79,7 +79,7 @@ export default {
     'selectedCommandIndex',
   ],
 
-  data () {
+  data() {
     return {
       checkSubNodes: false,
       afterTaskChoices: [

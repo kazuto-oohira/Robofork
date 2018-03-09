@@ -80,7 +80,7 @@ export default {
       marks: [],
       animate: false,
       animateIndex: 0,
-      currentDir: 0,
+      currentDir: true,
       selectedCommandIndex: 0,
     }
   },
@@ -124,18 +124,6 @@ export default {
       return nodes;
     },
 
-    startNode() {
-      return this.mainNodes.find(item => item.id === Constants.START_NODE_INDEX);
-    },
-
-    currentMark() {
-      if (this.marks.length <= 0) {
-        return null;
-      }
-
-      return this.marks[this.marks.length - 1];
-    },
-
     currentId() {
       if (this.mainNodes.length <= 0) {
         return null;
@@ -145,20 +133,16 @@ export default {
 
     commands() {
       // mainNodes, subNodes から自動算出する
-      if (!this.startNode) {
+      const startNode = this.mainNodes.find(item => item.id === Constants.START_NODE_INDEX);
+      if (!startNode) {
         return [];
       }
-      if (this.mainNodes.length <= 0) {
-        return [this.startNode];
-      }
 
-      const mainNodeIds = this.mainNodes.map(item => item.id);
+      let nodes = [startNode];
 
-      let nodes = [this.startNode];
-
-      mainNodeIds.reduce((prev, current) => {
-        const subNode = this.subNodes.find(item => item.path.includes(current) && item.path.includes(prev));
-
+      this.mainNodes.reduce((prev, current) => {
+        // subNodes の中から path プロパティ内に両端のノードを含むものを探す
+        const subNode = this.subNodes.find(item => item.path.includes(current.id) && item.path.includes(prev.id));
         if (!subNode) {
           console.error(`subNode is not found: path = ${[prev, current]}`);
         }
@@ -167,7 +151,7 @@ export default {
         nodes.push(...subNode.nodes);
 
         // mainNode
-        nodes.push(this.mainNodes.find(item => item.id === current));
+        nodes.push(current);
 
         return current;
       });
@@ -193,7 +177,6 @@ export default {
         }
 
         if ('commands' in commands) {
-          console.log(commands.commands.filter(item => item.isMain));
           this.marks = commands.commands.filter(item => item.isMain);
           this.selectedCommandIndex = this.marks.length - 1;
         }
@@ -235,8 +218,8 @@ export default {
           return this.currentDir ? Constants.TASK_REVERSE : Constants.TASK_FORWARD;
         })(),
         afterTask: Constants.TASK_NOTHING,
-        speed: 1000,
-        angle: 0,
+        speed: Constants.INITIAL_SPEED,
+        angle: Constants.INITIAL_ANGLE,
       });
 
       this.marks.push(mark);
@@ -291,7 +274,7 @@ export default {
       this.animateIndex = 0;
 
       clearTimeout(this.animateTimer);
-      this.animateTimer = setTimeout(this.next, 1000);
+      this.animateTimer = setTimeout(this.next, 10 * Constants.ANIMATION_SPEED);
     },
 
     next() {
@@ -301,7 +284,8 @@ export default {
         return;
       }
 
-      this.animateTimer = setTimeout(this.next, this.commands[this.animateIndex].isMain ? 1000 : 100);
+      const nextDuration = Constants.ANIMATION_SPEED * (this.commands[this.animateIndex].isMain ? 10 : 1);
+      this.animateTimer = setTimeout(this.next, nextDuration);
     },
 
     stop() {
@@ -313,7 +297,7 @@ export default {
     save() {
       axios({
         method: 'post',
-        url: `${window.location.href}/post`,
+        url: `${window.location.href}/save`,
         data: {
           commands: this.commands,
         },
