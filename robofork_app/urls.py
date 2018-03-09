@@ -3,7 +3,7 @@ from robofork_app.views import vehicle_view, mqtt_test_view
 from robofork_app.views.login_view import *
 from robofork_app.views.operation_plan.operation_plan_detail_view import *
 from robofork_app.views.vehicle_control_view import *
-from robofork_app.views.api import mqtt
+from robofork_app.views.api import mqtt, vehicle_operation_plan
 
 urlpatterns = [
     # ログイン
@@ -27,6 +27,8 @@ urlpatterns = [
 
 
     # 以下はまだテスト
+    path('operation_plan/<int:vehicle_operation_plan_id>/post', vehicle_operation_plan.save),
+
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
     path('vehicle/save', vehicle_view.save, name='vehicle_save'),
