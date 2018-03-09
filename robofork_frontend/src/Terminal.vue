@@ -30,8 +30,7 @@
 </template>
 
 <script>
-const DIR_FORWARD = '前進方向';
-const DIR_REVERSE = 'バック方向';
+import * as Constants from './Constants'
 
 export default {
   name: 'terminal',
@@ -92,7 +91,7 @@ export default {
         return '-';
       }
 
-      return this.currentDir ? DIR_REVERSE : DIR_FORWARD;
+      return this.currentDir ? Constants.DIR_REVERSE : Constants.DIR_FORWARD;
     },
   },
 

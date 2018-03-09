@@ -17,18 +17,18 @@
         </thead>
         <tbody>
           <tr
-            v-for="(node, index) in commands"
+            v-for="(command, index) in commands"
             v-if="enableCommand[index]"
           >
-            <th scope="row">{{ commandIndex[index] }}</th>
-            <td>{{ taskIndex[index] | taskLabel }}</td>
-            <td>{{ afterTaskIndex[index] | taskLabel }}</td>
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ command.task | taskLabel }}</td>
+            <td>{{ command.afterTask | afterTaskLabel }}</td>
             <td>1000</td>
             <td>0</td>
             <td>{{ liftHeight[index] }}</td>
-            <td>{{ node.lift ? '1' : '0' }}</td>
-            <td>{{ node.x | rounded }}</td>
-            <td>{{ node.y | rounded }}</td>
+            <td>{{ flagStop[index] }}</td>
+            <td>{{ command.x | rounded }}</td>
+            <td>{{ command.y | rounded }}</td>
           </tr>
         </tbody>
       </table>
@@ -44,16 +44,7 @@
 </template>
 
 <script>
-const TASK_LABELS = {
-  0: '前進',
-  1: 'バック',
-  2: '旋回（回転）',
-  3: '荷上げ(旋回なし)',
-  4: '荷上げ(旋回あり)',
-  5: '荷下げ(旋回なし)',
-  6: '荷下げ(旋回あり)',
-  255: 'なにもしない',
-};
+import * as Constants from './Constants'
 
 export default {
   name: 'command-viewer',
@@ -93,44 +84,12 @@ export default {
       });
     },
 
-    taskIndex() {
-      return this.commands.map((item, index) => {
-        if (index === 0) {
-          return 255;
-        }
-        if (item.lift && 'up' in item) {
-          return 3;
-        } else if (item.lift && 'down' in item) {
-          return 5;
-        }
-
-        return item.dir === 0 ? 0 : 1;
-      });
-    },
-
-    afterTaskIndex() {
-      return this.commands.map((item, index) => {
-        if (index === 0) {
-          return 255;
-        }
-        if (item.lift && 'up' in item) {
-          return 3;
-        } else if (item.lift && 'down' in item) {
-          return 5;
-        }
-
-        return item.dir === 0 ? 0 : 1;
-      });
-    },
-
     liftHeight() {
       return this.commands.map(item => {
-        if (!item.lift) {
-          return 0;
-        }
         if ('up' in item) {
           return item.up;
-        } else if ('down' in item) {
+        }
+        if ('down' in item) {
           return item.down;
         }
 
@@ -139,13 +98,7 @@ export default {
     },
 
     flagStop() {
-      return this.commands.map((item, index) => {
-        if (index >= this.commands.length - 1) {
-          return 0;
-        }
-
-        return item.lift ? 1 : 0;
-      });
+      return this.commands.map((item, index) => item.afterTask !== Constants.TASK_NOTHING ? 1 : 0);
     }
   },
 
@@ -161,7 +114,15 @@ export default {
     },
 
     taskLabel(taskIndex) {
-      return TASK_LABELS[taskIndex];
+      return Constants.TASK_LABELS[taskIndex];
+    },
+
+    afterTaskLabel(taskIndex) {
+      if (taskIndex === Constants.TASK_NOTHING) {
+        return '-';
+      }
+
+      return Constants.TASK_LABELS[taskIndex];
     },
   },
 }

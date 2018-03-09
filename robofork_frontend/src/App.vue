@@ -62,12 +62,10 @@ import Vue from 'vue'
 import axios from 'axios'
 import undoManager from 'undo-manager'
 
-import MapViewer from './MapViewer.vue'
-import CommandViewer from './CommandViewer.vue'
-import Terminal from './Terminal.vue'
-
-const OPERATION_ENDPOINT = '/static/robofork_app/api/operation_control.json';
-const START_ID = 0;
+import * as Constants from './Constants'
+import MapViewer from './MapViewer'
+import CommandViewer from './CommandViewer'
+import Terminal from './Terminal'
 
 export default {
   name: 'app',
@@ -99,7 +97,7 @@ export default {
         return [];
       }
 
-      this.nodeId = START_ID;
+      this.nodeId = Constants.START_ID;
 
       return this.marks.map(item => {
         item.id = this.generateId();
@@ -119,7 +117,9 @@ export default {
         nodes.push({
           path: [prev.id, current.id],
           nodes: this.path(prev.x, prev.y, current.x, current.y).map(item => {
-            item.dir = current.dir;
+            item.task = current.task;
+            item.afterTask = Constants.TASK_NOTHING;
+
             return item;
           }),
         });
@@ -130,7 +130,7 @@ export default {
     },
 
     startNode() {
-      return this.mainNodes.find(item => item.id === START_ID);
+      return this.mainNodes.find(item => item.id === Constants.START_ID);
     },
 
     currentMark() {
@@ -182,23 +182,16 @@ export default {
   },
 
   created() {
-    axios.get(OPERATION_ENDPOINT)
+    axios.get(Constants.OPERATION_ENDPOINT)
       .then((resp) => {
         if ('config' in resp.data) {
           this.config = resp.data.config;
-          this.currentDir = Number(this.config.startDir);
-
-          if ('startX' in resp.data.config && 'startY' in resp.data.config) {
-            this.addMark({
-              x: resp.data.config.startX,
-              y: resp.data.config.startY,
-            });
-          }
+          this.currentDir = ('startDir' in this.config) && Number(this.config.startDir) === 1;
         }
+        this.initialize();
       });
 
     this.history = undoManager();
-    this.initialize();
   },
 
   methods: {
@@ -206,6 +199,15 @@ export default {
       this.animate = false;
       this.marks = [];
       this.history.clear();
+
+      if ('startX' in this.config && 'startY' in this.config) {
+        this.addMark({
+          x: this.config.startX,
+          y: this.config.startY,
+          task: Constants.TASK_NOTHING,
+          afterTask: Constants.TASK_NOTHING,
+        });
+      }
 
       // history のバインディングできないところを callback でカバー
       this.history.setCallback(() => {
@@ -220,7 +222,13 @@ export default {
 
     addMark(_mark) {
       const mark = Object.assign(_mark, {
-        dir: this.currentDir,
+        task: (() => {
+          if (this.marks.length <= 0) {
+            return Constants.TASK_NOTHING;
+          }
+          return this.currentDir ? Constants.TASK_REVERSE : Constants.TASK_FORWARD;
+        })(),
+        afterTask: Constants.TASK_NOTHING,
       });
 
       this.marks.push(mark);
@@ -318,7 +326,7 @@ export default {
       }
 
       // 追加プロパティをリアクティブにして、変更検知できるようにする
-      Vue.set(this.currentMark, 'lift', true);
+      Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTUP);
       Vue.set(this.currentMark, 'up', liftHeight);
     },
 
@@ -329,7 +337,7 @@ export default {
       }
 
       // 追加プロパティをリアクティブにして、変更検知できるようにする
-      Vue.set(this.currentMark, 'lift', true);
+      Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTDOWN);
       Vue.set(this.currentMark, 'down', liftHeight);
     },
   },

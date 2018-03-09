@@ -97,8 +97,7 @@
 </template>
 
 <script>
-const MODE_ROUTING = 0;
-const MODE_POINT_EDIT = 1;
+import * as Constants from './Constants'
 
 export default {
   name: 'map-viewer',
@@ -135,11 +134,11 @@ export default {
     },
 
     enableRouting() {
-      return this.modeIndex === MODE_ROUTING;
+      return this.modeIndex === Constants.MODE_ROUTING;
     },
 
     enablePointEdit() {
-      return this.modeIndex === MODE_POINT_EDIT;
+      return this.modeIndex === Constants.MODE_POINT_EDIT;
     },
 
     unitX() {
@@ -155,7 +154,7 @@ export default {
         return 0;
       }
 
-      return this.mainNodes[this.mainNodes.length - 1].dir;
+      return this.mainNodes[this.mainNodes.length - 1].task === Constants.TASK_FORWARD ? 0 : 1;
     },
 
     currentDegree() {
@@ -223,7 +222,7 @@ export default {
   methods: {
     mark(x, y) {
       // ルート追加モードでなければマップを選択しても何もしない
-      if (this.modeIndex !== MODE_ROUTING) {
+      if (this.modeIndex !== Constants.MODE_ROUTING) {
         return;
       }
 
@@ -271,11 +270,11 @@ export default {
     },
 
     selectRouting() {
-      this.modeIndex = MODE_ROUTING;
+      this.modeIndex = Constants.MODE_ROUTING;
     },
 
     selectPointEdit() {
-      this.modeIndex = MODE_POINT_EDIT;
+      this.modeIndex = Constants.MODE_POINT_EDIT;
     },
   },
 }
