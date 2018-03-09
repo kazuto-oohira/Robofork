@@ -215,7 +215,7 @@ export default {
 
       const degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
 
-      return current.dir * 180 + degree;
+      return (current.task === Constants.TASK_FORWARD ? 0 : 1) * 180 + degree;
     },
   },
 

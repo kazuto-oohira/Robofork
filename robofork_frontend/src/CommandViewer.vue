@@ -25,10 +25,22 @@
           >
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ command.task | taskLabel }}</td>
-            <td>{{ command.afterTask | afterTaskLabel }}</td>
+            <td>
+              <span v-if="!isSelectedCommand(command.id)">{{ command.afterTask | afterTaskLabel }}</span>
+              <select
+                class="form-control after-task"
+                v-if="isSelectedCommand(command.id)"
+                v-model="command.afterTask"
+              >
+                <option v-for="choice in afterTaskChoices" :value="choice.index">{{ choice.label }}</option>
+              </select>
+            </td>
             <td>1000</td>
             <td>0</td>
-            <td>{{ liftHeight[index] }}</td>
+            <td>
+              <span v-if="!isSelectedCommand(command.id)">{{ liftHeight[index] }}</span>
+              <input class="form-control lift-height" v-if="isSelectedCommand(command.id)" v-model="command.liftHeight">
+            </td>
             <td>{{ flagStop[index] }}</td>
             <td>{{ command.x | rounded }}</td>
             <td>{{ command.y | rounded }}</td>
@@ -37,8 +49,9 @@
                 class="btn btn-warning"
                 type="button"
                 v-if="command.isMain && command.id !== 0"
+                :disabled="disableRemove"
                 @click="remove(command.id)"
-              >delete</button>
+              >ノード削除</button>
             </td>
           </tr>
         </tbody>
@@ -62,12 +75,18 @@ export default {
 
   props: [
     'commands',
+    'animate',
     'selectedCommandIndex',
   ],
 
   data () {
     return {
       checkSubNodes: false,
+      afterTaskChoices: [
+        { index: Constants.TASK_NOTHING,  label: Constants.TASK_LABELS[Constants.TASK_NOTHING] },
+        { index: Constants.TASK_LIFTUP,   label: Constants.TASK_LABELS[Constants.TASK_LIFTUP] },
+        { index: Constants.TASK_LIFTDOWN, label: Constants.TASK_LABELS[Constants.TASK_LIFTDOWN] },
+      ],
     }
   },
 
@@ -78,31 +97,14 @@ export default {
       });
     },
 
-    commandIndex() {
-      let commandIndex = 1;
-
-      return this.commands.map((item, index) => {
-        if (index >= this.commands.length - 1) {
-          return commandIndex++;
-        }
-
-        const next = this.commands[index + 1];
-
-        if (next.lift) {
-          return commandIndex;
-        }
-
-        return commandIndex++;
-      });
+    disableRemove() {
+      return this.animate;
     },
 
     liftHeight() {
       return this.commands.map(item => {
-        if ('up' in item) {
-          return item.up;
-        }
-        if ('down' in item) {
-          return item.down;
+        if ('afterTask' in item && (item.afterTask === Constants.TASK_LIFTUP || item.afterTask === Constants.TASK_LIFTDOWN)) {
+          return item.liftHeight;
         }
 
         return 0;
@@ -120,6 +122,10 @@ export default {
     },
 
     isSelectedCommand(id) {
+      if (this.selectedCommandIndex === 0) {
+        return false;
+      }
+
       return id === this.selectedCommandIndex;
     },
 
@@ -158,7 +164,21 @@ export default {
   border: 1px solid #333;
 }
 
-tr {
-  cursor: pointer;
+.table th,
+.table td {
+  border-top: 0;
+  vertical-align: middle;
+}
+
+.table tr {
+  height: 6rem;
+}
+
+.after-task {
+  width: 10rem;
+}
+
+.lift-height {
+  width: 5rem;
 }
 </style>

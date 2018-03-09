@@ -24,6 +24,7 @@
         <h2>指示画面</h2>
         <command-viewer
           :commands="commands"
+          :animate="animate"
           :selectedCommandIndex.sync="selectedCommandIndex"
           @removeMark="removeMark"
         ></command-viewer>
@@ -296,7 +297,7 @@ export default {
 
       // 追加プロパティをリアクティブにして、変更検知できるようにする
       Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTUP);
-      Vue.set(this.currentMark, 'up', liftHeight);
+      Vue.set(this.currentMark, 'liftHeight', liftHeight);
     },
 
     down(liftHeight) {
@@ -307,7 +308,7 @@ export default {
 
       // 追加プロパティをリアクティブにして、変更検知できるようにする
       Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTDOWN);
-      Vue.set(this.currentMark, 'down', liftHeight);
+      Vue.set(this.currentMark, 'liftHeight', liftHeight);
     },
   },
 }
