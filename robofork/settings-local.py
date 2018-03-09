@@ -10,6 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
+"""
+Macローカルで実行する際の設定
+・mosquittoが127.0.0.1で動いていることが前提
+"""
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -151,6 +156,6 @@ WEBPACK_LOADER = {
 }
 
 MQTT_SERVER = {
-    'IP': '192.168.13.101',
+    'IP': '127.0.0.1',
     'PORT': 1883
 }

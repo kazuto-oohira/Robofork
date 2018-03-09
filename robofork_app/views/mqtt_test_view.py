@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.conf import settings
 import json
 import paho.mqtt.client as mqtt
 from channels import Group
@@ -12,8 +13,8 @@ from robofork_app.libs import utility
 
 
 # 定数
-MQTT_SERVER = '192.168.13.101'
-MQTT_PORT = 1883
+MQTT_SERVER = settings.MQTT_SERVER['IP']
+MQTT_PORT = settings.MQTT_SERVER['PORT']
 
 
 def index(request):
