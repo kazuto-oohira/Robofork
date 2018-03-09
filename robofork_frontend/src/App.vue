@@ -29,13 +29,9 @@
     <div class="row">
       <div class="col-xs-6">
         <terminal
-          :hasUndo="hasUndo"
-          :hasRedo="hasRedo"
           :hasRoutes="this.routes.length > 0"
           :animate="animate"
           :currentDir.sync="currentDir"
-          @undo="undo"
-          @redo="redo"
           @clear="clear"
           @start="start"
           @stop="stop"
@@ -46,8 +42,6 @@
         <div class="log">
           <p>animate: {{ animate }}</p>
           <p>animateIndex: {{ animateIndex }}</p>
-          <p>hasUndo: {{ hasUndo }}</p>
-          <p>hasRedo: {{ hasRedo }}</p>
           <p>marks: {{ marks }}</p>
           <p>mainNodes: {{ mainNodes }}</p>
           <p>routes: {{ routes }}</p>
@@ -60,7 +54,6 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
-import undoManager from 'undo-manager'
 
 import * as Constants from './Constants'
 import MapViewer from './MapViewer'
@@ -81,9 +74,6 @@ export default {
     return {
       config: {},
       marks: [],
-      history: null,
-      hasUndo: false,
-      hasRedo: false,
       animate: false,
       animateIndex: 0,
       currentDir: 0,
@@ -190,15 +180,12 @@ export default {
         }
         this.initialize();
       });
-
-    this.history = undoManager();
   },
 
   methods: {
     initialize() {
       this.animate = false;
       this.marks = [];
-      this.history.clear();
 
       if ('startX' in this.config && 'startY' in this.config) {
         this.addMark({
@@ -208,12 +195,6 @@ export default {
           afterTask: Constants.TASK_NOTHING,
         });
       }
-
-      // history のバインディングできないところを callback でカバー
-      this.history.setCallback(() => {
-        this.hasUndo = this.history.hasUndo();
-        this.hasRedo = this.history.hasRedo();
-      });
     },
 
     generateId() {
@@ -232,14 +213,6 @@ export default {
       });
 
       this.marks.push(mark);
-      this.history.add({
-        undo: () => {
-          this.marks.pop()
-        },
-        redo: () => {
-          this.marks.push(mark);
-        },
-      });
     },
 
     // 2点間のサブノードを算出して返す
@@ -266,24 +239,6 @@ export default {
       }
 
       return subNodes;
-    },
-
-    undo() {
-      // アニメーション途中は選択できない
-      if (this.animate) {
-        return;
-      }
-
-      this.history.undo();
-    },
-
-    redo() {
-      // アニメーション途中は選択できない
-      if (this.animate) {
-        return;
-      }
-
-      this.history.redo();
     },
 
     clear() {

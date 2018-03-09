@@ -2,8 +2,6 @@
   <div class="container-fluid" id="terminal">
     <div class="row">
       <div class="col-sm-6 btn-group">
-        <button @click="undo()" :disabled="disableUndo" class="btn btn-default">undo</button>
-        <button @click="redo()" :disabled="disableRedo" class="btn btn-default">redo</button>
         <button @click="clear()":disabled="disableClear" class="btn btn-warning">clear</button>
       </div>
       <div class="col-sm-6 btn-group">
@@ -36,8 +34,6 @@ export default {
   name: 'terminal',
 
   props: [
-    'hasUndo',
-    'hasRedo',
     'hasRoutes',
     'animate',
     'currentDir',
@@ -50,14 +46,6 @@ export default {
   },
 
   computed: {
-    disableUndo() {
-      return !this.hasUndo || this.animate;
-    },
-
-    disableRedo() {
-      return !this.hasRedo || this.animate;
-    },
-
     disableClear() {
       return !this.hasRoutes;
     },
@@ -96,14 +84,6 @@ export default {
   },
 
   methods: {
-    undo() {
-      this.$emit('undo');
-    },
-
-    redo() {
-      this.$emit('redo');
-    },
-
     clear() {
       this.$emit('clear');
     },
