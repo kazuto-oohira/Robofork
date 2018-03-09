@@ -28,6 +28,7 @@ urlpatterns = [
 
     # 以下はまだテスト
     path('operation_plan/<int:vehicle_operation_plan_id>/post', vehicle_operation_plan.save),
+    path('operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
 
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
