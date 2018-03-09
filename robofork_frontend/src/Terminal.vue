@@ -14,15 +14,6 @@
         <button @click="reverse()" :disabled="disableReverse" class="btn btn-default">向きを反転する</button>
         <p style="margin-top: 10px">次の進行方向: {{ dirLabel }}</p>
       </div>
-      <div class="col-sm-6">
-        <div class="input-group">
-          <input type="text" :disabled="disableLiftHeight" class="form-control" placeholder="高さ(mm)" v-model="liftHeight">
-          <span class="input-group-btn">
-            <button @click="up()" :disabled="disableUp" class="btn btn-default" type="button">荷上げ</button>
-            <button @click="down()" :disabled="disableDown" class="btn btn-default" type="button">荷下げ</button>
-          </span>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -41,7 +32,6 @@ export default {
 
   data() {
     return {
-      liftHeight: null,
     }
   },
 
@@ -60,18 +50,6 @@ export default {
 
     disableReverse() {
       return !this.hasCommands || this.animate;
-    },
-
-    disableLiftHeight() {
-      return !this.hasCommands;
-    },
-
-    disableUp() {
-      return !this.hasCommands || !this.liftHeight || this.animate;
-    },
-
-    disableDown() {
-      return !this.hasCommands || !this.liftHeight || this.animate;
     },
 
     dirLabel() {
@@ -98,16 +76,6 @@ export default {
 
     reverse() {
       this.$emit('update:currentDir', 1 - this.currentDir);
-    },
-
-    up() {
-      this.$emit('up', this.liftHeight);
-      this.liftHeight = null;
-    },
-
-    down() {
-      this.$emit('down', this.liftHeight);
-      this.liftHeight = null;
     },
   },
 }
