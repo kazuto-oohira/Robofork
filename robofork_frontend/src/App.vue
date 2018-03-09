@@ -11,11 +11,12 @@
           :offsetX="Number(config.offsetX)"
           :offsetY="Number(config.offsetY)"
           :imageUrl="config.imageUrl"
-          :routes="routes"
+          :commands="commands"
           :mainNodes="mainNodes"
           :subNodes="subNodes"
           :animate="animate"
           :animateIndex="animateIndex"
+          :selectedCommandIndex.sync="selectedCommandIndex"
           @addMark="addMark"
         ></map-viewer>
       </div>
@@ -23,19 +24,17 @@
         <h2>指示画面</h2>
         <command-viewer
           :commands="commands"
+          :selectedCommandIndex.sync="selectedCommandIndex"
+          @removeMark="removeMark"
         ></command-viewer>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-6">
         <terminal
-          :hasUndo="hasUndo"
-          :hasRedo="hasRedo"
-          :hasRoutes="this.routes.length > 0"
+          :hasCommands="this.commands.length > 0"
           :animate="animate"
           :currentDir.sync="currentDir"
-          @undo="undo"
-          @redo="redo"
           @clear="clear"
           @start="start"
           @stop="stop"
@@ -46,11 +45,10 @@
         <div class="log">
           <p>animate: {{ animate }}</p>
           <p>animateIndex: {{ animateIndex }}</p>
-          <p>hasUndo: {{ hasUndo }}</p>
-          <p>hasRedo: {{ hasRedo }}</p>
           <p>marks: {{ marks }}</p>
           <p>mainNodes: {{ mainNodes }}</p>
           <p>commands: {{ commands }}</p>
+          <p>selectedCommandIndex: {{ selectedCommandIndex }}</p>
         </div>
       </div>
     </div>
@@ -58,15 +56,13 @@
 </template>
 
 <script>
+import Vue from 'vue'
 import axios from 'axios'
-import undoManager from 'undo-manager'
 
-import MapViewer from './MapViewer.vue'
-import CommandViewer from './CommandViewer.vue'
-import Terminal from './Terminal.vue'
-
-const OPERATION_ENDPOINT = '/static/robofork_app/api/operation_control.json';
-const START_ID = 0;
+import * as Constants from './Constants'
+import MapViewer from './MapViewer'
+import CommandViewer from './CommandViewer'
+import Terminal from './Terminal'
 
 export default {
   name: 'app',
@@ -82,12 +78,10 @@ export default {
     return {
       config: {},
       marks: [],
-      history: null,
-      hasUndo: false,
-      hasRedo: false,
       animate: false,
       animateIndex: 0,
       currentDir: 0,
+      selectedCommandIndex: 0,
     }
   },
 
@@ -98,7 +92,7 @@ export default {
         return [];
       }
 
-      this.nodeId = START_ID;
+      this.nodeIndex = Constants.START_NODE_INDEX;
 
       return this.marks.map(item => {
         item.id = this.generateId();
@@ -118,7 +112,9 @@ export default {
         nodes.push({
           path: [prev.id, current.id],
           nodes: this.path(prev.x, prev.y, current.x, current.y).map(item => {
-            item.dir = current.dir;
+            item.task = current.task;
+            item.afterTask = Constants.TASK_NOTHING;
+
             return item;
           }),
         });
@@ -129,14 +125,15 @@ export default {
     },
 
     startNode() {
-      return this.mainNodes.find(item => item.id === START_ID);
+      return this.mainNodes.find(item => item.id === Constants.START_NODE_INDEX);
     },
 
-    currentNode() {
-      if (this.mainNodes.length <= 0) {
+    currentMark() {
+      if (this.marks.length <= 0) {
         return null;
       }
-      return this.mainNodes[this.mainNodes.length - 1];
+
+      return this.marks[this.marks.length - 1];
     },
 
     currentId() {
@@ -177,57 +174,59 @@ export default {
 
       return nodes;
     },
-
-    routes() {
-      // commands から自動算出する（その場で行う命令をフィルタリングしたもの）
-      return this.commands.filter(item => item.lift !== true);
-    },
   },
 
   created() {
-    axios.get(OPERATION_ENDPOINT)
+    axios.get(Constants.OPERATION_ENDPOINT)
       .then((resp) => {
         if ('config' in resp.data) {
           this.config = resp.data.config;
-          this.currentDir = Number(this.config.startDir);
+          this.currentDir = ('startDir' in this.config) && Number(this.config.startDir) === 1;
         }
+        this.initialize();
       });
-
-    this.history = undoManager();
-    this.initialize();
   },
 
   methods: {
     initialize() {
       this.animate = false;
       this.marks = [];
-      this.history.clear();
 
-      // history のバインディングできないところを callback でカバー
-      this.history.setCallback(() => {
-        this.hasUndo = this.history.hasUndo();
-        this.hasRedo = this.history.hasRedo();
-      });
+      if ('startX' in this.config && 'startY' in this.config) {
+        this.addMark({
+          x: this.config.startX,
+          y: this.config.startY,
+          task: Constants.TASK_NOTHING,
+          afterTask: Constants.TASK_NOTHING,
+        });
+      }
     },
 
     generateId() {
-      return this.nodeId++;
+      return this.nodeIndex++;
     },
 
     addMark(_mark) {
       const mark = Object.assign(_mark, {
-        dir: this.currentDir,
+        task: (() => {
+          if (this.marks.length <= 0) {
+            return Constants.TASK_NOTHING;
+          }
+          return this.currentDir ? Constants.TASK_REVERSE : Constants.TASK_FORWARD;
+        })(),
+        afterTask: Constants.TASK_NOTHING,
       });
 
       this.marks.push(mark);
-      this.history.add({
-        undo: () => {
-          this.marks.pop()
-        },
-        redo: () => {
-          this.marks.push(mark);
-        },
-      });
+      this.selectedCommandIndex = this.marks.length - 1;
+    },
+
+    removeMark(id) {
+      this.marks.splice(id, 1);
+      // DOM の更新終わってから
+      Vue.nextTick(() => {
+        this.selectedCommandIndex = this.marks.length - 1;
+      })
     },
 
     // 2点間のサブノードを算出して返す
@@ -256,31 +255,13 @@ export default {
       return subNodes;
     },
 
-    undo() {
-      // アニメーション途中は選択できない
-      if (this.animate) {
-        return;
-      }
-
-      this.history.undo();
-    },
-
-    redo() {
-      // アニメーション途中は選択できない
-      if (this.animate) {
-        return;
-      }
-
-      this.history.redo();
-    },
-
     clear() {
       this.initialize();
     },
 
     start() {
-      // routes が空のときはアニメーションできない
-      if (this.routes.length <= 0) {
+      // commands が空のときはアニメーションできない
+      if (this.commands.length <= 0) {
         return;
       }
 
@@ -293,12 +274,12 @@ export default {
 
     next() {
       this.animateIndex++;
-      if (this.routes.length < this.animateIndex + 1) {
+      if (this.commands.length < this.animateIndex + 1) {
         this.stop();
         return;
       }
 
-      this.animateTimer = setTimeout(this.next, this.routes[this.animateIndex].isMain ? 1000 : 100);
+      this.animateTimer = setTimeout(this.next, this.commands[this.animateIndex].isMain ? 1000 : 100);
     },
 
     stop() {
@@ -313,21 +294,9 @@ export default {
         return;
       }
 
-      let mark = Object.assign({}, this.currentNode);
-      mark.lift = true;
-      mark.up = liftHeight;
-      // TODO:荷上げ荷下げを連続するとそれもコピーしてしまう、参照元を見直した方がいいかも
-      delete mark.down;
-
-      this.marks.push(mark);
-      this.history.add({
-        undo: () => {
-          this.marks.pop()
-        },
-        redo: () => {
-          this.marks.push(mark);
-        },
-      });
+      // 追加プロパティをリアクティブにして、変更検知できるようにする
+      Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTUP);
+      Vue.set(this.currentMark, 'up', liftHeight);
     },
 
     down(liftHeight) {
@@ -336,21 +305,9 @@ export default {
         return;
       }
 
-      let mark = Object.assign({}, this.currentNode);
-      mark.lift = true;
-      // TODO:荷上げ荷下げを連続するとそれもコピーしてしまう、参照元を見直した方がいいかも
-      delete mark.up;
-      mark.down = liftHeight;
-
-      this.marks.push(mark);
-      this.history.add({
-        undo: () => {
-          this.marks.pop()
-        },
-        redo: () => {
-          this.marks.push(mark);
-        },
-      });
+      // 追加プロパティをリアクティブにして、変更検知できるようにする
+      Vue.set(this.currentMark, 'afterTask', Constants.TASK_LIFTDOWN);
+      Vue.set(this.currentMark, 'down', liftHeight);
     },
   },
 }

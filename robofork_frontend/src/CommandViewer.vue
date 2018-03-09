@@ -1,32 +1,45 @@
 <template>
   <div class="container-fluid" id="command-viewer">
     <div class="row table-container pre-scrollable">
-      <table class="table table-striped">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>No</th>
             <th>Task</th>
+            <th>AfterTask</th>
             <th>Speed</th>
             <th>Angle</th>
             <th>Lift</th>
             <th>Stop</th>
             <th>X</th>
             <th>Y</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
           <tr
-            v-for="(node, index) in commands"
+            v-for="(command, index) in commands"
             v-if="enableCommand[index]"
+            :class="{ 'active': isSelectedCommand(command.id) }"
+            @click="selectColumn(command.id)"
           >
-            <th scope="row">{{ commandIndex[index] }}</th>
-            <td>{{ taskIndex[index] | taskLabel }}</td>
+            <th scope="row">{{ index + 1 }}</th>
+            <td>{{ command.task | taskLabel }}</td>
+            <td>{{ command.afterTask | afterTaskLabel }}</td>
             <td>1000</td>
             <td>0</td>
             <td>{{ liftHeight[index] }}</td>
             <td>{{ flagStop[index] }}</td>
-            <td>{{ node.x | rounded }}</td>
-            <td>{{ node.y | rounded }}</td>
+            <td>{{ command.x | rounded }}</td>
+            <td>{{ command.y | rounded }}</td>
+            <td>
+              <button
+                class="btn btn-warning"
+                type="button"
+                v-if="command.isMain && command.id !== 0"
+                @click="remove(command.id)"
+              >delete</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -42,22 +55,14 @@
 </template>
 
 <script>
-const TASK_LABELS = {
-  0: '前進',
-  1: 'バック',
-  2: '旋回（回転）',
-  3: '荷上げ(旋回なし)',
-  4: '荷上げ(旋回あり)',
-  5: '荷下げ(旋回なし)',
-  6: '荷下げ(旋回あり)',
-  255: 'なにもしない',
-};
+import * as Constants from './Constants'
 
 export default {
   name: 'command-viewer',
 
   props: [
     'commands',
+    'selectedCommandIndex',
   ],
 
   data () {
@@ -91,29 +96,12 @@ export default {
       });
     },
 
-    taskIndex() {
-      return this.commands.map((item, index) => {
-        if (index === 0) {
-          return 255;
-        }
-        if (item.lift && 'up' in item) {
-          return 3;
-        } else if (item.lift && 'down' in item) {
-          return 5;
-        }
-
-        return item.dir === 0 ? 0 : 1;
-      });
-    },
-
     liftHeight() {
       return this.commands.map(item => {
-        if (!item.lift) {
-          return 0;
-        }
         if ('up' in item) {
           return item.up;
-        } else if ('down' in item) {
+        }
+        if ('down' in item) {
           return item.down;
         }
 
@@ -122,26 +110,25 @@ export default {
     },
 
     flagStop() {
-      return this.commands.map((item, index) => {
-        if (index >= this.commands.length - 1) {
-          return 0;
-        }
-
-        const current = item;
-        const next = this.commands[index + 1];
-
-        if (!current.lift && next.lift) {
-          return 1;
-        }
-
-        return 0;
-      });
+      return this.commands.map((item, index) => item.afterTask !== Constants.TASK_NOTHING ? 1 : 0);
     }
   },
 
   methods: {
-    isMainNode: function(node) {
+    isMainNode(node) {
       return !!node.isMain;
+    },
+
+    isSelectedCommand(id) {
+      return id === this.selectedCommandIndex;
+    },
+
+    selectColumn(id) {
+      this.$emit('update:selectedCommandIndex', id);
+    },
+
+    remove(id) {
+      this.$emit('removeMark', id);
     },
   },
 
@@ -151,7 +138,15 @@ export default {
     },
 
     taskLabel(taskIndex) {
-      return TASK_LABELS[taskIndex];
+      return Constants.TASK_LABELS[taskIndex];
+    },
+
+    afterTaskLabel(taskIndex) {
+      if (taskIndex === Constants.TASK_NOTHING) {
+        return '-';
+      }
+
+      return Constants.TASK_LABELS[taskIndex];
     },
   },
 }
@@ -161,5 +156,9 @@ export default {
 .table-container {
   min-height: 350px;
   border: 1px solid #333;
+}
+
+tr {
+  cursor: pointer;
 }
 </style>

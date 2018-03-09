@@ -2,8 +2,6 @@
   <div class="container-fluid" id="terminal">
     <div class="row">
       <div class="col-sm-6 btn-group">
-        <button @click="undo()" :disabled="disableUndo" class="btn btn-default">undo</button>
-        <button @click="redo()" :disabled="disableRedo" class="btn btn-default">redo</button>
         <button @click="clear()":disabled="disableClear" class="btn btn-warning">clear</button>
       </div>
       <div class="col-sm-6 btn-group">
@@ -30,16 +28,13 @@
 </template>
 
 <script>
-const DIR_FORWARD = '前進方向';
-const DIR_REVERSE = 'バック方向';
+import * as Constants from './Constants'
 
 export default {
   name: 'terminal',
 
   props: [
-    'hasUndo',
-    'hasRedo',
-    'hasRoutes',
+    'hasCommands',
     'animate',
     'currentDir',
   ],
@@ -51,60 +46,44 @@ export default {
   },
 
   computed: {
-    disableUndo() {
-      return !this.hasUndo || this.animate;
-    },
-
-    disableRedo() {
-      return !this.hasRedo || this.animate;
-    },
-
     disableClear() {
-      return !this.hasRoutes;
+      return !this.hasCommands;
     },
 
     disableStart() {
-      return !this.hasRoutes || this.animate;
+      return !this.hasCommands || this.animate;
     },
 
     disableStop() {
-      return !this.hasRoutes || !this.animate;
+      return !this.hasCommands || !this.animate;
     },
 
     disableReverse() {
-      return !this.hasRoutes || this.animate;
+      return !this.hasCommands || this.animate;
     },
 
     disableLiftHeight() {
-      return !this.hasRoutes;
+      return !this.hasCommands;
     },
 
     disableUp() {
-      return !this.hasRoutes || !this.liftHeight || this.animate;
+      return !this.hasCommands || !this.liftHeight || this.animate;
     },
 
     disableDown() {
-      return !this.hasRoutes || !this.liftHeight || this.animate;
+      return !this.hasCommands || !this.liftHeight || this.animate;
     },
 
     dirLabel() {
-      if (!this.hasRoutes) {
+      if (!this.hasCommands) {
         return '-';
       }
 
-      return this.currentDir ? DIR_REVERSE : DIR_FORWARD;
+      return this.currentDir ? Constants.DIR_REVERSE : Constants.DIR_FORWARD;
     },
   },
 
   methods: {
-    undo() {
-      this.$emit('undo');
-    },
-
-    redo() {
-      this.$emit('redo');
-    },
-
     clear() {
       this.$emit('clear');
     },

@@ -3,6 +3,10 @@
     <div class="row">
       <div class="map-container"
         :style="{ width: `${width}px`, height: `${height}px` }"
+        :class="{
+          'routing': enableRouting,
+          'point-edit': enablePointEdit,
+        }"
         @click.self="mark($event.offsetX, $event.offsetY)"
       >
         <img v-if="imageUrl" class="map-image" :src="imageUrl">
@@ -26,11 +30,13 @@
             class="mainnode"
             :class="{
               current: isCurrent(node.id),
+              selected: isSelectedCommand(node.id),
             }"
             :style="{
               transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
             :title="node.id"
+            @click.self="select(node.id)"
           >
             <img
               src="/static/robofork_app/img/robofork.svg"
@@ -66,16 +72,32 @@
       </div>
     </div>
     <div class="row">
-      <div class="checkbox">
-        <label>
-          <input type="checkbox" v-model="checkSubNodes"> サブノードも含めて表示する
-        </label>
+      <div class="col-sm-6">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" v-model="checkSubNodes"> サブノードも含めて表示する
+          </label>
+        </div>
+      </div>
+      <div class="col-sm-6 btn-group">
+        <button
+          class="btn btn-default"
+          :class="{ 'btn-primary': enableRouting }"
+          @click="selectRouting"
+        >ルート追加モード</button>
+        <button
+          class="btn btn-default"
+          :class="{ 'btn-primary': enablePointEdit }"
+          @click="selectPointEdit"
+        >ポイント編集モード</button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import * as Constants from './Constants'
+
 export default {
   name: 'map-viewer',
 
@@ -87,16 +109,18 @@ export default {
     'offsetX',
     'offsetY',
     'imageUrl',
-    'routes',
+    'commands',
     'mainNodes',
     'subNodes',
     'animate',
     'animateIndex',
+    'selectedCommandIndex',
   ],
 
   data() {
     return {
       checkSubNodes: true,
+      modeIndex: 0,
     }
   },
 
@@ -107,6 +131,14 @@ export default {
 
     enableRobofork() {
       return !!this.animate;
+    },
+
+    enableRouting() {
+      return this.modeIndex === Constants.MODE_ROUTING;
+    },
+
+    enablePointEdit() {
+      return this.modeIndex === Constants.MODE_POINT_EDIT;
     },
 
     unitX() {
@@ -122,16 +154,16 @@ export default {
         return 0;
       }
 
-      return this.mainNodes[this.mainNodes.length - 1].dir;
+      return this.mainNodes[this.mainNodes.length - 1].task === Constants.TASK_FORWARD ? 0 : 1;
     },
 
     currentDegree() {
-      // routes から自動算出する
+      // commands から自動算出する
       let degree = 0;
 
-      if (this.routes.length >= 2) {
-        const current = this.routes[this.routes.length - 1];
-        const prev = this.routes[this.routes.length - 2];
+      if (this.commands.length >= 2) {
+        const current = this.commands[this.commands.length - 1];
+        const prev = this.commands[this.commands.length - 2];
         degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
       }
 
@@ -139,46 +171,46 @@ export default {
     },
 
     roboforkX() {
-      // routes, animateIndex から自動算出する
-      if (this.routes.length <= 0) {
+      // commands, animateIndex から自動算出する
+      if (this.commands.length <= 0) {
         return 0;
       }
       if (!this.animate) {
-        return this.routes[0].x;
+        return this.commands[0].x;
       }
 
-      return this.routes[this.animateIndex].x;
+      return this.commands[this.animateIndex].x;
     },
 
     roboforkY() {
-      // routes, animateIndex から自動算出する
-      if (this.routes.length <= 0) {
+      // commands, animateIndex から自動算出する
+      if (this.commands.length <= 0) {
         return 0;
       }
       if (!this.animate) {
-        return this.routes[0].y;
+        return this.commands[0].y;
       }
 
-      return this.routes[this.animateIndex].y;
+      return this.commands[this.animateIndex].y;
     },
 
     roboforkDegree() {
-      // routes, animateIndex から自動算出する
-      if (!this.animate || this.animateIndex === null || this.routes.length <= 1) {
+      // commands, animateIndex から自動算出する
+      if (!this.animate || this.animateIndex === null || this.commands.length <= 1) {
         return 0;
       }
 
       let prev, current;
 
       if (this.animateIndex === 0) {
-        prev = this.routes[this.animateIndex];
-        current = this.routes[this.animateIndex + 1];
-      } else if (this.routes.length - 1 <= this.animateIndex) {
-        prev = this.routes[this.routes.length - 2];
-        current = this.routes[this.routes.length - 1];
+        prev = this.commands[this.animateIndex];
+        current = this.commands[this.animateIndex + 1];
+      } else if (this.commands.length - 1 <= this.animateIndex) {
+        prev = this.commands[this.commands.length - 2];
+        current = this.commands[this.commands.length - 1];
       } else {
-        prev = this.routes[this.animateIndex - 1];
-        current = this.routes[this.animateIndex];
+        prev = this.commands[this.animateIndex - 1];
+        current = this.commands[this.animateIndex];
       }
 
       const degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
@@ -189,10 +221,19 @@ export default {
 
   methods: {
     mark(x, y) {
+      // ルート追加モードでなければマップを選択しても何もしない
+      if (this.modeIndex !== Constants.MODE_ROUTING) {
+        return;
+      }
+
       this.$emit('addMark', {
         x: this.unmappedX(x),
         y: this.unmappedY(y),
       });
+    },
+
+    select(id) {
+      this.$emit('update:selectedCommandIndex', id);
     },
 
     mappedX(x) {
@@ -226,6 +267,18 @@ export default {
 
       return this.mainNodes[this.mainNodes.length - 1].id === id;
     },
+
+    isSelectedCommand(id) {
+      return id === this.selectedCommandIndex;
+    },
+
+    selectRouting() {
+      this.modeIndex = Constants.MODE_ROUTING;
+    },
+
+    selectPointEdit() {
+      this.modeIndex = Constants.MODE_POINT_EDIT;
+    },
   },
 }
 </script>
@@ -235,7 +288,7 @@ export default {
   position: relative;
 }
 
-.map-container:after {
+.map-container.routing:after {
   width: 100%;
   height: 100%;
   content: '';
@@ -271,17 +324,25 @@ export default {
   background: blue;
   border-radius: 8px;
   opacity: 1;
+  cursor: pointer;
 }
 
-.map-draw-layer .mainnode.current {
+.map-draw-layer .mainnode.current img {
   width: 30px;
   height: 30px;
+  position: absolute;
+  left: 8px;
+  top: 8px;
   margin: -15px 0 0 -15px;
-  background: transparent;
-  border-radius: 15px;
-}
-.map-draw-layer .mainnode.current img {
   transform-origin: 50% 50%;
+}
+
+.map-container.point-edit .map-draw-layer .mainnode.selected {
+  background: red;
+}
+
+.map-container.point-edit .map-draw-layer .mainnode.current img {
+  display: none;
 }
 
 .map-draw-layer .subnode {
