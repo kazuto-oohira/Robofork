@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}NKC管理画面{% endblock %}
+{% block body_class %}nav-md{% endblock %}
+
+{% block content %}
+    <div class="container body">
+        <div class="main_container">
+            <!-- sidebar menu -->
+            {% include "robofork_app/_admin_side_menu.html" with admin_vehicle="active" %}
+
+            <!-- page content -->
+            <div class="right_col" role="main">
+            </div>
+        </div>
+    </div>
+{% endblock %}
