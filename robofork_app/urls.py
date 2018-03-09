@@ -18,10 +18,14 @@ urlpatterns = [
 
     # 各配置場所 管理画面
     path('<int:location_id>/', TemplateView.as_view(template_name='robofork_app/home/index.html'), name='home_index'),
+    path('<int:location_id>/vehicle_status/', TemplateView.as_view(template_name='robofork_app/vehicle_status/index.html'), name='vehicle_status_index'),
 
 
 
 
+
+
+    # 以下はまだテスト
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
     path('vehicle/save', vehicle_view.save, name='vehicle_save'),

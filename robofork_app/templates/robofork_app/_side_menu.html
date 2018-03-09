@@ -2,7 +2,7 @@
             <div class="col-md-3 left_col">
                 <div class="left_col scroll-view">
                     <div class="navbar nav_title" style="border: 0;">
-                        <a href="index.html" class="site_title"><i class="fa fa-cloud"></i> <span>滋賀工場</span></a>
+                        <a href="{% url 'home_index' 1 %}" class="site_title"><i class="fa fa-cloud"></i> <span>滋賀工場</span></a>
                     </div>
 
                     <div class="clearfix"></div>
@@ -12,6 +12,7 @@
                         <div class="menu_section">
                             <ul class="nav side-menu">
                                 <li class="{{ home_index|default:"" }}"><a href="{% url 'home_index' 1 %}"><i class="fa fa-home"></i> HOME </a></li>
+                                <li class="{{ vehicle_status_index|default:"" }}"><a href="{% url 'vehicle_status_index' 1 %}"><i class="fa fa-home"></i> 車両状態 </a></li>
                             </ul>
                         </div>
                     </div>
