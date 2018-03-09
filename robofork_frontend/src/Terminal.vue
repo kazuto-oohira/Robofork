@@ -34,7 +34,7 @@ export default {
   name: 'terminal',
 
   props: [
-    'hasRoutes',
+    'hasCommands',
     'animate',
     'currentDir',
   ],
@@ -47,35 +47,35 @@ export default {
 
   computed: {
     disableClear() {
-      return !this.hasRoutes;
+      return !this.hasCommands;
     },
 
     disableStart() {
-      return !this.hasRoutes || this.animate;
+      return !this.hasCommands || this.animate;
     },
 
     disableStop() {
-      return !this.hasRoutes || !this.animate;
+      return !this.hasCommands || !this.animate;
     },
 
     disableReverse() {
-      return !this.hasRoutes || this.animate;
+      return !this.hasCommands || this.animate;
     },
 
     disableLiftHeight() {
-      return !this.hasRoutes;
+      return !this.hasCommands;
     },
 
     disableUp() {
-      return !this.hasRoutes || !this.liftHeight || this.animate;
+      return !this.hasCommands || !this.liftHeight || this.animate;
     },
 
     disableDown() {
-      return !this.hasRoutes || !this.liftHeight || this.animate;
+      return !this.hasCommands || !this.liftHeight || this.animate;
     },
 
     dirLabel() {
-      if (!this.hasRoutes) {
+      if (!this.hasCommands) {
         return '-';
       }
 

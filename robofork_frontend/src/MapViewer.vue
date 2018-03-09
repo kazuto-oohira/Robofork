@@ -110,7 +110,7 @@ export default {
     'offsetX',
     'offsetY',
     'imageUrl',
-    'routes',
+    'commands',
     'mainNodes',
     'subNodes',
     'animate',
@@ -158,12 +158,12 @@ export default {
     },
 
     currentDegree() {
-      // routes から自動算出する
+      // commands から自動算出する
       let degree = 0;
 
-      if (this.routes.length >= 2) {
-        const current = this.routes[this.routes.length - 1];
-        const prev = this.routes[this.routes.length - 2];
+      if (this.commands.length >= 2) {
+        const current = this.commands[this.commands.length - 1];
+        const prev = this.commands[this.commands.length - 2];
         degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
       }
 
@@ -171,46 +171,46 @@ export default {
     },
 
     roboforkX() {
-      // routes, animateIndex から自動算出する
-      if (this.routes.length <= 0) {
+      // commands, animateIndex から自動算出する
+      if (this.commands.length <= 0) {
         return 0;
       }
       if (!this.animate) {
-        return this.routes[0].x;
+        return this.commands[0].x;
       }
 
-      return this.routes[this.animateIndex].x;
+      return this.commands[this.animateIndex].x;
     },
 
     roboforkY() {
-      // routes, animateIndex から自動算出する
-      if (this.routes.length <= 0) {
+      // commands, animateIndex から自動算出する
+      if (this.commands.length <= 0) {
         return 0;
       }
       if (!this.animate) {
-        return this.routes[0].y;
+        return this.commands[0].y;
       }
 
-      return this.routes[this.animateIndex].y;
+      return this.commands[this.animateIndex].y;
     },
 
     roboforkDegree() {
-      // routes, animateIndex から自動算出する
-      if (!this.animate || this.animateIndex === null || this.routes.length <= 1) {
+      // commands, animateIndex から自動算出する
+      if (!this.animate || this.animateIndex === null || this.commands.length <= 1) {
         return 0;
       }
 
       let prev, current;
 
       if (this.animateIndex === 0) {
-        prev = this.routes[this.animateIndex];
-        current = this.routes[this.animateIndex + 1];
-      } else if (this.routes.length - 1 <= this.animateIndex) {
-        prev = this.routes[this.routes.length - 2];
-        current = this.routes[this.routes.length - 1];
+        prev = this.commands[this.animateIndex];
+        current = this.commands[this.animateIndex + 1];
+      } else if (this.commands.length - 1 <= this.animateIndex) {
+        prev = this.commands[this.commands.length - 2];
+        current = this.commands[this.commands.length - 1];
       } else {
-        prev = this.routes[this.animateIndex - 1];
-        current = this.routes[this.animateIndex];
+        prev = this.commands[this.animateIndex - 1];
+        current = this.commands[this.animateIndex];
       }
 
       const degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));

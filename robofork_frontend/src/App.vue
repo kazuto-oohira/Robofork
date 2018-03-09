@@ -11,7 +11,7 @@
           :offsetX="Number(config.offsetX)"
           :offsetY="Number(config.offsetY)"
           :imageUrl="config.imageUrl"
-          :routes="routes"
+          :commands="commands"
           :mainNodes="mainNodes"
           :subNodes="subNodes"
           :animate="animate"
@@ -22,14 +22,14 @@
       <div class="col-xs-6">
         <h2>指示画面</h2>
         <command-viewer
-          :commands="routes"
+          :commands="commands"
         ></command-viewer>
       </div>
     </div>
     <div class="row">
       <div class="col-xs-6">
         <terminal
-          :hasRoutes="this.routes.length > 0"
+          :hasCommands="this.commands.length > 0"
           :animate="animate"
           :currentDir.sync="currentDir"
           @clear="clear"
@@ -44,7 +44,7 @@
           <p>animateIndex: {{ animateIndex }}</p>
           <p>marks: {{ marks }}</p>
           <p>mainNodes: {{ mainNodes }}</p>
-          <p>routes: {{ routes }}</p>
+          <p>commands: {{ commands }}</p>
         </div>
       </div>
     </div>
@@ -87,7 +87,7 @@ export default {
         return [];
       }
 
-      this.nodeId = Constants.START_ID;
+      this.nodeIndex = Constants.START_NODE_INDEX;
 
       return this.marks.map(item => {
         item.id = this.generateId();
@@ -120,7 +120,7 @@ export default {
     },
 
     startNode() {
-      return this.mainNodes.find(item => item.id === Constants.START_ID);
+      return this.mainNodes.find(item => item.id === Constants.START_NODE_INDEX);
     },
 
     currentMark() {
@@ -138,7 +138,7 @@ export default {
       return this.mainNodes[this.mainNodes.length - 1].id;
     },
 
-    routes() {
+    commands() {
       // mainNodes, subNodes から自動算出する
       if (!this.startNode) {
         return [];
@@ -198,7 +198,7 @@ export default {
     },
 
     generateId() {
-      return this.nodeId++;
+      return this.nodeIndex++;
     },
 
     addMark(_mark) {
@@ -246,8 +246,8 @@ export default {
     },
 
     start() {
-      // routes が空のときはアニメーションできない
-      if (this.routes.length <= 0) {
+      // commands が空のときはアニメーションできない
+      if (this.commands.length <= 0) {
         return;
       }
 
@@ -260,12 +260,12 @@ export default {
 
     next() {
       this.animateIndex++;
-      if (this.routes.length < this.animateIndex + 1) {
+      if (this.commands.length < this.animateIndex + 1) {
         this.stop();
         return;
       }
 
-      this.animateTimer = setTimeout(this.next, this.routes[this.animateIndex].isMain ? 1000 : 100);
+      this.animateTimer = setTimeout(this.next, this.commands[this.animateIndex].isMain ? 1000 : 100);
     },
 
     stop() {

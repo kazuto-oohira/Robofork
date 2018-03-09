@@ -1,5 +1,8 @@
+// API など
 export const OPERATION_ENDPOINT = '/static/robofork_app/api/operation_control.json';
-export const START_ID = 0;
+
+// command の連番
+export const START_NODE_INDEX = 0;
 
 // タスク定義
 export const TASK_FORWARD            = 0;
