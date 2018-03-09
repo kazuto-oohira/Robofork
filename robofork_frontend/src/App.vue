@@ -177,13 +177,33 @@ export default {
   },
 
   created() {
-    axios.get(Constants.OPERATION_ENDPOINT)
-      .then((resp) => {
-        if ('config' in resp.data) {
-          this.config = resp.data.config;
+    const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT);
+    const loadCommandsPromise = axios.get(Constants.COMMANDS_ENDPOINT);
+
+    Promise.all([loadConfigPromise, loadCommandsPromise])
+      .then((values) => {
+        const config = values[0].data;
+        const commands = values[1].data;
+
+        if ('config' in config) {
+          this.config = config.config;
           this.currentDir = ('startDir' in this.config) && Number(this.config.startDir) === 1;
+        } else {
+          throw new Error('not exist config');
         }
-        this.initialize();
+
+        if ('commands' in commands) {
+          console.log(commands.commands.filter(item => item.isMain));
+          this.marks = commands.commands.filter(item => item.isMain);
+          this.selectedCommandIndex = this.marks.length - 1;
+        }
+
+        if (this.marks.length <= 0) {
+          this.initialize();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
       });
   },
 
