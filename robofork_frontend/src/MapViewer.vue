@@ -30,12 +30,13 @@
             class="mainnode"
             :class="{
               current: isCurrent(node.id),
+              selected: isSelectedCommand(node.id),
             }"
             :style="{
               transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
             :title="node.id"
-            @click.self="select(node)"
+            @click.self="select(node.id)"
           >
             <img
               src="/static/robofork_app/img/robofork.svg"
@@ -81,13 +82,11 @@
       <div class="col-sm-6 btn-group">
         <button
           class="btn btn-default"
-          :disabled="enableRouting"
           :class="{ 'btn-primary': enableRouting }"
           @click="selectRouting"
         >ルート追加モード</button>
         <button
           class="btn btn-default"
-          :disabled="enablePointEdit"
           :class="{ 'btn-primary': enablePointEdit }"
           @click="selectPointEdit"
         >ポイント編集モード</button>
@@ -115,6 +114,7 @@ export default {
     'subNodes',
     'animate',
     'animateIndex',
+    'selectedCommandIndex',
   ],
 
   data() {
@@ -232,9 +232,8 @@ export default {
       });
     },
 
-    select(node) {
-      // 一旦情報を表示するだけ
-      alert(`id: ${node.id}, x: ${node.x}, y: ${node.y}, dir: ${node.dir}`);
+    select(id) {
+      this.$emit('update:selectedCommandIndex', id);
     },
 
     mappedX(x) {
@@ -267,6 +266,10 @@ export default {
       }
 
       return this.mainNodes[this.mainNodes.length - 1].id === id;
+    },
+
+    isSelectedCommand(id) {
+      return id === this.selectedCommandIndex;
     },
 
     selectRouting() {
@@ -324,9 +327,6 @@ export default {
   cursor: pointer;
 }
 
-.map-draw-layer .mainnode.current {
-}
-
 .map-draw-layer .mainnode.current img {
   width: 30px;
   height: 30px;
@@ -335,6 +335,10 @@ export default {
   top: 8px;
   margin: -15px 0 0 -15px;
   transform-origin: 50% 50%;
+}
+
+.map-container.point-edit .map-draw-layer .mainnode.selected {
+  background: red;
 }
 
 .map-container.point-edit .map-draw-layer .mainnode.current img {

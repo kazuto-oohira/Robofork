@@ -1,7 +1,7 @@
 <template>
   <div class="container-fluid" id="command-viewer">
     <div class="row table-container pre-scrollable">
-      <table class="table table-striped">
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>No</th>
@@ -13,12 +13,15 @@
             <th>Stop</th>
             <th>X</th>
             <th>Y</th>
+            <th>Delete</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="(command, index) in commands"
             v-if="enableCommand[index]"
+            :class="{ 'active': isSelectedCommand(command.id) }"
+            @click="selectColumn(command.id)"
           >
             <th scope="row">{{ index + 1 }}</th>
             <td>{{ command.task | taskLabel }}</td>
@@ -29,6 +32,14 @@
             <td>{{ flagStop[index] }}</td>
             <td>{{ command.x | rounded }}</td>
             <td>{{ command.y | rounded }}</td>
+            <td>
+              <button
+                class="btn btn-warning"
+                type="button"
+                v-if="command.isMain && command.id !== 0"
+                @click="remove(command.id)"
+              >delete</button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -51,6 +62,7 @@ export default {
 
   props: [
     'commands',
+    'selectedCommandIndex',
   ],
 
   data () {
@@ -106,6 +118,18 @@ export default {
     isMainNode(node) {
       return !!node.isMain;
     },
+
+    isSelectedCommand(id) {
+      return id === this.selectedCommandIndex;
+    },
+
+    selectColumn(id) {
+      this.$emit('update:selectedCommandIndex', id);
+    },
+
+    remove(id) {
+      this.$emit('removeMark', id);
+    },
   },
 
   filters: {
@@ -132,5 +156,9 @@ export default {
 .table-container {
   min-height: 350px;
   border: 1px solid #333;
+}
+
+tr {
+  cursor: pointer;
 }
 </style>

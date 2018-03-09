@@ -16,6 +16,7 @@
           :subNodes="subNodes"
           :animate="animate"
           :animateIndex="animateIndex"
+          :selectedCommandIndex.sync="selectedCommandIndex"
           @addMark="addMark"
         ></map-viewer>
       </div>
@@ -23,6 +24,8 @@
         <h2>指示画面</h2>
         <command-viewer
           :commands="commands"
+          :selectedCommandIndex.sync="selectedCommandIndex"
+          @removeMark="removeMark"
         ></command-viewer>
       </div>
     </div>
@@ -45,6 +48,7 @@
           <p>marks: {{ marks }}</p>
           <p>mainNodes: {{ mainNodes }}</p>
           <p>commands: {{ commands }}</p>
+          <p>selectedCommandIndex: {{ selectedCommandIndex }}</p>
         </div>
       </div>
     </div>
@@ -77,6 +81,7 @@ export default {
       animate: false,
       animateIndex: 0,
       currentDir: 0,
+      selectedCommandIndex: 0,
     }
   },
 
@@ -213,6 +218,15 @@ export default {
       });
 
       this.marks.push(mark);
+      this.selectedCommandIndex = this.marks.length - 1;
+    },
+
+    removeMark(id) {
+      this.marks.splice(id, 1);
+      // DOM の更新終わってから
+      Vue.nextTick(() => {
+        this.selectedCommandIndex = this.marks.length - 1;
+      })
     },
 
     // 2点間のサブノードを算出して返す
