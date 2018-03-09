@@ -235,6 +235,8 @@ export default {
           return this.currentDir ? Constants.TASK_REVERSE : Constants.TASK_FORWARD;
         })(),
         afterTask: Constants.TASK_NOTHING,
+        speed: 1000,
+        angle: 0,
       });
 
       this.marks.push(mark);
