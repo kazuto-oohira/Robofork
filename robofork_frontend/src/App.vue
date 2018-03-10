@@ -175,7 +175,7 @@ export default {
           throw new Error('not exist config');
         }
 
-        return loadCommandPromise;
+        return loadCommandsPromise;
       })
       .then(response => {
         const commands = response.data;
