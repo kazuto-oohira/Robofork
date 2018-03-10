@@ -1,6 +1,8 @@
 // API など
 export const CONFIG_ENDPOINT = '/static/robofork_app/api/operation_control.json';
 export const COMMANDS_ENDPOINT = '/static/robofork_app/api/commands.json';
+export const LOAD_ENDPOINT_SUFFIX = '/load';
+export const SAVE_ENDPOINT_SUFFIX = '/save';
 
 // command の連番
 export const START_NODE_INDEX = 0;

@@ -162,12 +162,11 @@ export default {
 
   created() {
     const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT);
-    const loadCommandsPromise = axios.get(Constants.COMMANDS_ENDPOINT);
+    const loadCommandsPromise = axios.get(window.location.href + Constants.LOAD_ENDPOINT_SUFFIX);
 
-    Promise.all([loadConfigPromise, loadCommandsPromise])
-      .then((values) => {
-        const config = values[0].data;
-        const commands = values[1].data;
+    loadConfigPromise
+      .then(response => {
+        const config = response.data;
 
         if ('config' in config) {
           this.config = config.config;
@@ -175,6 +174,11 @@ export default {
         } else {
           throw new Error('not exist config');
         }
+
+        return loadCommandPromise;
+      })
+      .then(response => {
+        const commands = response.data;
 
         if ('commands' in commands) {
           this.marks = commands.commands.filter(item => item.isMain);
@@ -185,8 +189,14 @@ export default {
           this.initialize();
         }
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error);
+
+        if (this.marks.length <= 0) {
+          this.initialize();
+        }
+
+        return;
       });
   },
 
@@ -297,7 +307,7 @@ export default {
     save() {
       axios({
         method: 'post',
-        url: `${window.location.href}/save`,
+        url: window.location.href + Constants.SAVE_ENDPOINT_SUFFIX,
         data: {
           commands: this.commands,
         },
