@@ -10,12 +10,12 @@ from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
 def save(request, vehicle_operation_plan_id=1):
     print(json.dumps(json.loads(request.body), indent=4))
 
-    if vehicle_operation_plan_id:
-        vehicle_operation_plan = get_object_or_404(VehicleOperationPlan, pk=vehicle_operation_plan_id)
-    else:
-        # しばらく入らんやろ
+    try:
+        vehicle_operation_plan = VehicleOperationPlan.objects.get(pk=vehicle_operation_plan_id)
+    except VehicleOperationPlan.DoesNotExist:
         vehicle_operation_plan = VehicleOperationPlan()
 
+    vehicle_operation_plan.id = vehicle_operation_plan_id
     vehicle_operation_plan.route_operation_json = json.dumps(json.loads(request.body))
     vehicle_operation_plan.save()
 
@@ -33,12 +33,8 @@ def save(request, vehicle_operation_plan_id=1):
 
 @csrf_exempt
 def load(request, vehicle_operation_plan_id=1):
-    if vehicle_operation_plan_id:
-        vehicle_operation_plan = get_object_or_404(VehicleOperationPlan, pk=vehicle_operation_plan_id)
-    else:
-        # しばらく入らんやろ
-        vehicle_operation_plan = VehicleOperationPlan()
-
+    vehicle_operation_plan = get_object_or_404(VehicleOperationPlan, pk=vehicle_operation_plan_id)
     print(vehicle_operation_plan.route_operation_json)
+
     data = json.loads(vehicle_operation_plan.route_operation_json)
     return JsonResponse(data)
