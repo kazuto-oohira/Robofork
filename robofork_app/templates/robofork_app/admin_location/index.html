@@ -9,13 +9,62 @@
             {% include "robofork_app/_admin_side_menu.html" with admin_location="active" %}
 
             <!-- page content -->
-            <div class="right_col col-md-12" role="main">
-                <h2>配置場所一覧</h2>
-                <h3>
-                    <p>
-                        ここに配置場所（ex:滋賀工場など）一覧が表示されます。
-                    </p>
-                </h3>
+            <div class="right_col" role="main">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <h2>配置場所一覧</h2>
+                            <p class="col-md-11">
+                                ここに配置場所（ex:滋賀工場など）一覧が表示されます。
+                            </p>
+                            <div class="col-md-1 text-right">
+                                <a class="btn btn-success btn-sm">新規作成</a>
+                            </div>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+                                        <th class="column-title">場所名</th>
+                                        <th class="column-title">配置済み車両数</th>
+                                        <th class="column-title">運行計画数</th>
+                                        <th class="column-title"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-size:125%;">NKC滋賀工場</td>
+                                        <td style="font-size:125%;">2台</td>
+                                        <td style="font-size:125%;">5ルート</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-primary btn-sm">詳細</a>
+                                            <a class="btn btn-danger btn-sm">削除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:125%;">XXXXXXXXXX工場</td>
+                                        <td style="font-size:125%;">5台</td>
+                                        <td style="font-size:125%;">10ルート</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-primary btn-sm">詳細</a>
+                                            <a class="btn btn-danger btn-sm">削除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-size:125%;">YYYYYYYYYYY工場</td>
+                                        <td style="font-size:125%;">1台</td>
+                                        <td style="font-size:125%;">1ルート</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-primary btn-sm">詳細</a>
+                                            <a class="btn btn-danger btn-sm">削除</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="col-md-offset-11 col-md-1 text-right">
+                                <a class="btn btn-success btn-sm">新規作成</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
