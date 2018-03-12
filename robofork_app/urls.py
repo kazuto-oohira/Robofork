@@ -21,6 +21,7 @@ urlpatterns = [
     path('<int:location_id>/vehicle_status/', TemplateView.as_view(template_name='robofork_app/vehicle_status/index.html'), name='vehicle_status_index'),
     path('<int:location_id>/operation_plan/', TemplateView.as_view(template_name='robofork_app/operation_plan/index.html'), name='operation_plan_index'),
     path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_detail'),
+    path('<int:location_id>/operation_plan/new', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_new'),
 
 
 

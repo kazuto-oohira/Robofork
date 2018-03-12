@@ -24,7 +24,7 @@
                                 </p>
                                 <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
                                     <div class="dataTables_filter">
-                                        <a class="btn btn-success btn-sm">新規作成</a>
+                                        <a href="{% url 'operation_plan_new' 1 %}" class="btn btn-success btn-sm">新規作成</a>
                                     </div>
                                     <table class="table table-striped jambo_table bulk_action">
                                         <thead>
@@ -38,10 +38,10 @@
                                         </thead>
                                         <tbody>
                                             <tr>
-                                                <td style="font-size:125%;">XXX</td>
-                                                <td style="font-size:125%;">YYY</td>
-                                                <td style="font-size:125%;">ZZZ</td>
-                                                <td style="font-size:125%;">OOO</td>
+                                                <td style="font-size:125%;">R05-1段目からR06-2段目への移動</td>
+                                                <td style="font-size:125%;">完成したG-001を移動させる</td>
+                                                <td style="font-size:125%;">FX15-1</td>
+                                                <td style="font-size:125%;">1</td>
                                                 <td class="text-right">
                                                     <a href="{%  url 'operation_plan_detail' 1 1 %}" class="btn btn-primary btn-sm">詳細</a>
                                                     <a class="btn btn-danger btn-sm">削除</a>
