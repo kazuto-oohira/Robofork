@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}滋賀工場{% endblock %}
 {% block body_class %}nav-md{% endblock %}
+{% block page_scripts %}
+    <script src="{% static 'robofork_app/vendor/Chart.js/dist/Chart.min.js' %}"></script>
+{% endblock %}
 
 {% block content %}
     <div class="container body">
@@ -10,7 +14,93 @@
 
             <!-- page content -->
             <div class="right_col" role="main">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h3>FX15-1</h3>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <p class="text-muted">
+                                    XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                                </p>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="x_panel">
+                                            <div class="x_title">
+                                                <h4>バッテリー</h4>
+                                            </div>
+                                            <div class="x_content">
+                                                <div class="x_content">
+                                                    <iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
+                                                    <canvas id="mybarChart" width="303" height="151" style="width: 303px; height: 151px;"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="x_panel">
+                                            <div class="x_title">
+                                                <h4>稼働時間</h4>
+                                            </div>
+                                            <div class="x_content">
+                                                <div class="x_content">
+                                                    <iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
+                                                    <canvas id="canvasDoughnut" width="303" height="151" style="width: 303px; height: 151px;"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h3>FX15-2</h3>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div class="x_content">
+                                <p class="text-muted">
+                                    XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+                                </p>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="x_panel">
+                                            <div class="x_title">
+                                                <h4>バッテリー</h4>
+                                            </div>
+                                            <div class="x_content">
+                                                <div class="x_content">
+                                                    <iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
+                                                    <canvas id="mybarChart2" width="303" height="151" style="width: 303px; height: 151px;"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-xs-12">
+                                        <div class="x_panel">
+                                            <div class="x_title">
+                                                <h4>稼働時間</h4>
+                                            </div>
+                                            <div class="x_content">
+                                                <div class="x_content">
+                                                    <iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
+                                                    <canvas id="canvasDoughnut2" width="303" height="151" style="width: 303px; height: 151px;"></canvas>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+            <!-- /page content -->
 
         </div>
     </div>
