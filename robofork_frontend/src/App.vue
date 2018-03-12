@@ -1,7 +1,7 @@
 <template>
-  <div class="container operation-plan-detail">
+  <div class="operation-plan-detail">
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-md-6">
         <h2>マップ画面</h2>
         <map-viewer
           :width="config.imageWidth"
@@ -20,7 +20,7 @@
           @addMark="addMark"
         ></map-viewer>
       </div>
-      <div class="col-xs-6">
+      <div class="col-md-6">
         <h2>指示画面</h2>
         <command-viewer
           :commands="commands"
@@ -31,7 +31,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-6">
+      <div class="col-md-6">
         <terminal
           :hasCommands="this.commands.length > 0"
           :animate="animate"
