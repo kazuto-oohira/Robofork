@@ -162,7 +162,7 @@ export default {
 
   created() {
     const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT);
-    const loadCommandsPromise = axios.get(window.location.href + Constants.LOAD_ENDPOINT_SUFFIX);
+    const loadCommandsPromise = axios.get(Constants.LOAD_ENDPOINT);
 
     loadConfigPromise
       .then(response => {
@@ -307,7 +307,7 @@ export default {
     save() {
       axios({
         method: 'post',
-        url: window.location.href + Constants.SAVE_ENDPOINT_SUFFIX,
+        url: Constants.SAVE_ENDPOINT,
         data: {
           commands: this.commands,
         },

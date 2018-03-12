@@ -20,6 +20,7 @@ urlpatterns = [
     path('<int:location_id>/', TemplateView.as_view(template_name='robofork_app/home/index.html'), name='home_index'),
     path('<int:location_id>/vehicle_status/', TemplateView.as_view(template_name='robofork_app/vehicle_status/index.html'), name='vehicle_status_index'),
     path('<int:location_id>/operation_plan/', TemplateView.as_view(template_name='robofork_app/operation_plan/index.html'), name='operation_plan_index'),
+    path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_detail'),
 
 
 
@@ -27,8 +28,6 @@ urlpatterns = [
 
 
     # 以下はまだテスト
-    path('operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
-    path('operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
 
     path('vehicle', vehicle_view.index, name='vehicle_index'),
     path('vehicle/new', vehicle_view.new, name='vehicle_new'),
@@ -42,6 +41,8 @@ urlpatterns = [
 
     # API
     path('api/mqtt/send', mqtt.send),
+    path('api/operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
+    path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
 
     # MQTT テスト
     path('mqtt_test', mqtt_test_view.index),
