@@ -1,6 +1,7 @@
 var path = require('path')
 var webpack = require('webpack')
 var bundleTracker = require('webpack-bundle-tracker')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/main.js',
@@ -10,6 +11,12 @@ module.exports = {
     filename: 'operation_plan_detail.js'
   },
   plugins: [
+    new HtmlWebpackPlugin({
+      template: 'home.html',
+    }),
+    new HtmlWebpackPlugin({
+      template: 'operation_plan_detail.html',
+    }),
     new bundleTracker({filename: './webpack-stats.json'}),
   ],
   module: {
