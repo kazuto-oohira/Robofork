@@ -28,6 +28,7 @@
           <div
             v-for="node in mainNodes"
             class="mainnode"
+            draggable="true"
             :class="{
               latest: isLatest(node.id),
               selected: isSelectedCommand(node.id),
@@ -36,7 +37,8 @@
               transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
             }"
             :title="node.id"
-            @click.self="select(node.id)"
+            @mousedown.self="select(node.id)"
+            @dragend="move($event, mappedX(node.x), mappedY(node.y), node.id)"
           >
             <img
               src="/static/robofork_app/img/robofork.svg"
@@ -236,6 +238,21 @@ export default {
 
     select(id) {
       this.$emit('update:selectedCommandIndex', id);
+    },
+
+    move(event, originX, originY, id) {
+      const rect = event.target.getBoundingClientRect();
+      const newX = Number(originX) + event.offsetX - (rect.width / 2);
+      const newY = Number(originY) + event.offsetY - (rect.height / 2);
+      console.log(event);
+      console.log(originX, originY);
+      console.log(event.offsetX, event.offsetY);
+      console.log(newX, newY);
+      console.log(event.target.getBoundingClientRect());
+      this.$emit('updateMark', id, {
+        x: this.unmappedX(newX),
+        y: this.unmappedY(newY),
+      });
     },
 
     mappedX(x) {

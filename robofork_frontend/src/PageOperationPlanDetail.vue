@@ -18,6 +18,7 @@
           :animateIndex="animateIndex"
           :selectedCommandIndex.sync="selectedCommandIndex"
           @addMark="addMark"
+          @updateMark="updateMark"
         ></map-viewer>
       </div>
       <div class="col-md-6">
@@ -227,6 +228,11 @@ export default {
 
       this.marks.push(mark);
       this.selectedCommandIndex = this.marks.length - 1;
+    },
+
+    updateMark(id, _mark) {
+      Vue.set(this.marks[id], 'x', _mark.x);
+      Vue.set(this.marks[id], 'y', _mark.y);
     },
 
     removeMark(id) {
