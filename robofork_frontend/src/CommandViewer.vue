@@ -44,8 +44,14 @@
               <input class="form-control lift-height" v-if="isSelectedCommand(command.id)" v-model="command.liftHeight">
             </td>
             <td>{{ flagStop[index] }}</td>
-            <td>{{ command.x | rounded }}</td>
-            <td>{{ command.y | rounded }}</td>
+            <td>
+              <span v-if="!isSelectedCommand(command.id)">{{ command.x | rounded }}</span>
+              <input class="form-control coordinate" v-if="isSelectedCommand(command.id)" v-model="command.x">
+            </td>
+            <td>
+              <span v-if="!isSelectedCommand(command.id)">{{ command.y | rounded }}</span>
+              <input class="form-control coordinate" v-if="isSelectedCommand(command.id)" v-model="command.y">
+            </td>
             <td>
               <button
                 class="btn btn-warning"
