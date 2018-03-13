@@ -1,5 +1,5 @@
 // API など
-export const CONFIG_ENDPOINT = '/static/robofork_app/api/operation_control.json';
+export const CONFIG_ENDPOINT = (id) => `/api/operation_plan/${id}/config`;
 export const LOAD_ENDPOINT = (id) => `/api/operation_plan/${id}/load`;
 export const SAVE_ENDPOINT = (id) => `/api/operation_plan/${id}/save`;
 
