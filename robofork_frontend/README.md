@@ -25,7 +25,9 @@ robofork_app で django が管理しているビューをそのまま利用し�
   * `cd robofork_frontend`
 	* `npm run dev`
 	* 8001 番ポートをすでに使用している場合は webpack.config.js の port 部分を変更する
-	* access <http://127.0.0.1:8001>
+	* この時点で以下の URL などにアクセスが可能
+		* HOME 画面: <http://127.0.0.1:8001/1>
+		* 運行計画明細画面: <http://127.0.0.1:8001/1/operation_plan/1>
 4. Pythonの開発サーバを起動する
  	* `python manage.py runserver 0.0.0.0:8000`
 	* access <http://127.0.0.1:8000>
