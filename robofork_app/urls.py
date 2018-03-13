@@ -3,7 +3,7 @@ from robofork_app.views import vehicle_view, mqtt_test_view
 from robofork_app.views.login_view import *
 from robofork_app.views.operation_plan.operation_plan_detail_view import *
 from robofork_app.views.vehicle_control_view import *
-from robofork_app.views.api import mqtt, vehicle_operation_plan
+from robofork_app.views.api import mqtt, vehicle_operation_plan, vehicle_operation_status
 urlpatterns = [
     # ログイン
     path('', LoginView.as_view(), name='login'),
@@ -44,6 +44,7 @@ urlpatterns = [
     path('api/operation_plan/<int:vehicle_operation_plan_id>/config', vehicle_operation_plan.config),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
+    path('api/vehicle_operation_status/load', vehicle_operation_status.load),
 
     # MQTT テスト
     path('mqtt_test', mqtt_test_view.index),

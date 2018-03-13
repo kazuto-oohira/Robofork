@@ -65,14 +65,14 @@ def route_execute(request):
 
 def ws_add(message):
     message.reply_channel.send({"accept": True})
-    Group("can").add(message.reply_channel)
+    Group("mqtt_test").add(message.reply_channel)
 
 
 def ws_disconnect(message):
-    Group("can").discard(message.reply_channel)
+    Group("mqtt_test").discard(message.reply_channel)
 
 
 def ws_message(message):
-    Group("can").send({
+    Group("mqtt_test").send({
         "text": message.content['text'],
     })
