@@ -12,7 +12,7 @@
     <div class="row">
       <div class="col-sm-6">
         <button @click="reverse()" :disabled="disableReverse" class="btn btn-default">向きを反転する</button>
-        <p style="margin-top: 10px">次の進行方向: {{ dirLabel }}</p>
+        <p style="margin-top: 10px">今の進行方向: {{ dirLabel }}</p>
       </div>
       <div class="col-sm-6">
         <button @click="save()" class="btn btn-success">ルートを保存する</button>
@@ -60,7 +60,7 @@ export default {
         return '-';
       }
 
-      return this.currentDir ? Constants.DIR_REVERSE : Constants.DIR_FORWARD;
+      return this.currentDir ? Constants.DIR_FORWARD : Constants.DIR_REVERSE;
     },
   },
 
@@ -78,7 +78,7 @@ export default {
     },
 
     reverse() {
-      this.$emit('update:currentDir', !this.currentDir);
+      this.$emit('reverse');
     },
 
     save() {

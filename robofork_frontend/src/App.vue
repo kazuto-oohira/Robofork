@@ -35,10 +35,11 @@
         <terminal
           :hasCommands="this.commands.length > 0"
           :animate="animate"
-          :currentDir.sync="currentDir"
+          :currentDir="currentDir"
           @clear="clear"
           @start="start"
           @stop="stop"
+          @reverse="reverse"
           @save="save"
         ></terminal>
 
@@ -170,7 +171,6 @@ export default {
 
         if ('config' in config) {
           this.config = config.config;
-          this.currentDir = ('startDir' in this.config) && Number(this.config.startDir) === 1;
         } else {
           throw new Error('not exist config');
         }
@@ -225,7 +225,7 @@ export default {
           if (this.marks.length <= 0) {
             return Constants.TASK_NOTHING;
           }
-          return this.currentDir ? Constants.TASK_REVERSE : Constants.TASK_FORWARD;
+          return this.currentDir ? Constants.TASK_FORWARD : Constants.TASK_REVERSE;
         })(),
         afterTask: Constants.TASK_NOTHING,
         speed: Constants.INITIAL_SPEED,
@@ -302,6 +302,17 @@ export default {
       clearInterval(this.animateTimer);
       this.animate = false;
       this.animateIndex = null;
+    },
+
+    reverse() {
+      this.currentDir = !this.currentDir;
+
+      if (this.marks.length <= 1) {
+        return;
+      }
+
+      const currentMark = this.marks[this.marks.length - 1];
+      Vue.set(currentMark, 'task', currentMark.task === Constants.TASK_FORWARD ? Constants.TASK_REVERSE : Constants.TASK_FORWARD);
     },
 
     save() {
