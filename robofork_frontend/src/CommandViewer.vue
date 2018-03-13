@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid" id="command-viewer">
-    <div class="row table-container pre-scrollable">
+    <div class="row table-container pre-scrollable" ref="scrollContainer">
       <table class="table table-hover">
         <thead>
           <tr>
@@ -20,6 +20,8 @@
           <tr
             v-for="(command, index) in commands"
             v-if="enableCommand[index]"
+            ref="commandsElements"
+            :value="$el"
             :class="{ 'active': isSelectedCommand(command.id) }"
             @click="selectColumn(command.id)"
           >
@@ -113,7 +115,11 @@ export default {
 
     flagStop() {
       return this.commands.map((item, index) => item.afterTask !== Constants.TASK_NOTHING ? 1 : 0);
-    }
+    },
+  },
+
+  updated() {
+    this.focusSelectedCommand();
   },
 
   methods: {
@@ -135,6 +141,26 @@ export default {
 
     remove(id) {
       this.$emit('removeMark', id);
+    },
+
+    focusSelectedCommand() {
+      if (!('commandsElements' in this.$refs) || !('scrollContainer' in this.$refs)) {
+        return;
+      }
+
+      const container = this.$refs.scrollContainer;
+      const el = this.$refs.commandsElements[this.selectedCommandIndex];
+
+      if (!el) {
+        return;
+      }
+
+      let offsetTop = 0;
+      if (this.selectedCommandIndex >= 1) {
+        offsetTop = el.offsetTop;
+      }
+
+      container.scrollTop = offsetTop;
     },
   },
 
@@ -161,6 +187,8 @@ export default {
 <style scoped>
 .table-container {
   min-height: 350px;
+  box-sizing: border-box;
+  padding: 1px;
   border: 1px solid #333;
 }
 
