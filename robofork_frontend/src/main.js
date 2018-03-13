@@ -11,11 +11,11 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     {
-      path: '/:location_id',
+      path: '/:locationId',
       component: PageHome,
     },
     {
-      path: '/:location_id/operation_plan/:vehicle_operation_plan_id',
+      path: '/:locationId/operation_plan/:vehicleOperationPlanId',
       component: PageOperationPlanDetail,
     },
   ],

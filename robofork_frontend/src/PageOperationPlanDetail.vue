@@ -3,6 +3,8 @@
     <div class="row">
       <div class="col-md-6">
         <h2>マップ画面</h2>
+        <p>locationId: {{ locationId }}</p>
+        <p>vehicleOperationPlanId: {{ vehicleOperationPlanId }}</p>
         <map-viewer
           :width="config.imageWidth"
           :height="config.imageHeight"
@@ -76,6 +78,9 @@ export default {
 
   data () {
     return {
+      locationId: this.$route.params.locationId,
+      vehicleOperationPlanId: this.$route.params.vehicleOperationPlanId,
+
       config: {},
       marks: [],
       animate: false,
