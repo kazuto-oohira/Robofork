@@ -3,8 +3,6 @@
     <div class="row">
       <div class="col-md-6">
         <h2>マップ画面</h2>
-        <p>locationId: {{ locationId }}</p>
-        <p>vehicleOperationPlanId: {{ vehicleOperationPlanId }}</p>
         <map-viewer
           :width="config.imageWidth"
           :height="config.imageHeight"
@@ -44,15 +42,6 @@
           @reverse="reverse"
           @save="save"
         ></terminal>
-
-        <div class="log">
-          <p>animate: {{ animate }}</p>
-          <p>animateIndex: {{ animateIndex }}</p>
-          <p>marks: {{ marks }}</p>
-          <p>mainNodes: {{ mainNodes }}</p>
-          <p>commands: {{ commands }}</p>
-          <p>selectedCommandIndex: {{ selectedCommandIndex }}</p>
-        </div>
       </div>
     </div>
   </div>
