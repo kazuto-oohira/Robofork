@@ -131,7 +131,7 @@
                 if (onVerticalForce >= 1) {
                     verticalForce = 1;
                 }
-                sendData += toHex(Math.round(verticalForce * 1000 * verticalMinus + offset));
+                sendData += toHex(Math.round(changeCanUnSignedToSigned(verticalForce * 1000 * verticalMinus)));
 
                 // ステア角(-90度〜0〜90度)
                 if (onHorizontalDirection === 'right') {
@@ -147,21 +147,19 @@
                 }
 
                 // 0.0〜1.0を0.0度〜90.0度へ変換
-                sendData += toHex(Math.floor((horizontalForce * (90 - 0) * 10) * horizontalMinus + offset));
+                sendData += toHex(Math.floor(changeCanUnSignedToSigned((horizontalForce * (90 - 0) * 10) * horizontalMinus)));
 
                 $.ajax({
                     url: '/api/mqtt/send',
                     type: 'POST',
                     data: {
-                        //can_id: '1E0',
                         can_id: '105',
                         can_data: sendData + '000000'
                     }
                 });
             } else {
-                var offset = 32768;
                 var sendData = '00';
-                sendData += toHex(0 + offset) + toHex(0 + offset);
+                sendData += toHex(changeCanUnSignedToSigned(0)) + toHex(changeCanUnSignedToSigned(0));
 
                 $.ajax({
                     url: '/api/mqtt/send',
@@ -192,6 +190,14 @@
 
         function toHex(v) {
             return (('0000' + v.toString(16).toUpperCase()).substr(-4));
+        }
+
+        function changeCanUnSignedToSigned(value) {
+            if (!isNaN(value)) {
+                return value + 32768;
+            } else {
+                return 0;
+            }
         }
     });
 </script>

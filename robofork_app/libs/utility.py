@@ -20,3 +20,12 @@ def to_can_data(value):
     :return:
     """
     return [(i + j) for (i, j) in zip(value[::2], value[1::2])]
+
+
+def to_can_unsigned_to_signed(value):
+    """
+    CAN向けにUnSinged数値をSignedに変更する
+    :param value:
+    :return:
+    """
+    return value + 32768
