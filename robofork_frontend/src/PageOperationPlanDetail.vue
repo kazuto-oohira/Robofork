@@ -167,7 +167,7 @@ export default {
 
   created() {
     const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT);
-    const loadCommandsPromise = axios.get(Constants.LOAD_ENDPOINT);
+    const loadCommandsPromise = axios.get(Constants.LOAD_ENDPOINT(this.vehicleOperationPlanId));
 
     loadConfigPromise
       .then(response => {
@@ -322,7 +322,7 @@ export default {
     save() {
       axios({
         method: 'post',
-        url: Constants.SAVE_ENDPOINT,
+        url: Constants.SAVE_ENDPOINT(this.vehicleOperationPlanId),
         data: {
           commands: this.commands,
         },
