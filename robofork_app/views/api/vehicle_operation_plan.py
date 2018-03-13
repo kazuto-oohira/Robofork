@@ -7,6 +7,25 @@ from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
 
 
 @csrf_exempt
+def config(request, vehicle_operation_plan_id=1):
+    return JsonResponse(
+        {
+            "config": {
+                "imageUrl": "/static/robofork_app/img/test/map1.png",
+                "imageWidth": 502,
+                "imageHeight": 394,
+                "scaleX": "13.210526316",
+                "scaleY": "10.368421053",
+                "offsetX": "-2.5",
+                "offsetY": "0",
+                "startX": "-9.56",
+                "startY": "-0.26"
+            }
+        }
+    )
+
+
+@csrf_exempt
 def save(request, vehicle_operation_plan_id=1):
     print(json.dumps(json.loads(request.body), indent=4))
 
