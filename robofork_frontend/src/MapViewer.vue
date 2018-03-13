@@ -244,11 +244,6 @@ export default {
       const rect = event.target.getBoundingClientRect();
       const newX = Number(originX) + event.offsetX - (rect.width / 2);
       const newY = Number(originY) + event.offsetY - (rect.height / 2);
-      console.log(event);
-      console.log(originX, originY);
-      console.log(event.offsetX, event.offsetY);
-      console.log(newX, newY);
-      console.log(event.target.getBoundingClientRect());
       this.$emit('updateMark', id, {
         x: this.unmappedX(newX),
         y: this.unmappedY(newY),
