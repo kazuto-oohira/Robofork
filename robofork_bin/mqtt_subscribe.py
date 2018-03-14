@@ -33,18 +33,17 @@ def on_message(client, userdata, msg):
 
 # MQTT
 while True:
-    client = mqtt.Client()
-    client.on_connect = on_connect
-    client.on_message = on_message
-
     try:
+        client = mqtt.Client()
+        client.on_connect = on_connect
+        client.on_message = on_message
         client.connect(mqtt_server, 1883, 60)
-    except:
-        print("MQTT Connect Error:", sys.exc_info()[0])
-        sleep(5)
-    else:
+
         # Blocking call that processes network traffic, dispatches callbacks and
         # handles reconnecting.
         # Other loop*() functions are available that give a threaded interface and a
         # manual interface.
         client.loop_forever()
+    except:
+        print("MQTT Error:", sys.exc_info()[0])
+        sleep(5)
