@@ -1,6 +1,7 @@
 import sys
 import paho.mqtt.client as mqtt
 import websocket
+from time import sleep
 
 # コマンド引数処理
 mqtt_server = '127.0.0.1'
@@ -13,7 +14,7 @@ if len(sys.argv) == 3:
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
+    print("Connected with result code " + str(rc))
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -31,14 +32,18 @@ def on_message(client, userdata, msg):
 
 
 # MQTT
-client = mqtt.Client()
-client.on_connect = on_connect
-client.on_message = on_message
+while True:
+    try:
+        client = mqtt.Client()
+        client.on_connect = on_connect
+        client.on_message = on_message
+        client.connect(mqtt_server, 1883, 60)
 
-client.connect(mqtt_server, 1883, 60)
-
-# Blocking call that processes network traffic, dispatches callbacks and
-# handles reconnecting.
-# Other loop*() functions are available that give a threaded interface and a
-# manual interface.
-client.loop_forever()
+        # Blocking call that processes network traffic, dispatches callbacks and
+        # handles reconnecting.
+        # Other loop*() functions are available that give a threaded interface and a
+        # manual interface.
+        client.loop_forever()
+    except:
+        print("MQTT Error:", sys.exc_info()[0])
+        sleep(5)
