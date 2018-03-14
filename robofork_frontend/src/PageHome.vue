@@ -1,13 +1,13 @@
 <template>
   <map-multi-viewer
-    :width="502"
-    :height="394"
-    :scaleX="13.210526316"
-    :scaleY="10.368421053"
-    :offsetX="-2.5"
-    :offsetY="0"
-    :imageUrl="'/static/robofork_app/img/test/map1.png'"
-    :positions="positions"
+    :width="config.imageWidth"
+    :height="config.imageHeight"
+    :scaleX="Number(config.scaleX)"
+    :scaleY="Number(config.scaleY)"
+    :offsetX="Number(config.offsetX)"
+    :offsetY="Number(config.offsetY)"
+    :imageUrl="config.imageUrl"
+    :vehicles="vehicles"
   ></map-multi-viewer>
 </template>
 
@@ -26,19 +26,10 @@ export default {
 
   data () {
     return {
-      vehicles: {},
+      config: {},
+      vehicles: [],
       locationId: this.$route.params.locationId,
     }
-  },
-
-  computed: {
-    positions() {
-      if (!this.vehicles) {
-        return [];
-      }
-
-      return this.vehicles.vehicle_positions;
-    },
   },
 
   created() {
@@ -50,11 +41,31 @@ export default {
       .then(response => {
         const vehicles = response.data;
 
-        if ('vehicles' in vehicles) {
-          this.vehicles = vehicles.vehicles[0];
-        } else {
+        if (!('vehicles' in vehicles) || vehicles.vehicles.length <= 0) {
           throw new Error('not exist vehicles');
         }
+
+        this.vehicles = vehicles.vehicles;
+
+        // 運行計画は複数存在するが、マップ情報はどれも共通のため、
+        // 1つ目の operation_plan_id を拾って API を叩き、マップ情報を得る
+        const anyOperationPlanId = vehicles.vehicles[0].vehicle_status.vehicle_operation_plan_id;
+
+        return axios.get(Constants.CONFIG_ENDPOINT(anyOperationPlanId));
+      })
+      .then(response => {
+        const config = response.data;
+
+        if ('config' in config) {
+          this.config = config.config;
+        } else {
+          throw new Error('not exist config');
+        }
+      })
+      .catch(error => {
+        console.error(error);
+
+        return;
       });
   },
 }

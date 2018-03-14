@@ -22,13 +22,12 @@
             data-trigger="manual"
             data-toggle="popover"
             data-placement="top"
-            data-original-title="滋賀#1"
-            data-content="非常停止"
+            :data-original-title="vehicleName"
+            :data-content="statusName"
             data-animation="false"
-            :data-status-code="0"
+            :data-status-code="statusCode"
             :style="{
-              transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`,
-              'transition-duration': `${animationSpeed}ms`
+              transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`
             }"
           >
             <img
@@ -61,22 +60,45 @@ export default {
     'offsetX',
     'offsetY',
     'imageUrl',
-    'positions',
+    'vehicles',
   ],
 
   data() {
     return {
-      animationSpeed: Constants.ANIMATION_SPEED,
     }
   },
 
   computed: {
     commands() {
-      if (!this.positions) {
+      if (!this.vehicles || this.vehicles.length <= 0) {
         return [];
       }
 
-      return this.positions;
+      return this.vehicles[0].vehicle_positions;
+    },
+
+    vehicleName() {
+      if (!this.vehicles || this.vehicles.length <= 0) {
+        return '';
+      }
+
+      return this.vehicles[0].name;
+    },
+
+    statusName() {
+      if (!this.vehicles || this.vehicles.length <= 0) {
+        return '';
+      }
+
+      return this.vehicles[0].vehicle_status.status_name;
+    },
+
+    statusCode() {
+      if (!this.vehicles || this.vehicles.length <= 0) {
+        return '';
+      }
+
+      return this.vehicles[0].vehicle_status.status_code;
     },
 
     unitX() {
@@ -140,10 +162,6 @@ export default {
     },
   },
 
-  created() {
-    console.log('created');
-  },
-
   updated() {
     this.updatePopoverByJQuery();
   },
@@ -188,6 +206,7 @@ export default {
     updatePopoverByJQuery() {
       // DOM が更新されたとき、TwitterBootstrap の popover を jQuery 経由で呼ぶ
       $('[data-toggle="popover"]').each((_, element) => {
+        $(element).popover('destroy');
         $(element).popover('show');
 
         const popoverTarget = $(element).attr('aria-describedby');
