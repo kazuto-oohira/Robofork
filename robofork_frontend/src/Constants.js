@@ -4,6 +4,13 @@ export const LOAD_ENDPOINT = (id) => `/api/operation_plan/${id}/load`;
 export const SAVE_ENDPOINT = (id) => `/api/operation_plan/${id}/save`;
 export const VEHICLES_ENDPOINT = '/api/vehicle_operation_status/load';
 
+// HOME 画面での車両ポップアップの色ごとの追加クラス名
+export const STATUS_CODE_CLASSNAMES = {
+  0: '',
+  1: 'my-warning',
+  2: 'my-danger',
+};
+
 // command の連番
 export const START_NODE_INDEX = 0;
 

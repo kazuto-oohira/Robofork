@@ -17,8 +17,15 @@
 
           <!-- roboork -->
           <div
-          v-if="commands.length > 0"
+            v-if="commands.length > 0"
             class="robofork"
+            data-trigger="manual"
+            data-toggle="popover"
+            data-placement="top"
+            data-original-title="滋賀#1"
+            data-content="非常停止"
+            data-animation="false"
+            :data-status-code="0"
             :style="{
               transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`,
               'transition-duration': `${animationSpeed}ms`
@@ -137,6 +144,10 @@ export default {
     console.log('created');
   },
 
+  updated() {
+    this.updatePopoverByJQuery();
+  },
+
   methods: {
     mappedX(x) {
       const offsetX = Number(x) + this.offsetX;
@@ -173,6 +184,18 @@ export default {
     isSelectedCommand(id) {
       return id === this.selectedCommandIndex;
     },
+
+    updatePopoverByJQuery() {
+      // DOM が更新されたとき、TwitterBootstrap の popover を jQuery 経由で呼ぶ
+      $('[data-toggle="popover"]').each((_, element) => {
+        $(element).popover('show');
+
+        const popoverTarget = $(element).attr('aria-describedby');
+        const statusCode = Number($(element).attr('data-status-code'));
+
+        $(`#${popoverTarget}`).addClass(Constants.STATUS_CODE_CLASSNAMES[statusCode]);
+      });
+    },
   },
 }
 </script>
@@ -180,18 +203,6 @@ export default {
 <style scoped>
 .map-container {
   position: relative;
-}
-
-.map-container.routing:after {
-  width: 100%;
-  height: 100%;
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 100;
-  display: block;
-  background: rgba(0, 0, 0, 0);
 }
 
 .map-image {
@@ -231,5 +242,35 @@ export default {
 
 .map-draw-layer .robofork img {
   transform-origin: 50% 50%;
+}
+
+</style>
+
+<style>
+/* outer component styles */
+.popover.my-warning {
+  background-color: #f0ad4e;
+  color: #fff;
+}
+
+.popover.my-warning.top > .arrow:after {
+  border-top-color: #f0ad4e;
+}
+
+.popover.my-warning .popover-title {
+  background-color: #f0ad4e;
+}
+
+.popover.my-danger {
+  background-color: #d9534f;
+  color: #fff;
+}
+
+.popover.my-danger.top > .arrow:after {
+  border-top-color: #d9534f;
+}
+
+.popover.my-danger .popover-title {
+  background-color: #d9534f;
 }
 </style>
