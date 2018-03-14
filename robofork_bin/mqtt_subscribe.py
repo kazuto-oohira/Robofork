@@ -1,5 +1,9 @@
+import sys
 import paho.mqtt.client as mqtt
 import websocket
+
+MQTT_SERVER = '127.0.0.1'
+WEB_SOCKET_SERVER = '127.0.0.1'
 
 
 # The callback for when the client receives a CONNACK response from the server.
@@ -16,7 +20,7 @@ def on_message(client, userdata, msg):
     # print(msg.topic + " " + str(msg.payload))
 
     # 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
-    ws = websocket.create_connection("ws://127.0.0.1/mqtt_test_ws")
+    ws = websocket.create_connection("ws://" + WEB_SOCKET_SERVER + "/mqtt_test_ws")
     ws.send(msg.payload.decode('ASCII'))
     ws.close()
 
@@ -26,7 +30,7 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-client.connect("127.0.0.1", 1883, 60)
+client.connect(MQTT_SERVER, 1883, 60)
 
 # Blocking call that processes network traffic, dispatches callbacks and
 # handles reconnecting.
