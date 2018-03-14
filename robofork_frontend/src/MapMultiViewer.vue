@@ -6,40 +6,42 @@
       >
         <img v-if="imageUrl" class="map-image" :src="imageUrl">
         <div class="map-draw-layer">
-          <!-- commands -->
-          <div
-            v-for="command in commands"
-            class="node"
-            :style="{
-              transform: `translate(${mappedX(command.x)}px, ${mappedY(command.y)}px)`
-            }"
-          ></div>
-
-          <!-- roboork -->
-          <div
-            v-if="commands.length > 0"
-            class="robofork"
-            data-trigger="manual"
-            data-toggle="popover"
-            data-placement="top"
-            :data-original-title="vehicleName"
-            :data-content="statusName"
-            data-animation="false"
-            :data-status-code="statusCode"
-            :style="{
-              transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`
-            }"
-          >
-            <img
-              src="/static/robofork_app/img/robofork.svg"
-              alt=""
-              width="30"
-              height="30"
+          <template v-for="(vehicle, index) in vehicles">
+            <!-- commands -->
+            <div
+              v-for="command in vehicle.vehicle_positions"
+              class="node"
               :style="{
-                transform: `rotate(${roboforkDegree}deg)`
+                transform: `translate(${mappedX(command.x)}px, ${mappedY(command.y)}px)`
+              }"
+            ></div>
+
+            <!-- roboork -->
+            <div
+              v-if="vehicle.vehicle_positions.length > 0"
+              class="robofork"
+              data-trigger="manual"
+              data-toggle="popover"
+              data-placement="top"
+              :data-original-title="vehicleName[index]"
+              :data-content="statusName[index]"
+              data-animation="false"
+              :data-status-code="statusCode[index]"
+              :style="{
+                transform: `translate(${mappedX(roboforkX[index])}px, ${mappedY(roboforkY[index])}px)`
               }"
             >
-          </div>
+              <img
+                src="/static/robofork_app/img/robofork.svg"
+                alt=""
+                width="30"
+                height="30"
+                :style="{
+                  transform: `rotate(${roboforkDegree[index]}deg)`
+                }"
+              >
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -78,27 +80,15 @@ export default {
     },
 
     vehicleName() {
-      if (!this.vehicles || this.vehicles.length <= 0) {
-        return '';
-      }
-
-      return this.vehicles[0].name;
+      return this.vehicles.map(vehicle => vehicle.name);
     },
 
     statusName() {
-      if (!this.vehicles || this.vehicles.length <= 0) {
-        return '';
-      }
-
-      return this.vehicles[0].vehicle_status.status_name;
+      return this.vehicles.map(vehicle => vehicle.vehicle_status.status_name);
     },
 
     statusCode() {
-      if (!this.vehicles || this.vehicles.length <= 0) {
-        return '';
-      }
-
-      return this.vehicles[0].vehicle_status.status_code;
+      return this.vehicles.map(vehicle => vehicle.vehicle_status.status_code);
     },
 
     unitX() {
@@ -131,34 +121,46 @@ export default {
     },
 
     roboforkX() {
-      // commands から自動算出する
-      if (this.commands.length <= 0) {
-        return 0;
-      }
+      // vehicles から自動算出する
+      return this.vehicles.map(vehicle => {
+        const commands = vehicle.vehicle_positions;
 
-      return this.commands[this.commands.length - 1].x;
+        if (commands.length <= 0) {
+          return 0;
+        }
+
+        return commands[commands.length - 1].x;
+      });
     },
 
     roboforkY() {
-      // commands から自動算出する
-      if (this.commands.length <= 0) {
-        return 0;
-      }
+      // vehicles から自動算出する
+      return this.vehicles.map(vehicle => {
+        const commands = vehicle.vehicle_positions;
 
-      return this.commands[this.commands.length - 1].y;
+        if (commands.length <= 0) {
+          return 0;
+        }
+
+        return commands[commands.length - 1].y;
+      });
     },
 
     roboforkDegree() {
-      // commands から自動算出する
-      if (this.commands.length <= 1) {
-        return 0;
-      }
+      // vehicles から自動算出する
+      return this.vehicles.map(vehicle => {
+        const commands = vehicle.vehicle_positions;
 
-      const prev = this.commands[this.commands.length - 2];
-      const current = this.commands[this.commands.length - 1];
-      const degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
+        if (commands.length <= 1) {
+          return 0;
+        }
 
-      return (current.task === Constants.TASK_FORWARD ? 0 : 1) * 180 + degree;
+        const prev = commands[commands.length - 2];
+        const current = commands[commands.length - 1];
+        const degree = this.degree(Number(prev.x), Number(prev.y), Number(current.x), Number(current.y));
+
+        return (current.task === Constants.TASK_FORWARD ? 0 : 1) * 180 + degree;
+      });
     },
   },
 
