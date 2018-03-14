@@ -56,4 +56,8 @@ def load(request, vehicle_operation_plan_id=1):
     print(vehicle_operation_plan.route_operation_json)
 
     data = json.loads(vehicle_operation_plan.route_operation_json)
+
+    # 補完
+    data['name'] = 'R05-1段目からR06-2段目へ'
+
     return JsonResponse(data)
