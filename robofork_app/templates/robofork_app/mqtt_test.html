@@ -2,36 +2,54 @@
 {% block title %}通信テスト | Robofork{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>通信テスト</h2>
-        <div class="alert alert-success" role="alert">送信データ</div>
-        <div class="form-group row">
-            <label for="can_id" class="col-sm-2 col-form-label">CAN_ID(Hex)</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="can_id" name="can_id" value=""/>
-            </div>
-        </div>
-        <div class="form-group row">
-            <label for="can_data" class="col-sm-2 col-form-label">CAN_DATA(Hex)</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" id="can_data" name="can_data" value=""/>
-            </div>
-        </div>
-        <div class="form-group row">
-            <div class="col-sm-10 offset-2">
-                <button type="button" id="can_send" class="btn btn-primary">送信</button>
-            </div>
-        </div>
+    <div class="container" style="background-color:#F7F7F7;">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>通信テスト</h2>
 
-        <div class="alert alert-info" role="alert">受信データ</div>
-        <div class="form-group">
-            <textarea class="form-control" id="can_received" rows="10" readonly></textarea>
-        </div>
+                <div class="x_panel">
+                    <div class="x_title"><h3>CAN送信データ</h3></div>
+                    <div class="x_content">
+                        <div class="form-group row">
+                            <label for="can_id" class="col-sm-2 col-form-label">CAN_ID(Hex)</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="can_id" name="can_id" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="can_data" class="col-sm-2 col-form-label">CAN_DATA(Hex)</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="can_data" name="can_data" value=""/>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-10 offset-2">
+                                <button type="button" id="can_send" class="btn btn-primary">送信</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="alert alert-warning" role="alert">ルート走行実行</div>
-        <div class="form-group row">
-            <div class="col-sm-10 offset-2">
-                <button type="button" id="route-execute" class="btn btn-warning">実行</button>
+                <div class="x_panel">
+                    <div class="x_title"><h3>CAN受信データ</h3></div>
+                    <div class="x_content">
+                        <div class="form-group row">
+                            <textarea class="form-control" id="can_received" rows="10" readonly></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="x_panel">
+                    <div class="x_title"><h3>ルート走行実行</h3></div>
+                    <div class="x_content">
+                        <div class="form-group row">
+                            <div class="col-sm-10 offset-2">
+                                <button type="button" id="route-execute" class="btn btn-warning">実行</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
