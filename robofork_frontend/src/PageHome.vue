@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h2>Home 画面</h2>
+    <img class="img-responsive center-block" src="/static/robofork_app/img/test/map1.png" alt="dummy" width="502" height="394">
   </div>
 </template>
 

@@ -1,6 +1,10 @@
 {% extends "base.html" %}
+{% load render_bundle from webpack_loader %}
 {% block title %}滋賀工場{% endblock %}
 {% block body_class %}nav-md{% endblock %}
+{% block page_scripts %}
+    {% render_bundle 'main' 'js' %}
+{% endblock %}
 
 {% block content %}
     <div class="container body">
@@ -49,7 +53,7 @@
                         </p>
                         <div class="row">
                             <div class="col-md-7" style="background-color: #9d9d9d;">
-                                <img class="img-responsive center-block" src="{{ STATIC_URL }}robofork_app/img/test/map1_now.png" alt="">
+                                <div id="app"><!-- vue.js control --></div>
                             </div>
                             <div class="col-md-5">
                                 <table class="table table-striped jambo_table bulk_action">
