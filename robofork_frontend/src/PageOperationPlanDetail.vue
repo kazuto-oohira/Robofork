@@ -167,6 +167,7 @@ export default {
 
         if ('config' in config) {
           this.config = config.config;
+          this.currentDir = this.config.startDirection === 0;
         } else {
           throw new Error('not exist config');
         }
