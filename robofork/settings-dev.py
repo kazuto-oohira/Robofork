@@ -10,11 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
-"""
-Macローカルで実行する際の設定
-・mosquittoが127.0.0.1で動いていることが前提
-"""
-
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -147,6 +142,7 @@ STATIC_URL = '/static/'
 
 # webpack integration
 # see robofork_frontend/README.md
+USE_WEBPACK_PRODUCTION = False
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -154,6 +150,11 @@ WEBPACK_LOADER = {
         'STATS_FILE': os.path.join(BASE_DIR, 'robofork_frontend/webpack-stats.json'),
     }
 }
+
+if USE_WEBPACK_PRODUCTION:
+    WEBPACK_LOADER['DEFAULT'].update({
+        'STATS_FILE': os.path.join(BASE_DIR, 'robofork_frontend/webpack-stats-prod.json'),
+    })
 
 MQTT_SERVER = {
     'IP': '127.0.0.1',

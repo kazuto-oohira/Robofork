@@ -142,6 +142,7 @@ STATIC_URL = '/static/'
 
 # webpack integration
 # see robofork_frontend/README.md
+USE_WEBPACK_PRODUCTION = True
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -150,7 +151,7 @@ WEBPACK_LOADER = {
     }
 }
 
-if not DEBUG:
+if USE_WEBPACK_PRODUCTION:
     WEBPACK_LOADER['DEFAULT'].update({
         'STATS_FILE': os.path.join(BASE_DIR, 'robofork_frontend/webpack-stats-prod.json'),
     })
