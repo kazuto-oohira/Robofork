@@ -47,8 +47,14 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="x_panel">
-                                            <div class="x_title"><h4>ステータス(JSON)</h4></div>
+                                            <div class="x_title"><h4>車両IDとステータス(JSON)</h4></div>
                                             <div class="x_content">
+                                                <div class="col-md-5">
+                                                    <label for="rbfk_status_id" class="col-md-4 form-label">車両ID</label>
+                                                    <div class="col-md-7">
+                                                        <input type="text" class="form-control" id="rbfk_status_id" name="rbfk_status_id" value="1"/>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group">
                                                     <textarea class="form-control" id="rbfk_status_json" rows="7"></textarea>
                                                 </div>
@@ -156,12 +162,20 @@
 
         // 送信ボタン
         $('#rbfk_status_send').click(function() {
-            // ステータス
-            var data = JSON.parse($('#rbfk_status_json').val());
-            data['vehicle_positions'] = [];
+            var data = {};
 
             // リロード
             data['reload'] = $('#rbfk_status_reload').prop('checked') ? true : false;
+
+            // 車両ステータス配列
+            data['vehicles'] = [];
+
+            // ステータス
+            var vehicleData = JSON.parse($('#rbfk_status_json').val());
+            vehicleData['vehicle_positions'] = [];
+
+            // 車両ID
+            vehicleData['id'] = $('#rbfk_status_id').val();
 
             // ポジション
             var position = {
@@ -171,15 +185,18 @@
                 speed: parseInt($('#rbfk_status_speed').val()),
                 angle: parseInt($('#rbfk_status_angle').val())
             };
-            data['vehicle_positions'].push(position);
+            vehicleData['vehicle_positions'].push(position);
 
             // 2行
             if ($('#rbfk_status_double_record').prop('checked')) {
                 var position2 = $.extend(true, {}, position);
                 position2['x'] = String(parseFloat(position2['x']) - 0.5);
                 position2['y'] = String(parseFloat(position2['y']) - 0.5);
-                data['vehicle_positions'].push(position2);
+                vehicleData['vehicle_positions'].push(position2);
             }
+
+            // 車両ステータス配列に追加
+            data['vehicles'].push(vehicleData);
 
             socket.send(JSON.stringify(data));
         });
