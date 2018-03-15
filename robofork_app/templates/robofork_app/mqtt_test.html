@@ -39,6 +39,80 @@
                     </div>
                 </div>
 
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <div class="x_title"><h3>Roboforkステータス変更</h3></div>
+                            <div class="x_content">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="x_panel">
+                                            <div class="x_title"><h4>ステータス(JSON)</h4></div>
+                                            <div class="x_content">
+                                                <div class="form-group">
+                                                    <textarea class="form-control" id="rbfk_status_json" rows="7"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="x_panel">
+                                            <div class="x_title"><h4>最新情報</h4></div>
+                                            <div class="x_content">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_x" class="col-md-4 form-label text-right">x(m)</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" id="rbfk_status_x" name="rbfk_status_x" value=""/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_y" class="col-md-4 form-label text-right">y(m)</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" id="rbfk_status_y" name="rbfk_status_y" value=""/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_task" class="col-md-4 form-label text-right">Task</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" id="rbfk_status_task" name="rbfk_status_task" value=""/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_speed" class="col-md-4 form-label text-right">Speed</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" id="rbfk_status_speed" name="rbfk_status_speed" value=""/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_angle" class="col-md-4 form-label text-right">Angle</label>
+                                                        <div class="col-md-8">
+                                                            <input type="text" class="form-control" id="rbfk_status_angle" name="rbfk_status_angle" value=""/>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_reload" class="col-md-6 form-label text-right">Reload送信</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" id="rbfk_status_reload" name="rbfk_status_reload" />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <label for="rbfk_status_double_record" class="col-md-6 form-label text-right">2レコード送信</label>
+                                                        <div class="col-md-6">
+                                                            <input type="checkbox" id="rbfk_status_double_record" name="rbfk_status_double_record" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" id="rbfk_status_send" class="btn btn-primary">送信</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="x_panel">
                     <div class="x_title"><h3>ルート走行実行</h3></div>
                     <div class="x_content">
@@ -55,6 +129,86 @@
     </div>
 
     <script type="text/javascript">
+    // Roboforkステータス変更
+    $(function() {
+        // 初期データ設定
+        $('#rbfk_status_json').val(JSON.stringify({
+            "vehicle_status": {
+                "vehicle_operation_plan_id": 1,
+                "status_code": 1,
+                "status_name": "非常停止"
+            }
+        }, undefined, 4));
+        $('#rbfk_status_x').val('-9.56');
+        $('#rbfk_status_y').val('-0.26');
+        $('#rbfk_status_task').val('0');
+        $('#rbfk_status_speed').val('1000');
+        $('#rbfk_status_angle').val('0');
+
+        // WebSocket定義
+        var socket = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        socket.addEventListener('open', function (event) {
+            console.log("WebSocket(/vehicle_operation_status) Connected!");
+        });
+        socket.addEventListener('message', function (event) {
+            console.log(event.data);
+        });
+
+        // 送信ボタン
+        $('#rbfk_status_send').click(function() {
+            // ステータス
+            var data = JSON.parse($('#rbfk_status_json').val());
+            data['vehicle_positions'] = [];
+
+            // リロード
+            data['reload'] = $('#rbfk_status_reload').prop('checked') ? true : false;
+
+            // ポジション
+            var position = {
+                x: $('#rbfk_status_x').val(),
+                y: $('#rbfk_status_y').val(),
+                task: parseInt($('#rbfk_status_task').val()),
+                speed: parseInt($('#rbfk_status_speed').val()),
+                angle: parseInt($('#rbfk_status_angle').val())
+            };
+            data['vehicle_positions'].push(position);
+
+            // 2行
+            if ($('#rbfk_status_double_record').prop('checked')) {
+                var position2 = $.extend(true, {}, position);
+                position2['x'] = String(parseFloat(position2['x']) - 0.5);
+                position2['y'] = String(parseFloat(position2['y']) - 0.5);
+                data['vehicle_positions'].push(position2);
+            }
+
+            socket.send(JSON.stringify(data));
+        });
+    });
+
+    // ルート走行
+    $(function() {
+        // ルート走行実行ボタン
+        $('#route-execute').click(function() {
+            $.ajax({
+                url: '/mqtt_test/route_execute'
+            }).done(function(data) {
+                if (data["result"] && data["result"] == true) {
+                    $('#route-execute').popover('show');
+                    setTimeout(function() {
+                        $('#route-execute').popover('hide');
+                    }, 1500);
+                }
+            });
+        });
+
+        // 送信ボタン: Popover定義
+        $('#route-execute').popover({
+            content: '実行要求を送信しました',
+            trigger: 'manual'
+        });
+    });
+
+    // CANテスト送信/受信
     $(function() {
         // 送信ボタンクリック
         $('#can_send').click(function() {
@@ -84,31 +238,11 @@
         // WebSocket定義
         var socket = new WebSocket("ws://" + window.location.host + "/mqtt_test_ws");
         socket.addEventListener('open', function (event) {
-            console.log("WebSocket Connected!");
+            console.log("WebSocket(/mqtt_test_ws) Connected!");
         });
         socket.addEventListener('message', function (event) {
             console.log(event.data);
             $('#can_received').val(Date() + " "  + event.data + "\n" + $('#can_received').val());
-        });
-
-        // ルート走行実行ボタン
-        $('#route-execute').click(function() {
-            $.ajax({
-                url: '/mqtt_test/route_execute'
-            }).done(function(data) {
-                if (data["result"] && data["result"] == true) {
-                    $('#route-execute').popover('show');
-                    setTimeout(function() {
-                        $('#route-execute').popover('hide');
-                    }, 1500);
-                }
-            });
-        });
-
-        // 送信ボタン: Popover定義
-        $('#route-execute').popover({
-            content: '実行要求を送信しました',
-            trigger: 'manual'
         });
     });
     </script>

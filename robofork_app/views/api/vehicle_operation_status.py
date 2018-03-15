@@ -1,7 +1,8 @@
+import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from channels import Group
 from django.shortcuts import get_object_or_404
-import json
 from robofork_app.libs import mqtt
 from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
 
@@ -43,3 +44,20 @@ def load(request):
             ]
         }
     )
+
+
+def ws_add(message):
+    message.reply_channel.send({"accept": True})
+    Group("operation_status").add(message.reply_channel)
+
+
+def ws_disconnect(message):
+    Group("operation_status").discard(message.reply_channel)
+
+
+def ws_message(message):
+    print(message.content)
+
+    Group("operation_status").send({
+        "text": message.content['text'],
+    })
