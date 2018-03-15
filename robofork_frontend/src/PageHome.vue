@@ -45,9 +45,7 @@ export default {
       this.vehicles = [];
       this.updateVehicles = [];
 
-      // dummy json
-      const loadVehiclesPromise = axios.get('/static/robofork_app/api/positions.json');
-      // const loadVehiclesPromise = axios.get(Constants.VEHICLES_ENDPOINT);
+      const loadVehiclesPromise = axios.get(Constants.VEHICLES_ENDPOINT);
 
       loadVehiclesPromise
         .then(response => {
