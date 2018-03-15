@@ -150,6 +150,11 @@ WEBPACK_LOADER = {
     }
 }
 
+if not DEBUG:
+    WEBPACK_LOADER['DEFAULT'].update({
+        'STATS_FILE': os.path.join(BASE_DIR, 'robofork_frontend/webpack-stats-prod.json'),
+    })
+
 MQTT_SERVER = {
     'IP': '192.168.13.101',
     'PORT': 1883
