@@ -49,8 +49,6 @@
 </template>
 
 <script>
-import { w3cwebsocket as W3CWebSocket } from 'websocket'
-
 import * as Constants from './Constants'
 
 export default {
@@ -65,6 +63,7 @@ export default {
     'offsetY',
     'imageUrl',
     'vehicles',
+    'updateVehicles',
   ],
 
   data() {
@@ -166,33 +165,24 @@ export default {
     },
   },
 
-  created() {
-    const url = `ws://${window.location.host}/vehicle_operation_status`;
-    const client = new W3CWebSocket(url);
-
-    client.onerror = (error) => {
-      console.error('error', error);
-    };
-
-    client.onopen = () => {
-      console.log('opened');
-    };
-
-    client.onclose = () => {
-      console.log('closed');
-    };
-
-    client.onmessage = (event) => {
-      console.log(event);
-
-      if ('data' in event) {
-        console.log(event.data);
-      }
-    };
-  },
-
   updated() {
     this.updatePopoverByJQuery();
+  },
+
+  watch: {
+    updateVehicles(newValues, oldValues) {
+      this.vehicles.map(vehicle => {
+        const newValuesIndex = newValues.findIndex(item => Number(item.id) === Number(vehicle.id));
+        if (newValuesIndex !== -1) {
+          // status は上書き
+          vehicle.vehicle_status = newValues[newValuesIndex].vehicle_status;
+          // positions は追加
+          vehicle.vehicle_positions.push(...newValues[newValuesIndex].vehicle_positions);
+        }
+
+        return vehicle;
+      });
+    },
   },
 
   methods: {
@@ -233,6 +223,9 @@ export default {
     },
 
     updatePopoverByJQuery() {
+      // リアクティブな要素に反応できないので、予め全部消して作り直す
+      $('.map-draw-layer .popover').remove();
+
       // DOM が更新されたとき、TwitterBootstrap の popover を jQuery 経由で呼ぶ
       $('[data-toggle="popover"]').each((_, element) => {
         $(element).popover('destroy');
