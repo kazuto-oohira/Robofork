@@ -19,7 +19,8 @@ def config(request, vehicle_operation_plan_id=1):
                 "offsetX": "-2.5",
                 "offsetY": "0",
                 "startX": "-9.56",
-                "startY": "-0.26"
+                "startY": "-0.26",
+                "startDirection": 1,
             }
         }
     )
