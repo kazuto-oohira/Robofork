@@ -22,10 +22,11 @@ def to_can_data(value):
     return [(i + j) for (i, j) in zip(value[::2], value[1::2])]
 
 
-def to_can_unsigned_to_signed(value):
+def to_can_signed(value):
     """
-    CAN向けにUnSinged数値をSignedに変更する
+    CAN向けにU数値をSignedに変更する
     :param value:
     :return:
     """
     return value + 32768
+

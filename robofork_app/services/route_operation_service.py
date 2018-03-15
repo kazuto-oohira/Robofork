@@ -61,9 +61,9 @@ class RouteOperationService:
     def __send_route_data(cls, vehicle_id, populated_data):
         can_data = (
             utility.to_hex(populated_data["index"]) +
-            utility.to_hex(utility.to_can_unsigned_to_signed(populated_data["x"])) +
-            utility.to_hex(utility.to_can_unsigned_to_signed(populated_data["y"])) +
-            utility.to_hex(utility.to_can_unsigned_to_signed(populated_data["speed"]))
+            utility.to_hex(utility.to_can_signed(populated_data["x"])) +
+            utility.to_hex(utility.to_can_signed(populated_data["y"])) +
+            utility.to_hex(utility.to_can_signed(populated_data["speed"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
         mqtt.send(vehicle_id, "102", can_data)
@@ -73,8 +73,8 @@ class RouteOperationService:
             utility.to_hex(populated_data["index"]) +
             utility.to_hex(populated_data["task"], 2) +
             utility.to_hex(populated_data["flag_stop"], 2) +
-            utility.to_hex(utility.to_can_unsigned_to_signed(populated_data["angle"])) +
-            utility.to_hex(utility.to_can_unsigned_to_signed(populated_data["height_lift"]))
+            utility.to_hex(utility.to_can_signed(populated_data["angle"])) +
+            utility.to_hex(utility.to_can_signed(populated_data["height_lift"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
         mqtt.send(vehicle_id, "103", can_data)
