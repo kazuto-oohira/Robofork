@@ -176,7 +176,7 @@ export default {
       .then(response => {
         const commands = response.data;
 
-        if ('commands' in commands) {
+        if (('commands' in commands) && Array.isArray(commands.commands)) {
           this.marks = commands.commands.filter(item => item.isMain);
           this.selectedCommandIndex = this.marks.length - 1;
         }
