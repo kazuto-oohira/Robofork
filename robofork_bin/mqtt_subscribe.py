@@ -1,6 +1,9 @@
-import sys, json, time, websocket
+import sys, os, json, time, websocket
 import paho.mqtt.client as mqtt
-# from robofork_app.libs.utility import
+
+# Web Import
+sys.path.append(os.pardir)
+import robofork_app.libs.utility as utility
 
 # コマンド引数処理
 mqtt_server = '127.0.0.1'
@@ -28,8 +31,38 @@ def on_message(client, userdata, msg):
     # RoboforkStatusへ（ひとまず402だけ）
     data = json.loads(msg.payload.decode('ASCII'))
     if data["id"] == "402":
-        # x: 0-1
-        pass
+        x = utility.from_can_singed(int(data["data"][0] + data["data"][1], 16)) / 1000
+        y = utility.from_can_singed(int(data["data"][2] + data["data"][3], 16)) / 1000
+        speed = utility.from_can_singed(int(data["data"][4] + data["data"][5], 16))
+        angle = utility.from_can_singed(int(data["data"][6] + data["data"][7], 16)) * 10
+
+        result = {
+            "reload": False,
+            "vehicles": [
+                {
+                    "id": "1",
+                    "vehicle_status": {
+                        "vehicle_operation_plan_id": 1,
+                        "status_code": 0,
+                        "status_name": "--"
+                    },
+                    "vehicle_positions": [
+                        {
+                            "x": x,
+                            "y": y,
+                            "task": 0,
+                            "speed": speed,
+                            "angle": angle
+                        }
+                    ]
+                }
+            ]
+        }
+        print(json.dumps(result, indent=4))
+
+        ws = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+        ws.send(json.dumps(result))
+        ws.close()
 
     # MQTTテストへ
     ws = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")

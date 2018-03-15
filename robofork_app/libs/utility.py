@@ -30,3 +30,6 @@ def to_can_signed(value):
     """
     return value + 32768
 
+
+def from_can_singed(value):
+    return value - 32768
