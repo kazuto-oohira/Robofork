@@ -143,10 +143,12 @@ export default {
         }
 
         // subNode
-        nodes.push(...subNode.nodes);
+        nodes.push(...subNode.nodes.map(item => Object.assign(item, { stop: 0 })));
 
         // mainNode
-        nodes.push(current);
+        nodes.push(Object.assign(current, {
+          stop: current.afterTask !== Constants.TASK_NOTHING ? 1 : 0,
+        }));
 
         return current;
       });
