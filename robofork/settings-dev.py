@@ -142,7 +142,7 @@ STATIC_URL = '/static/'
 
 # webpack integration
 # see robofork_frontend/README.md
-USE_WEBPACK_PRODUCTION = False
+USE_WEBPACK_PRODUCTION = True
 
 WEBPACK_LOADER = {
     'DEFAULT': {
