@@ -19,8 +19,8 @@ def load(request):
                     "vehicle_model_name": "FX15",
                     "vehicle_status": {
                         "vehicle_operation_plan_id": 1,
-                        "status_code": 1,
-                        "status_name": "非常停止"
+                        "status_code": 0,
+                        "status_name": "-"
                     },
                     "vehicle_positions": [
                         {
