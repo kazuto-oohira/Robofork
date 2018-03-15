@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { w3cwebsocket as W3CWebSocket } from 'websocket'
+
 import * as Constants from './Constants'
 
 export default {
@@ -162,6 +164,31 @@ export default {
         return (current.task === Constants.TASK_FORWARD ? 0 : 1) * 180 + degree;
       });
     },
+  },
+
+  created() {
+    const url = `ws://${window.location.host}/vehicle_operation_status`;
+    const client = new W3CWebSocket(url);
+
+    client.onerror = (error) => {
+      console.error('error', error);
+    };
+
+    client.onopen = () => {
+      console.log('opened');
+    };
+
+    client.onclose = () => {
+      console.log('closed');
+    };
+
+    client.onmessage = (event) => {
+      console.log(event);
+
+      if ('data' in event) {
+        console.log(event.data);
+      }
+    };
   },
 
   updated() {
