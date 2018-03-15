@@ -63,6 +63,7 @@ export default {
     'offsetY',
     'imageUrl',
     'vehicles',
+    'updateVehicles',
   ],
 
   data() {
@@ -168,6 +169,22 @@ export default {
     this.updatePopoverByJQuery();
   },
 
+  watch: {
+    updateVehicles(newValues, oldValues) {
+      this.vehicles.map(vehicle => {
+        const newValuesIndex = newValues.findIndex(item => Number(item.id) === Number(vehicle.id));
+        if (newValuesIndex !== -1) {
+          // status は上書き
+          vehicle.vehicle_status = newValues[newValuesIndex].vehicle_status;
+          // positions は追加
+          vehicle.vehicle_positions.push(...newValues[newValuesIndex].vehicle_positions);
+        }
+
+        return vehicle;
+      });
+    },
+  },
+
   methods: {
     mappedX(x) {
       const offsetX = Number(x) + this.offsetX;
@@ -206,6 +223,9 @@ export default {
     },
 
     updatePopoverByJQuery() {
+      // リアクティブな要素に反応できないので、予め全部消して作り直す
+      $('.map-draw-layer .popover').remove();
+
       // DOM が更新されたとき、TwitterBootstrap の popover を jQuery 経由で呼ぶ
       $('[data-toggle="popover"]').each((_, element) => {
         $(element).popover('destroy');
