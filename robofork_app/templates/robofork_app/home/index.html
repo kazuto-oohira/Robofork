@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 {% load render_bundle from webpack_loader %}
+{% load static %}
 {% block title %}滋賀工場{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 {% block page_scripts %}
     {% render_bundle 'main' 'js' %}
+    <script type="text/javascript" src="{{ STATIC_URL }}robofork_app/js/home.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -25,7 +27,15 @@
                             <div class="col-md-3">
                                 <div class="tile-stats">
                                     <div class="count text-center">
-                                        <a href="" class="btn btn-lg btn-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>緊急停止</a>
+                                        <button id="button_start_operation" class="btn btn-lg btn-info"><span class="glyphicon glyphicon-hand-right" aria-hidden="true"></span> !!運行開始!!</button>
+                                    </div>
+                                    <h3 class="text-center">[テスト]運行開始</h3>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="tile-stats">
+                                    <div class="count text-center">
+                                        <a href="" class="btn btn-lg btn-danger"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 緊急停止</a>
                                     </div>
                                     <h3 class="text-center">全車緊急停止</h3>
                                 </div>
@@ -33,7 +43,7 @@
                             <div class="col-md-3">
                                 <div class="tile-stats">
                                     <div class="count text-center">
-                                        <a href="" class="btn btn-lg btn-success"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span>(他の指示)</a>
+                                        <a href="" class="btn btn-lg btn-success"><span class="glyphicon glyphicon-alert" aria-hidden="true"></span> (他の指示)</a>
                                     </div>
                                     <h3 class="text-center">(他の指示)</h3>
                                 </div>

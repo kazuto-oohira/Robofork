@@ -44,6 +44,7 @@ urlpatterns = [
     path('api/operation_plan/<int:vehicle_operation_plan_id>/config', vehicle_operation_plan.config),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
+    path('api/operation_plan/<int:vehicle_operation_plan_id>/execute', vehicle_operation_plan.execute),
     path('api/vehicle_operation_status/load', vehicle_operation_status.load),
 
     # MQTT テスト
