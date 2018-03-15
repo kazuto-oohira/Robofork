@@ -89,13 +89,7 @@ export default {
         console.error('error', error);
       };
 
-      client.onopen = () => {
-        console.log('opened');
-      };
-
       client.onclose = () => {
-        console.log('closed');
-
         this.reconnectInterval *= 2;
         this.connectWebsocket();
       };
