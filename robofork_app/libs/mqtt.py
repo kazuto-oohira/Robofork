@@ -4,7 +4,7 @@ from django.conf import settings
 from robofork_app.libs import utility
 
 # MQTT QoS
-mqtt_qos = 0
+mqtt_pub_qos = 1
 
 
 def send(serial_number, can_id, can_data):
@@ -26,7 +26,7 @@ def send(serial_number, can_id, can_data):
     # MQTT送信
     client = mqtt.Client(protocol=mqtt.MQTTv311)
     client.connect(settings.MQTT_SERVER['IP'], settings.MQTT_SERVER['PORT'], 60)
-    client.publish("Robofork/" + serial_number + "/toR", payload=payload_json, qos=mqtt_qos)
+    client.publish("Robofork/" + serial_number + "/toR", payload=payload_json, qos=mqtt_pub_qos)
     client.disconnect()
 
     return True

@@ -6,7 +6,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/
 import utility
 
 # MQTT QoS
-mqtt_qos = 0
+mqtt_sub_qos = 0
 
 # コマンド引数処理
 mqtt_server = '127.0.0.1'
@@ -23,7 +23,7 @@ def on_connect(client, userdata, flags, rc):
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
-    client.subscribe("Robofork/+/toS")
+    client.subscribe("Robofork/+/toS", qos=mqtt_sub_qos)
 
 
 # The callback for when a PUBLISH message is received from the server.
