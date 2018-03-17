@@ -4,7 +4,7 @@
 IoT-GWのcan_mqtt_slcan0.pyのロジックをテストするため
 """
 
-import sys, json, multiprocessing, csv
+import sys, json, multiprocessing, csv, time
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
@@ -34,55 +34,60 @@ class CanMessage:
 
 
 def can_recv():
-    bus = []
-    with open("test_can_data.csv") as f:
-        reader = csv.reader(f, delimiter="\t")
-        for row in reader:
-            msg = CanMessage()
+    while True:
+        bus = []
+        with open("test_can_data.csv") as f:
+            reader = csv.reader(f, delimiter="\t")
+            for row in reader:
+                msg = CanMessage()
 
-            # HEXのテストデータを数値に戻す（以下のロジックはCAN−BUSから取得した数値データだから）
-            msg.arbitration_id = int(row[0], 16)
-            msg.data = [
-                int(row[1], 16),
-                int(row[2], 16),
-                int(row[3], 16),
-                int(row[4], 16),
-                int(row[5], 16),
-                int(row[6], 16),
-                int(row[7], 16),
-                int(row[8], 16),
-            ]
+                # HEXのテストデータを数値に戻す（以下のロジックはCAN−BUSから取得した数値データだから）
+                msg.arbitration_id = int(row[0], 16)
+                msg.data = [
+                    int(row[1], 16),
+                    int(row[2], 16),
+                    int(row[3], 16),
+                    int(row[4], 16),
+                    int(row[5], 16),
+                    int(row[6], 16),
+                    int(row[7], 16),
+                    int(row[8], 16),
+                ]
 
-            bus.append(msg)
+                bus.append(msg)
 
-    for msg in bus:
-        can_id = hex(msg.arbitration_id)[2:]  # "0x"を外してる
-        # print("Can Recv : " + str(can_id) + " " + str(msg))
+        # ▽▽▽▽ このロジックは本番と同一に合わせること ▽▽▽▽
+        for msg in bus:
+            can_id = (hex(msg.arbitration_id)[2:]).upper()  # "0x"を外してる
+            # print("Can Recv : " + str(can_id) + " " + str(msg))
 
-        # 処理対象のCAN-ID以外は無視
-        if can_id not in can_id_list:
-            continue
+            # 処理対象のCAN-ID以外は無視
+            if can_id not in can_id_list:
+                continue
 
-        can_data = list(map(hex, msg.data))
-        for i in range(len(can_data)):
-            can_data[i] = can_data[i][2:]
-            if len(can_data[i]) == 1:
-                can_data[i] = "0" + can_data[i]
+            can_data = list(map(hex, msg.data))
+            for i in range(len(can_data)):
+                can_data[i] = can_data[i][2:]
+                if len(can_data[i]) == 1:
+                    can_data[i] = "0" + can_data[i]
 
-        data_mqtt = {"serial_number": SerialNumber, "id": can_id, "data": can_data}
-        data_mqtt_json = json.dumps(data_mqtt)
+            data_mqtt = {"serial_number": SerialNumber, "id": can_id, "data": can_data}
+            data_mqtt_json = json.dumps(data_mqtt)
 
-        # 前回同じデータを送っていたら送らない
-        # if can_id not in always_send_can_id_list:
-        #     if can_id in saved_sent_can_data and saved_sent_can_data[can_id] == can_data:
-        #         continue
+            # 前回同じデータを送っていたら送らない
+            if can_id not in always_send_can_id_list:
+                if can_id in saved_sent_can_data and saved_sent_can_data[can_id] == can_data:
+                    continue
 
-        try:
-            mqtt_pub(topic_toS, data_mqtt_json)
-            # saved_sent_can_data[can_id] = can_data  # 送信データ保存
-        except:
-            print("MQTT Error :Publish ", sys.exc_info()[0])
-            print("id:" + str(can_id) + ", data:" + str(can_data))
+            try:
+                mqtt_pub(topic_toS, data_mqtt_json)
+                saved_sent_can_data[can_id] = can_data  # 送信データ保存
+            except:
+                print("MQTT Error :Publish ", sys.exc_info()[0])
+                print("id:" + str(can_id) + ", data:" + str(can_data))
+
+        # △△△△ このロジックは本番と同一に合わせること △△△△
+            time.sleep(0.02)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 def mqtt_pub(topic, data):
@@ -106,7 +111,7 @@ def mqtt_sub():
         for i in range(len(can_data)):
             can_data[i] = int(can_data[i], 16)
 
-        print("Sub[HEX]    : " + data_json["id"] + " " + str(data_json["data"]))
+        print("Sub[HEX]    : " + data_json["id"] + " " + json.dumps(data_json["data"]))
         print("Sub[DECIMAL]: " + str(can_id) + " " + str(can_data))
 
     try:
@@ -121,7 +126,7 @@ def mqtt_sub():
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 if __name__ == "__main__":
-    # proc_mqtt = multiprocessing.Process(target=mqtt_sub)
+    proc_mqtt = multiprocessing.Process(target=mqtt_sub)
     proc_can = multiprocessing.Process(target=can_recv)
-    # proc_mqtt.start()
+    proc_mqtt.start()
     proc_can.start()
