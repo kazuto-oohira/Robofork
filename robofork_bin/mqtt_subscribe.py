@@ -1,8 +1,8 @@
 import sys, os, json, time, websocket
 import paho.mqtt.client as mqtt
 
-# Web Import
-#sys.path.append(os.pardir)
+# Web's library Import
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/libs')
 import utility
 
 # コマンド引数処理
