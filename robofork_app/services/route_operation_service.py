@@ -33,12 +33,26 @@ class RouteOperationService:
                 "speed": int(row.get("speed", 0)),
                 "task": int(row.get("task", 255)),
                 "after_task": int(row.get("afterTask", 255)),
-                "flag_stop": 0,
+                "flag_stop": int(row.get("stop", 0)),
                 "angle": int(row.get("angle", 0)),
                 "height_lift": int(row.get("liftHeight", 0))
             }
 
-            # TODO: AfterTaskのところ仕様これでいいか確認？
+            # ===================================
+            # AfterTaskを1行で送信するバージョン
+            # ===================================
+            # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
+            if data["after_task"] != 255:
+                data["task"] = data["after_task"]
+                data["flag_stop"] = 1
+
+            # 送信
+            cls.__send_route_data(vehicle_id, data)
+
+            # ===================================
+            # AfterTaskを2行にして送信するバージョン
+            # ===================================
+            """
             # AfterTaskが定義されていれば、flag_stopをONに
             if data["after_task"] != 255:
                 data["flag_stop"] = 1
@@ -51,6 +65,7 @@ class RouteOperationService:
                 data["flag_stop"] = 0
                 data["task"] = data["after_task"]
                 cls.__send_route_data(vehicle_id, data)
+            """
 
         # 104
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
