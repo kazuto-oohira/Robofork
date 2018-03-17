@@ -26,6 +26,7 @@ tests/report/
 .idea/
 .vscode/
 db.sqlite3
+robofork/settings-dev.py
 
 # generate by webpack
 robofork_frontend/webpack-stats.json
