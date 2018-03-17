@@ -1,6 +1,10 @@
 import sys, os, json, time, websocket
 import paho.mqtt.client as mqtt
 
+# Shell起動, Background起動時もSIGINTをKeyboardInterruptで捕まえる
+import signal
+signal.signal(signal.SIGINT, signal.default_int_handler)
+
 # Web's library Import
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/libs')
 import utility

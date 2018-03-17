@@ -8,6 +8,10 @@ import sys, json, multiprocessing, csv, time
 import paho.mqtt.client as mqtt
 import paho.mqtt.publish as publish
 
+# Shell起動, Background起動時もSIGINTをKeyboardInterruptで捕まえる
+import signal
+signal.signal(signal.SIGINT, signal.default_int_handler)
+
 # MQTT QoS
 mqtt_pub_qos = 0
 mqtt_sub_qos = 1
@@ -34,61 +38,65 @@ class CanMessage:
 
 
 def can_recv():
-    while True:
-        bus = []
-        with open("test_can_data.csv") as f:
-            reader = csv.reader(f, delimiter="\t")
-            for row in reader:
-                msg = CanMessage()
+    try:
+        while True:
+            bus = []
+            with open("test_can_data.csv") as f:
+                reader = csv.reader(f, delimiter="\t")
+                for row in reader:
+                    msg = CanMessage()
 
-                # HEXのテストデータを数値に戻す（以下のロジックはCAN−BUSから取得した数値データだから）
-                # MQTT->と同じロジックでやってるから大丈夫でしょ。テストになるでしょ。
-                msg.arbitration_id = int(row[0], 16)
-                msg.data = [
-                    int(row[1], 16),
-                    int(row[2], 16),
-                    int(row[3], 16),
-                    int(row[4], 16),
-                    int(row[5], 16),
-                    int(row[6], 16),
-                    int(row[7], 16),
-                    int(row[8], 16),
-                ]
+                    # HEXのテストデータを数値に戻す（以下のロジックはCAN−BUSから取得した数値データだから）
+                    # MQTT->と同じロジックでやってるから大丈夫でしょ。テストになるでしょ。
+                    msg.arbitration_id = int(row[0], 16)
+                    msg.data = [
+                        int(row[1], 16),
+                        int(row[2], 16),
+                        int(row[3], 16),
+                        int(row[4], 16),
+                        int(row[5], 16),
+                        int(row[6], 16),
+                        int(row[7], 16),
+                        int(row[8], 16),
+                    ]
 
-                bus.append(msg)
+                    bus.append(msg)
 
-        # ▽▽▽▽ このロジックは本番と同一に合わせること ▽▽▽▽
-        for msg in bus:
-            can_id = (hex(msg.arbitration_id)[2:]).upper()  # "0x"を外してる
-            # print("Can Recv : " + str(can_id) + " " + str(msg))
+            # ▽▽▽▽ このロジックは本番と同一に合わせること ▽▽▽▽
+            for msg in bus:
+                can_id = (hex(msg.arbitration_id)[2:]).upper()  # "0x"を外してる
+                # print("Can Recv : " + str(can_id) + " " + str(msg))
 
-            # 処理対象のCAN-ID以外は無視
-            if can_id not in can_id_list:
-                continue
-
-            can_data = list(map(hex, msg.data))
-            for i in range(len(can_data)):
-                can_data[i] = can_data[i][2:]
-                if len(can_data[i]) == 1:
-                    can_data[i] = "0" + can_data[i]
-
-            data_mqtt = {"serial_number": SerialNumber, "id": can_id, "data": can_data}
-            data_mqtt_json = json.dumps(data_mqtt)
-
-            # 前回同じデータを送っていたら送らない
-            if can_id not in always_send_can_id_list:
-                if can_id in saved_sent_can_data and saved_sent_can_data[can_id] == can_data:
+                # 処理対象のCAN-ID以外は無視
+                if can_id not in can_id_list:
                     continue
 
-            try:
-                mqtt_pub(topic_toS, data_mqtt_json)
-                saved_sent_can_data[can_id] = can_data  # 送信データ保存
-            except:
-                print("MQTT Error :Publish ", sys.exc_info()[0])
-                print("id:" + str(can_id) + ", data:" + str(can_data))
+                can_data = list(map(hex, msg.data))
+                for i in range(len(can_data)):
+                    can_data[i] = can_data[i][2:]
+                    if len(can_data[i]) == 1:
+                        can_data[i] = "0" + can_data[i]
 
-        # △△△△ このロジックは本番と同一に合わせること △△△△
-            time.sleep(0.5)
+                data_mqtt = {"serial_number": SerialNumber, "id": can_id, "data": can_data}
+                data_mqtt_json = json.dumps(data_mqtt)
+
+                # 前回同じデータを送っていたら送らない
+                if can_id not in always_send_can_id_list:
+                    if can_id in saved_sent_can_data and saved_sent_can_data[can_id] == can_data:
+                        continue
+
+                try:
+                    mqtt_pub(topic_toS, data_mqtt_json)
+                    saved_sent_can_data[can_id] = can_data  # 送信データ保存
+                except:
+                    print("MQTT Error :Publish ", sys.exc_info()[0])
+                    print("id:" + str(can_id) + ", data:" + str(can_data))
+
+            # △△△△ このロジックは本番と同一に合わせること △△△△
+                time.sleep(0.5)
+
+    except KeyboardInterrupt:
+        sys.exit()
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 def mqtt_pub(topic, data):
