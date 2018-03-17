@@ -5,6 +5,9 @@ import paho.mqtt.client as mqtt
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/libs')
 import utility
 
+# MQTT QoS
+mqtt_qos = 0
+
 # コマンド引数処理
 mqtt_server = '127.0.0.1'
 web_socket_server = '127.0.0.1'
