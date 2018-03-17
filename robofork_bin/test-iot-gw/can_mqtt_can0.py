@@ -42,6 +42,7 @@ def can_recv():
                 msg = CanMessage()
 
                 # HEXのテストデータを数値に戻す（以下のロジックはCAN−BUSから取得した数値データだから）
+                # MQTT->と同じロジックでやってるから大丈夫でしょ。テストになるでしょ。
                 msg.arbitration_id = int(row[0], 16)
                 msg.data = [
                     int(row[1], 16),
@@ -87,7 +88,7 @@ def can_recv():
                 print("id:" + str(can_id) + ", data:" + str(can_data))
 
         # △△△△ このロジックは本番と同一に合わせること △△△△
-            time.sleep(0.02)
+            time.sleep(0.5)
 
 # %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 def mqtt_pub(topic, data):
