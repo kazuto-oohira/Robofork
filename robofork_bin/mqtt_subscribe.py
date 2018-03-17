@@ -33,7 +33,7 @@ def on_message(client, userdata, msg):
     # TODO: 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
     # RoboforkStatusへ（ひとまず402だけ）
     data = json.loads(msg.payload.decode('ASCII'))
-    if False and data["id"] == "X402":
+    if data["id"] == "402":
         x = utility.from_can_singed(int(data["data"][0] + data["data"][1], 16)) / 1000
         y = utility.from_can_singed(int(data["data"][2] + data["data"][3], 16)) / 1000
         speed = utility.from_can_singed(int(data["data"][4] + data["data"][5], 16))
@@ -61,11 +61,11 @@ def on_message(client, userdata, msg):
                 }
             ]
         }
-        print(json.dumps(result, indent=4))
+        # print(json.dumps(result, indent=4))
 
-        ws = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
-        ws.send(json.dumps(result))
-        ws.close()
+        ws2 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+        ws2.send(json.dumps(result))
+        ws2.close()
 
     # MQTTテストへ
     ws = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
@@ -86,6 +86,10 @@ while True:
         # Other loop*() functions are available that give a threaded interface and a
         # manual interface.
         client.loop_forever()
+
+    except KeyboardInterrupt:
+        # Ctrl+Cは何もせずに終了
+        sys.exit()
     except:
         print("MQTT Error:", sys.exc_info()[0])
         time.sleep(5)
