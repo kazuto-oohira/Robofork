@@ -2,8 +2,8 @@ import sys, os, json, time, websocket
 import paho.mqtt.client as mqtt
 
 # Web Import
-sys.path.append(os.pardir)
-import robofork_app.libs.utility as utility
+#sys.path.append(os.pardir)
+import utility
 
 # コマンド引数処理
 mqtt_server = '127.0.0.1'
@@ -30,7 +30,7 @@ def on_message(client, userdata, msg):
     # TODO: 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
     # RoboforkStatusへ（ひとまず402だけ）
     data = json.loads(msg.payload.decode('ASCII'))
-    if data["id"] == "402":
+    if False and data["id"] == "X402":
         x = utility.from_can_singed(int(data["data"][0] + data["data"][1], 16)) / 1000
         y = utility.from_can_singed(int(data["data"][2] + data["data"][3], 16)) / 1000
         speed = utility.from_can_singed(int(data["data"][4] + data["data"][5], 16))
