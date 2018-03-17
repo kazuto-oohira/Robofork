@@ -21,9 +21,9 @@ def send(serial_number, can_id, can_data):
     print('MQTT->: ' + payload_json)
 
     # MQTT送信
-    client = mqtt.Client()
+    client = mqtt.Client(protocol=mqtt.MQTTv31)
     client.connect(settings.MQTT_SERVER['IP'], settings.MQTT_SERVER['PORT'], 60)
-    client.publish("Robofork/" + serial_number + "/toR", payload=payload_json)   # 最後の引数はQoS
+    client.publish("Robofork/" + serial_number + "/toR", payload=payload_json, qos=2)   # 最後の引数はQoS
     client.disconnect()
 
     return True

@@ -73,7 +73,7 @@ def on_message(client, userdata, msg):
 # MQTT
 while True:
     try:
-        client = mqtt.Client()
+        client = mqtt.Client(protocol=mqtt.MQTTv31)
         client.on_connect = on_connect
         client.on_message = on_message
         client.connect(mqtt_server, 1883, 60)
