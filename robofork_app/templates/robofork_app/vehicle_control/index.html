@@ -154,7 +154,8 @@
                     type: 'POST',
                     data: {
                         can_id: '105',
-                        can_data: sendData + '000000'
+                        can_data: sendData + '000000',
+                        qos: 0
                     }
                 });
             } else {
@@ -166,7 +167,8 @@
                     type: 'POST',
                     data: {
                         can_id: '105',
-                        can_data: sendData + '000000'
+                        can_data: sendData + '000000',
+                        qos: 0
                     }
                 });
             }
