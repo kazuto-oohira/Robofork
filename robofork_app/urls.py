@@ -2,6 +2,8 @@ from django.urls import path
 from robofork_app.views import vehicle_view, mqtt_test_view
 from robofork_app.views.login_view import *
 from robofork_app.views.vehicle_control_view import *
+from robofork_app.views.operation_plan.operation_plan_index_view import OperationPlanIndexView
+from robofork_app.views.operation_plan.operation_plan_detail_view import OperationPlanDetailView
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status
 
 
@@ -19,8 +21,8 @@ urlpatterns = [
     # 各配置場所 管理画面
     path('<int:location_id>/', TemplateView.as_view(template_name='robofork_app/home/index.html'), name='home_index'),
     path('<int:location_id>/vehicle_status/', TemplateView.as_view(template_name='robofork_app/vehicle_status/index.html'), name='vehicle_status_index'),
-    path('<int:location_id>/operation_plan/', TemplateView.as_view(template_name='robofork_app/operation_plan/index.html'), name='operation_plan_index'),
-    path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_detail'),
+    path('<int:location_id>/operation_plan/', OperationPlanIndexView.as_view(), name='operation_plan_index'),
+    path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', OperationPlanDetailView.as_view(), name='operation_plan_detail'),
     path('<int:location_id>/operation_plan/new', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_new'),
 
     # 車両マニュアル操作
@@ -30,7 +32,6 @@ urlpatterns = [
     path('api/mqtt/send', mqtt.send),
     path('api/file/<int:file_id>', file.file, name='api_file'),
     path('api/location/<int:location_id>/map_config', location.map_config),
-    # path('api/operation_plan/<int:vehicle_operation_plan_id>/config', vehicle_operation_plan.config),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/execute', vehicle_operation_plan.execute),
