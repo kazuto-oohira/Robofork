@@ -1,9 +1,10 @@
 from django.urls import path
 from robofork_app.views import vehicle_view, mqtt_test_view
 from robofork_app.views.login_view import *
-from robofork_app.views.operation_plan.operation_plan_detail_view import *
 from robofork_app.views.vehicle_control_view import *
-from robofork_app.views.api import mqtt, file, vehicle_operation_plan, vehicle_operation_status
+from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status
+
+
 urlpatterns = [
     # ログイン
     path('', LoginView.as_view(), name='login'),
@@ -22,27 +23,14 @@ urlpatterns = [
     path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_detail'),
     path('<int:location_id>/operation_plan/new', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_new'),
 
-
-
-
-
-
-    # 以下はまだテスト
-
-    path('vehicle', vehicle_view.index, name='vehicle_index'),
-    path('vehicle/new', vehicle_view.new, name='vehicle_new'),
-    path('vehicle/save', vehicle_view.save, name='vehicle_save'),
-    path('vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
-    path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
-
-    path('operation_plan/<int:operation_plan_id>', OperationPlanDetailView.as_view()),
-
+    # 車両マニュアル操作
     path('vehicle/control/<int:vehicle_id>', VehicleControlView.as_view(), name='vehicle_control'),
 
     # API
     path('api/mqtt/send', mqtt.send),
-    path('api/file/<int:file_id>', file.file),
-    path('api/operation_plan/<int:vehicle_operation_plan_id>/config', vehicle_operation_plan.config),
+    path('api/file/<int:file_id>', file.file, name='api_file'),
+    path('api/location/<int:location_id>/map_config', location.map_config),
+    # path('api/operation_plan/<int:vehicle_operation_plan_id>/config', vehicle_operation_plan.config),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/execute', vehicle_operation_plan.execute),
@@ -51,5 +39,11 @@ urlpatterns = [
     # MQTT テスト
     path('mqtt_test', mqtt_test_view.index),
     path('mqtt_test/route_execute', mqtt_test_view.route_execute),
-]
 
+    # 以下はまだテスト
+    path('vehicle', vehicle_view.index, name='vehicle_index'),
+    path('vehicle/new', vehicle_view.new, name='vehicle_new'),
+    path('vehicle/save', vehicle_view.save, name='vehicle_save'),
+    path('vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
+    path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
+]

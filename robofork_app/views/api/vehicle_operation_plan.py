@@ -7,26 +7,6 @@ from robofork_app.services.route_operation_service import RouteOperationService
 
 
 @csrf_exempt
-def config(request, vehicle_operation_plan_id=1):
-    return JsonResponse(
-        {
-            "config": {
-                "imageUrl": "/api/file/1",
-                "imageWidth": 502,
-                "imageHeight": 394,
-                "scaleX": "13.210526316",
-                "scaleY": "10.368421053",
-                "offsetX": "-2.5",
-                "offsetY": "0",
-                "startX": "-7.9",
-                "startY": "-1.2",
-                "startDirection": 1,
-            }
-        }
-    )
-
-
-@csrf_exempt
 def load(request, vehicle_operation_plan_id=1):
     vehicle_operation_plan = get_object_or_404(VehicleOperationPlan, pk=vehicle_operation_plan_id)
 

@@ -45,24 +45,10 @@ export default {
       this.vehicles = [];
       this.updateVehicles = [];
 
+      const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT(this.locationId));
       const loadVehiclesPromise = axios.get(Constants.VEHICLES_ENDPOINT);
 
-      loadVehiclesPromise
-        .then(response => {
-          const vehicles = response.data;
-
-          if (!('vehicles' in vehicles) || vehicles.vehicles.length <= 0) {
-            throw new Error('not exist vehicles');
-          }
-
-          this.vehicles = vehicles.vehicles;
-
-          // 運行計画は複数存在するが、マップ情報はどれも共通のため、
-          // 1つ目の operation_plan_id を拾って API を叩き、マップ情報を得る
-          const anyOperationPlanId = vehicles.vehicles[0].vehicle_status.vehicle_operation_plan_id;
-
-          return axios.get(Constants.CONFIG_ENDPOINT(anyOperationPlanId));
-        })
+      loadConfigPromise
         .then(response => {
           const config = response.data;
 
@@ -71,6 +57,17 @@ export default {
           } else {
             throw new Error('not exist config');
           }
+
+          return loadVehiclesPromise;
+        })
+        .then(response => {
+          const vehicles = response.data;
+
+          if (!('vehicles' in vehicles) || vehicles.vehicles.length <= 0) {
+            throw new Error('not exist vehicles');
+          }
+
+          this.vehicles = vehicles.vehicles;
 
           this.connectWebsocket();
         })

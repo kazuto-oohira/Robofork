@@ -175,7 +175,7 @@ export default {
   },
 
   created() {
-    const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT(this.vehicleOperationPlanId));
+    const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT(this.locationId));
     const loadCommandsPromise = axios.get(Constants.LOAD_ENDPOINT(this.vehicleOperationPlanId));
 
     loadConfigPromise

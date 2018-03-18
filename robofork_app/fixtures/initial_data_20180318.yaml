@@ -5,7 +5,7 @@
     map_information_json:
       '{
            "config": {
-               "imageUrl": "/static/robofork_app/img/test/map1.png",
+               "imageFileId": 1,
                "imageWidth": 502,
                "imageHeight": 394,
                "scaleX": "13.210526316",
@@ -14,7 +14,7 @@
                "offsetY": "0",
                "startX": "-7.9",
                "startY": "-1.2",
-               "startDirection": 1,
+               "startDirection": 1
            }
        }'
     created_at: 2018-03-18T00:00:00
