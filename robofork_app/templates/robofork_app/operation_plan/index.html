@@ -28,14 +28,14 @@
                   </div>
                   <table class="table table-striped jambo_table bulk_action">
                     <thead>
-                    <tr class="headings">
-                      <th class="column-title">ID</th>
-                      <th class="column-title">運行計画名</th>
-                      <th class="column-title">説明</th>
-                      <th class="column-title">車両</th>
-                      <th class="column-title">優先度</th>
-                      <th class="column-title"></th>
-                    </tr>
+                      <tr class="headings">
+                        <th class="column-title">ID</th>
+                        <th class="column-title">運行計画名</th>
+                        <th class="column-title">説明</th>
+                        <th class="column-title">車両</th>
+                        <th class="column-title">優先度</th>
+                        <th class="column-title"></th>
+                      </tr>
                     </thead>
                     <tbody>
                     {% for row in object_list %}
@@ -53,7 +53,8 @@
                     {% empty %}
                       <tr>
                         <td colspan="5">
-                          運行計画はありません。<a href="{% url 'operation_plan_new' location_id %}" class="btn btn-primary btn-xs">新規作成しますか？</a>
+                          運行計画はありません。
+                          <a href="{% url 'operation_plan_new' location_id %}" class="btn btn-primary btn-xs">新規作成</a>
                         </td>
                       </tr>
                     {% endfor %}
