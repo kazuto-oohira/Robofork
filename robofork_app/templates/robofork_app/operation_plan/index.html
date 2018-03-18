@@ -37,16 +37,25 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {% for row in object_list %}
                                             <tr>
-                                                <td style="font-size:125%;">R05-1段目からR06-2段目へ</td>
-                                                <td style="font-size:125%;">完成したG-001を移動させる</td>
-                                                <td style="font-size:125%;">FX15-1</td>
-                                                <td style="font-size:125%;">1</td>
+                                                <td>R05-1段目からR06-2段目へ</td>
+                                                <td>完成したG-001を移動させる</td>
+                                                <td>FX15-1</td>
+                                                <td>1</td>
                                                 <td class="text-right">
                                                     <a href="{%  url 'operation_plan_detail' 1 1 %}" class="btn btn-primary btn-sm">詳細</a>
                                                     <a class="btn btn-danger btn-sm">削除</a>
                                                 </td>
                                             </tr>
+                                                <tr><td colspan="5">
+                                                    運行計画はありません。<a href="{% url 'operation_plan_new' location_id %}"></a>新規作成しますか？
+                                                </td></tr>
+                                            {% empty %}
+                                                <tr><td colspan="5">
+                                                    運行計画はありません。<a href="{% url 'operation_plan_new' location_id %}"></a>新規作成しますか？
+                                                </td></tr>
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
