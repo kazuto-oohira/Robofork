@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid" id="operation-plan-info">
-    <h1>ほげほげほげ</h1>
   </div>
 </template>
 

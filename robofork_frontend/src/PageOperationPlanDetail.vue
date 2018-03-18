@@ -1,8 +1,8 @@
 <template>
   <div class="operation-plan-detail">
+    <h1>工場名が貼りいます</h1>
     <div class="row">
       <div class="col-md-12">
-        <h1></h1>
         <operation-plan-info
           :hasCommands="this.commands.length > 0"
           :animate="animate"
