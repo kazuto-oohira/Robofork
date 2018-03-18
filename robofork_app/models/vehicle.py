@@ -1,3 +1,4 @@
+import json
 from django.db import models
 from django.forms import ModelForm
 from .vehicle_model import VehicleModel
@@ -10,6 +11,15 @@ class Vehicle(models.Model):
     extra_info_json = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+    def as_json(self):
+        return {
+            "name": self.name,
+            "vehicle_no": self.vehicle_no,
+            "vehicle_model": self.vehicle_model.as_json() if self.vehicle_model else None,
+            "extra_info_json": json.loads(self.extra_info_json or "{}")
+        }
 
 
 class VehicleForm(ModelForm):
