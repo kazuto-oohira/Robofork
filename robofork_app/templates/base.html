@@ -2,31 +2,31 @@
 <!doctype html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{% block title %}{% endblock %}</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>{% block title %}{% endblock %}</title>
 
-    {# Stylesheets #}
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/bootstrap-3.3.7/css/bootstrap.min.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/font-awesome/css/font-awesome.min.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/animate.css/animate.min.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/gentelella-alela/css/custom.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/nprogress/nprogress.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/css/robofork_app_base.css' %}" />
-    {% block page_style_sheets %}{% endblock %}
+  {# Stylesheets #}
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/bootstrap-3.3.7/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/font-awesome/css/font-awesome.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/animate.css/animate.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/gentelella-alela/css/custom.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/nprogress/nprogress.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/css/robofork_app_base.css' %}" />
+  {% block page_style_sheets %}{% endblock %}
 
-    {# Scripts(Requited to include first) #}
-    <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
-    <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+  {# Scripts(Requited to include first) #}
+  <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
+  <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
 </head>
 <body class="{% block body_class %}{% endblock %}">
-    {# Contents #}
-    {% block content %}{% endblock %}
+  {# Contents #}
+  {% block content %}{% endblock %}
 
-    {# Scripts #}
-    <script src="{% static 'robofork_app/vendor/gentelella-alela/js/custom.js' %}"></script>
-    <script src="{% static 'robofork_app/vendor/nprogress/nprogress.js' %}"></script>
-    {% block page_scripts %}{% endblock %}
+  {# Scripts #}
+  <script src="{% static 'robofork_app/vendor/gentelella-alela/js/custom.js' %}"></script>
+  <script src="{% static 'robofork_app/vendor/nprogress/nprogress.js' %}"></script>
+  {% block page_scripts %}{% endblock %}
 </body>
 </html>
