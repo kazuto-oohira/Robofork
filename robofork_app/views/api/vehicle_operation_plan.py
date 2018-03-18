@@ -18,8 +18,8 @@ def config(request, vehicle_operation_plan_id=1):
                 "scaleY": "10.368421053",
                 "offsetX": "-2.5",
                 "offsetY": "0",
-                "startX": "-9.56",
-                "startY": "-0.26",
+                "startX": "-7.9",
+                "startY": "-1.2",
                 "startDirection": 1,
             }
         }
