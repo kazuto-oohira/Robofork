@@ -11,7 +11,7 @@ def config(request, vehicle_operation_plan_id=1):
     return JsonResponse(
         {
             "config": {
-                "imageUrl": "/static/robofork_app/img/test/map1.png",
+                "imageUrl": "/api/file/1",
                 "imageWidth": 502,
                 "imageHeight": 394,
                 "scaleX": "13.210526316",
