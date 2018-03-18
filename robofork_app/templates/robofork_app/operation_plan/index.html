@@ -3,70 +3,71 @@
 {% block body_class %}nav-md{% endblock %}
 
 {% block content %}
-    <div class="container body">
-        <div class="main_container">
-            <!-- sidebar menu -->
-            {% include "robofork_app/_side_menu.html" with operation_plan_index="active" %}
+  <div class="container body">
+    <div class="main_container">
+      <!-- sidebar menu -->
+      {% include "robofork_app/_side_menu.html" with operation_plan_index="active" %}
 
-            <!-- page content -->
-            <div class="right_col" role="main">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h2>運行計画一覧</h2>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <p class="text-muted">
-                                    運行計画の一覧です。
-                                    各運行計画詳細で、ルート設定, タスク(荷上げなど)設定, 車両紐付け, 優先度, PLC連携などの設定ができます。
-                                </p>
-                                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
-                                    <div class="dataTables_filter">
-                                        <a href="{% url 'operation_plan_new' 1 %}" class="btn btn-success btn-sm">新規作成</a>
-                                    </div>
-                                    <table class="table table-striped jambo_table bulk_action">
-                                        <thead>
-                                            <tr class="headings">
-                                                <th class="column-title">運行計画名</th>
-                                                <th class="column-title">説明</th>
-                                                <th class="column-title">車両</th>
-                                                <th class="column-title">優先度</th>
-                                                <th class="column-title"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for row in object_list %}
-                                            <tr>
-                                                <td>R05-1段目からR06-2段目へ</td>
-                                                <td>完成したG-001を移動させる</td>
-                                                <td>FX15-1</td>
-                                                <td>1</td>
-                                                <td class="text-right">
-                                                    <a href="{%  url 'operation_plan_detail' 1 1 %}" class="btn btn-primary btn-sm">詳細</a>
-                                                    <a class="btn btn-danger btn-sm">削除</a>
-                                                </td>
-                                            </tr>
-                                                <tr><td colspan="5">
-                                                    運行計画はありません。<a href="{% url 'operation_plan_new' location_id %}"></a>新規作成しますか？
-                                                </td></tr>
-                                            {% empty %}
-                                                <tr><td colspan="5">
-                                                    運行計画はありません。<a href="{% url 'operation_plan_new' location_id %}"></a>新規作成しますか？
-                                                </td></tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>運行計画一覧</h2>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <p class="text-muted">
+                  運行計画の一覧です。
+                  各運行計画詳細で、ルート設定, タスク(荷上げなど)設定, 車両紐付け, 優先度, PLC連携などの設定ができます。
+                </p>
+                <div class="dataTables_wrapper form-inline dt-bootstrap no-footer">
+                  <div class="dataTables_filter">
+                    <a href="{% url 'operation_plan_new' location_id %}" class="btn btn-success btn-sm">新規作成</a>
+                  </div>
+                  <table class="table table-striped jambo_table bulk_action">
+                    <thead>
+                    <tr class="headings">
+                      <th class="column-title">ID</th>
+                      <th class="column-title">運行計画名</th>
+                      <th class="column-title">説明</th>
+                      <th class="column-title">車両</th>
+                      <th class="column-title">優先度</th>
+                      <th class="column-title"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for row in object_list %}
+                      <tr>
+                        <td>{{ row.id }}</td>
+                        <td>{{ row.name }}</td>
+                        <td>{{ row.explain }}</td>
+                        <td>{{ row.vehicle.name }}</td>
+                        <td>{{ row.priority }}</td>
+                        <td class="text-right">
+                          <a href="{% url 'operation_plan_detail' location_id row.id %}" class="btn btn-primary btn-xs">詳細</a>
+                          <a class="btn btn-danger btn-xs">削除</a>
+                        </td>
+                      </tr>
+                    {% empty %}
+                      <tr>
+                        <td colspan="5">
+                          運行計画はありません。<a href="{% url 'operation_plan_new' location_id %}" class="btn btn-primary btn-xs">新規作成しますか？</a>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                    </tbody>
+                  </table>
                 </div>
+              </div>
             </div>
-            <!-- /page content -->
-
+          </div>
         </div>
+      </div>
+      <!-- /page content -->
+
     </div>
-    <!-- /compose -->
+  </div>
+  <!-- /compose -->
 {% endblock %}
