@@ -1,6 +1,21 @@
 <template>
   <div class="operation-plan-detail">
     <div class="row">
+      <div class="col-md-12">
+        <h1></h1>
+        <operation-plan-info
+          :hasCommands="this.commands.length > 0"
+          :animate="animate"
+          :currentDir="currentDir"
+          @clear="clear"
+          @start="start"
+          @stop="stop"
+          @reverse="reverse"
+          @save="save"
+        ></operation-plan-info>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-md-6">
         <h2>マップ画面</h2>
         <map-viewer
@@ -56,11 +71,13 @@ import * as Constants from './Constants'
 import MapViewer from './MapViewer'
 import CommandViewer from './CommandViewer'
 import Terminal from './Terminal'
+import OperationPlanInfo from "./OperationPlanInfo";
 
 export default {
   name: 'page-operation-plan-detail',
 
   components: {
+    OperationPlanInfo,
     'map-viewer': MapViewer,
     'command-viewer': CommandViewer,
     'terminal': Terminal,

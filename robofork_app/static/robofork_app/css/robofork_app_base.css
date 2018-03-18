@@ -1,0 +1,21 @@
+/*
+ * Twitter Bootstrap, Gentelella-alelaをベースとするが、共通で変更したいStyleを定義する
+ */
+h1 {
+    font-size: 175%;
+}
+h2 {
+    font-size: 150%;
+}
+h3 {
+    font-size: 125%;
+}
+h4 {
+    font-size: 110%;
+}
+h5 {
+    font-size: 105%;
+}
+h6 {
+    font-size: 100%;
+}
