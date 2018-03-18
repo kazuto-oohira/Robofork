@@ -2,8 +2,7 @@ from django.urls import path
 from robofork_app.views import vehicle_view, mqtt_test_view
 from robofork_app.views.login_view import *
 from robofork_app.views.vehicle_control_view import *
-from robofork_app.views.operation_plan.operation_plan_index_view import OperationPlanIndexView
-from robofork_app.views.operation_plan.operation_plan_detail_view import OperationPlanDetailView
+from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status
 
 
