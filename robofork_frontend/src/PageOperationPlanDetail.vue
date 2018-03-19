@@ -368,7 +368,8 @@ export default {
         },
       })
       .then(() => {
-        alert('保存しました');
+        // jQuery使っちゃってごめんなさい...
+        $(document).trigger('showInfoAlert', { message: '保存しました' });
       });
     },
 
