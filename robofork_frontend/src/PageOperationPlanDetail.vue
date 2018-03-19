@@ -28,8 +28,14 @@
               :animate="animate"
               :animateIndex="animateIndex"
               :selectedCommandIndex.sync="selectedCommandIndex"
+              :hasCommands="this.commands.length > 0"
+              :currentDir="currentDir"
               @addMark="addMark"
               @updateMark="updateMark"
+              @clear="clear"
+              @start="start"
+              @stop="stop"
+              @reverse="reverse"
             ></map-viewer>
           </div>
         </div>
@@ -52,17 +58,9 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
-        <terminal
-          :hasCommands="this.commands.length > 0"
-          :animate="animate"
-          :currentDir="currentDir"
-          @clear="clear"
-          @start="start"
-          @stop="stop"
-          @reverse="reverse"
-          @save="save"
-        ></terminal>
+      <div class="col-md-12">
+        <button class="btn btn-success">キャンセル/戻る</button>
+        <button @click="save()" class="btn btn-success">ルートを保存する</button>
       </div>
     </div>
   </div>

@@ -100,9 +100,24 @@
           </div>
         </div>
 
-        <div class="row">
+        <hr/>
 
+        <div class="row">
+          <div class="col-md-6 btn-group">
+            <button @click="clear()":disabled="disableClear" class="btn btn-warning">clear</button>
+          </div>
+          <div class="col-md-6 btn-group">
+            <button @click="start()" :disabled="disableStart" class="btn btn-primary">Start</button>
+            <button @click="stop()" :disabled="disableStop" class="btn btn-danger">Stop</button>
+          </div>
         </div>
+        <div class="row">
+          <div class="col-sm-6">
+            <button @click="reverse()" :disabled="disableReverse" class="btn btn-default">向きを反転する</button>
+            <p style="margin-top: 10px">今の進行方向: {{ dirLabel }}</p>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -128,6 +143,8 @@ export default {
     'animate',
     'animateIndex',
     'selectedCommandIndex',
+    'hasCommands',
+    'currentDir',
   ],
 
   data() {
@@ -231,6 +248,30 @@ export default {
 
       return (current.task === Constants.TASK_FORWARD ? 0 : 1) * 180 + degree;
     },
+
+    disableClear() {
+      return !this.hasCommands;
+    },
+
+    disableStart() {
+      return !this.hasCommands || this.animate;
+    },
+
+    disableStop() {
+      return !this.hasCommands || !this.animate;
+    },
+
+    disableReverse() {
+      return !this.hasCommands || this.animate;
+    },
+
+    dirLabel() {
+      if (!this.hasCommands) {
+        return '-';
+      }
+
+      return this.currentDir ? Constants.DIR_FORWARD : Constants.DIR_REVERSE;
+    },
   },
 
   methods: {
@@ -302,6 +343,22 @@ export default {
 
     selectPointEdit() {
       this.modeIndex = Constants.MODE_POINT_EDIT;
+    },
+
+    clear() {
+      this.$emit('clear');
+    },
+
+    start() {
+      this.$emit('start');
+    },
+
+    stop() {
+      this.$emit('stop');
+    },
+
+    reverse() {
+      this.$emit('reverse');
     },
   },
 }
@@ -406,5 +463,9 @@ export default {
 
 .map-draw-layer .robofork img {
   transform-origin: 50% 50%;
+}
+
+.checkbox label {
+  user-select: none;
 }
 </style>
