@@ -86,7 +86,7 @@
       -->
       <div class="col-md-4 btn-group">
         <div class="row">
-          <div class="col-md-12">
+          <div class="col-md-12 btn-group">
             <button
               class="btn btn-default"
               :class="{ 'btn-primary': enableRouting }"
@@ -99,22 +99,25 @@
             >ポイント編集モード</button>
           </div>
         </div>
-
-        <hr/>
-
+        <hr>
         <div class="row">
-          <div class="col-md-6 btn-group">
-            <button @click="clear()":disabled="disableClear" class="btn btn-warning">clear</button>
-          </div>
-          <div class="col-md-6 btn-group">
-            <button @click="start()" :disabled="disableStart" class="btn btn-primary">Start</button>
-            <button @click="stop()" :disabled="disableStop" class="btn btn-danger">Stop</button>
+          <div class="col-md-12">
+            <label>進行方向: {{ dirLabel }}</label>
+            <br>
+            <button @click="reverse()" :disabled="disableReverse" class="btn btn-info">向きを反転する</button>
           </div>
         </div>
+        <hr>
         <div class="row">
-          <div class="col-sm-6">
-            <button @click="reverse()" :disabled="disableReverse" class="btn btn-default">向きを反転する</button>
-            <p style="margin-top: 10px">今の進行方向: {{ dirLabel }}</p>
+          <div class="col-md-12 btn-group">
+            <button @click="start()" :disabled="disableStart" class="btn btn-warning">シミュレーション開始</button>
+            <button @click="stop()" :disabled="disableStop" class="btn btn-default">停止</button>
+          </div>
+        </div>
+        <hr>
+        <div class="row">
+          <div class="col-md-12">
+            <button @click="clear()":disabled="disableClear" class="btn btn-danger">ルートを全て削除する</button>
           </div>
         </div>
 

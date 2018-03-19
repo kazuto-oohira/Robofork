@@ -51,5 +51,5 @@ export const MODE_POINT_EDIT = 1;
 export const ANIMATION_SPEED = 100;
 
 // 次の進行方向のラベル
-export const DIR_FORWARD = '前進方向';
-export const DIR_REVERSE = 'バック方向';
+export const DIR_FORWARD = '前進';
+export const DIR_REVERSE = 'バック';
