@@ -252,6 +252,8 @@ export default {
     },
 
     addMark(_mark) {
+      _mark["x"] = this.rounded(_mark["x"]);
+      _mark["y"] = this.rounded(_mark["y"]);
       const mark = Object.assign(_mark, {
         task: (() => {
           if (this.marks.length <= 0) {
@@ -375,6 +377,14 @@ export default {
 
     back() {
       window.location = Constants.PREV_PAGE_URL(this.locationId);
+    },
+
+    rounded(point) {
+      let result = "0.00";
+      if (!isNaN(point)) {
+        result = String(Math.round(parseFloat(point) * 100) / 100);
+      }
+      return result;
     },
   },
 }

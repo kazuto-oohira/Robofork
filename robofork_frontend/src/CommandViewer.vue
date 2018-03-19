@@ -45,11 +45,11 @@
             </td>
             <td>{{ flagStop[index] }}</td>
             <td>
-              <span v-if="!isSelectedCommand(command.id)">{{ command.x | rounded }}</span>
+              <span v-if="!isSelectedCommand(command.id)">{{ command.x }}</span>
               <input class="form-control coordinate" v-if="isSelectedCommand(command.id)" v-model="command.x">
             </td>
             <td>
-              <span v-if="!isSelectedCommand(command.id)">{{ command.y | rounded }}</span>
+              <span v-if="!isSelectedCommand(command.id)">{{ command.y }}</span>
               <input class="form-control coordinate" v-if="isSelectedCommand(command.id)" v-model="command.y">
             </td>
             <td>
@@ -173,10 +173,6 @@ export default {
   },
 
   filters: {
-    rounded(point) {
-      return String(point).substr(0, 7);
-    },
-
     taskLabel(taskIndex) {
       return Constants.TASK_LABELS[taskIndex];
     },

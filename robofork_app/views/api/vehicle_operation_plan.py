@@ -37,6 +37,7 @@ def save(request, vehicle_operation_plan_id):
     vehicle_operation_plan.explain = data_json["planInfo"]["explain"]
     vehicle_operation_plan.priority = int(data_json["planInfo"]["priority"])
     vehicle_operation_plan.route_operation_json = json.dumps(data_json["commands"])
+    vehicle_operation_plan.vehicle_id = 1   # TODO: 車両IDが固定
     vehicle_operation_plan.save()
 
     return JsonResponse({'result': True})
