@@ -59,9 +59,10 @@
     </div>
     <div class="row">
       <div class="col-md-12">
-        <button class="btn btn-success">キャンセル/戻る</button>
-        <button @click="save()" class="btn btn-success">ルートを保存する</button>
+        <button @click="back()" class="btn btn-default pull-left">キャンセル/戻る</button>
+        <button @click="save()" class="btn btn-success btn-lg pull-right">ルートを保存する</button>
       </div>
+      <div class="clearfix">&nbsp;</div>
     </div>
   </div>
 </template>
@@ -346,6 +347,10 @@ export default {
       .then(() => {
         alert('保存しました');
       });
+    },
+
+    back() {
+      window.location = Constants.PREV_PAGE_URL(this.locationId);
     },
   },
 }
