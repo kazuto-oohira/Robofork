@@ -85,16 +85,24 @@
       </div>
       -->
       <div class="col-md-4 btn-group">
-        <button
-          class="btn btn-default"
-          :class="{ 'btn-primary': enableRouting }"
-          @click="selectRouting"
-        >ルート追加モード</button>
-        <button
-          class="btn btn-default"
-          :class="{ 'btn-primary': enablePointEdit }"
-          @click="selectPointEdit"
-        >ポイント編集モード</button>
+        <div class="row">
+          <div class="col-md-12">
+            <button
+              class="btn btn-default"
+              :class="{ 'btn-primary': enableRouting }"
+              @click="selectRouting"
+            >ルート追加モード</button>
+            <button
+              class="btn btn-default"
+              :class="{ 'btn-primary': enablePointEdit }"
+              @click="selectPointEdit"
+            >ポイント編集モード</button>
+          </div>
+        </div>
+
+        <div class="row">
+
+        </div>
       </div>
     </div>
   </div>

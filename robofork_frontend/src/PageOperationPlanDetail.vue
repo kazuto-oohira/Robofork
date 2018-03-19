@@ -3,14 +3,6 @@
     <div class="row">
       <div class="col-md-12">
         <operation-plan-info
-          :hasCommands="this.commands.length > 0"
-          :animate="animate"
-          :currentDir="currentDir"
-          @clear="clear"
-          @start="start"
-          @stop="stop"
-          @reverse="reverse"
-          @save="save"
         ></operation-plan-info>
       </div>
     </div>
