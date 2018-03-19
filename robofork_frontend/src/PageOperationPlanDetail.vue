@@ -3,6 +3,8 @@
     <div class="row">
       <div class="col-md-12">
         <operation-plan-info
+          :planInfo="this.planInfo"
+          @changeValue="changePlanInfoValue"
         ></operation-plan-info>
       </div>
     </div>
@@ -80,7 +82,7 @@ export default {
   name: 'page-operation-plan-detail',
 
   components: {
-    OperationPlanInfo,
+    'operation-plan-info': OperationPlanInfo,
     'map-viewer': MapViewer,
     'command-viewer': CommandViewer,
   },
@@ -96,6 +98,13 @@ export default {
       animateIndex: 0,
       currentDir: true,
       selectedCommandIndex: 0,
+
+      planInfo: {
+        name: '',
+        explain: '',
+        priority: -1,
+        vehicle: {}
+      },
     }
   },
 
@@ -203,6 +212,13 @@ export default {
 
         if (this.marks.length <= 0) {
           this.initialize();
+        }
+
+        this.planInfo = {
+          name: commands.name || "",
+          explain: commands.explain || "",
+          priority: commands.priority || 0,
+          vehicle: commands.vehicle,
         }
       })
       .catch(error => {
@@ -336,12 +352,19 @@ export default {
       Vue.set(currentMark, 'task', currentMark.task === Constants.TASK_FORWARD ? Constants.TASK_REVERSE : Constants.TASK_FORWARD);
     },
 
+    changePlanInfoValue(value) {
+      for (const key in value) {
+        this.planInfo[key] = value[key];
+      }
+    },
+
     save() {
       axios({
         method: 'post',
         url: Constants.SAVE_ENDPOINT(this.vehicleOperationPlanId),
         data: {
           commands: this.commands,
+          planInfo: this.planInfo,
         },
       })
       .then(() => {

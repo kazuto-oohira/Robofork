@@ -15,7 +15,8 @@
           <div class="form-group">
             <label class="control-label col-md-2" for="name">名称 <span class="required">*</span></label>
             <div class="col-md-10">
-              <input type="text" id="name" required="required" class="form-control">
+              <input type="text" id="name" required="required" class="form-control"
+                     :value="this.planInfo.name" @input="changeValue">
             </div>
           </div>
 
@@ -24,8 +25,7 @@
             <label class="control-label col-md-2" for="vehicle">車両 <span class="required">*</span></label>
             <div class="col-md-10">
               <select id="vehicle" class="form-control">
-                <option>3号機</option>
-                <option>1号機</option>
+                <option value="1">3号機</option>
               </select>
             </div>
           </div>
@@ -34,7 +34,8 @@
           <div class="form-group">
             <label class="control-label col-md-2" for="explain">説明</label>
             <div class="col-md-10">
-              <textarea name="explain" id="explain" rows="2" class="form-control"></textarea>
+              <textarea name="explain" id="explain" rows="2" class="form-control"
+                        :value="this.planInfo.explain" @input="changeValue"></textarea>
             </div>
           </div>
         </div>
@@ -46,7 +47,8 @@
           <div class="form-group">
             <label class="control-label col-md-4" for="priority">優先度 <span class="required">*</span></label>
             <div class="col-md-8">
-              <input type="text" id="priority" required="required" class="form-control" value="0" style="width:75px;">
+              <input type="text" id="priority" required="required" class="form-control" style="width:75px;"
+                     :value="this.planInfo.priority" @input="changeValue">
               <small>0が標準。数値が高いほど優先度が高くなる<br/>車両交差時に優先度に応じて走行する</small>
             </div>
           </div>
@@ -63,7 +65,6 @@
           </div>
 
         </div>
-
       </div>
     </div>
   </div>
@@ -76,44 +77,22 @@ export default {
   name: 'operation-plan-info',
 
   props: [
-    // 'hasCommands',
-    // 'animate',
-    // 'currentDir',
+    'planInfo',
   ],
 
   data() {
-    return {
-    }
-  },
-
-  computed: {
-    // dirLabel() {
-    //   if (!this.hasCommands) {
-    //     return '-';
-    //   }
-    //
-    //   return this.currentDir ? Constants.DIR_FORWARD : Constants.DIR_REVERSE;
-    // },
+    return {}
   },
 
   methods: {
-    // reverse() {
-    //   this.$emit('reverse');
-    // },
-    //
-    // save() {
-    //   this.$emit('save');
-    // },
+    changeValue(event) {
+      let ret = {}
+      ret[event.target.id] = event.target.value;
+      this.$emit('changeValue', ret);
+    }
   },
 }
 </script>
 
 <style scoped>
-/*.checkbox label {*/
-  /*user-select: none;*/
-/*}*/
-
-/*.row {*/
-  /*margin-bottom: 1rem;*/
-/*}*/
 </style>
