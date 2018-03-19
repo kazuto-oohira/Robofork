@@ -73,7 +73,6 @@ import axios from 'axios'
 import * as Constants from './Constants'
 import MapViewer from './MapViewer'
 import CommandViewer from './CommandViewer'
-import Terminal from './Terminal'
 import OperationPlanInfo from "./OperationPlanInfo";
 
 export default {
@@ -83,7 +82,6 @@ export default {
     OperationPlanInfo,
     'map-viewer': MapViewer,
     'command-viewer': CommandViewer,
-    'terminal': Terminal,
   },
 
   data () {
