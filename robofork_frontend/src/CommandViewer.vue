@@ -65,6 +65,7 @@
         </tbody>
       </table>
     </div>
+    <!--
     <div class="row">
       <div class="checkbox">
         <label>
@@ -72,6 +73,7 @@
         </label>
       </div>
     </div>
+    -->
   </div>
 </template>
 
@@ -195,6 +197,7 @@ export default {
   min-height: 350px;
   box-sizing: border-box;
   padding: 1px;
+  border: 1px solid #ccccc;
 }
 
 .table th,

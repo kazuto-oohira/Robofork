@@ -43,13 +43,20 @@
         </div>
       </div>
       <div class="col-md-12">
-        <h2>指示画面</h2>
-        <command-viewer
-          :commands="commands"
-          :animate="animate"
-          :selectedCommandIndex.sync="selectedCommandIndex"
-          @removeMark="removeMark"
-        ></command-viewer>
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>運行計画一覧</h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <command-viewer
+              :commands="commands"
+              :animate="animate"
+              :selectedCommandIndex.sync="selectedCommandIndex"
+              @removeMark="removeMark"
+            ></command-viewer>
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
