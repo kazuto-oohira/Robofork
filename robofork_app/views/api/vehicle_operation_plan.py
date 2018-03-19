@@ -15,7 +15,7 @@ def load(request, vehicle_operation_plan_id):
         "explain": vehicle_operation_plan.explain,
         "priority": vehicle_operation_plan.priority,
         "commands": json.loads(vehicle_operation_plan.route_operation_json),
-        "vehicle": vehicle_operation_plan.vehicle.as_json(),
+        "vehicle": vehicle_operation_plan.vehicle.as_json() if vehicle_operation_plan.vehicle else None,
     }
 
     return JsonResponse(result_data)

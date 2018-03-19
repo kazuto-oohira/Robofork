@@ -1,6 +1,6 @@
 <template>
   <div class="operation-plan-detail">
-    <h1>工場名が貼りいます</h1>
+    <h1>運行計画詳細</h1>
     <div class="row">
       <div class="col-md-12">
         <operation-plan-info
