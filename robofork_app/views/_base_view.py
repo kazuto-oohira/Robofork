@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 
 
-class BaseTemplateViewMixIn(TemplateView):
+class BaseViewMixIn(object):    # TemplateViewを親にすると多重継承でややこしいので...
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 

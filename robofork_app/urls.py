@@ -1,14 +1,14 @@
 from django.urls import path
+from django.views.generic import TemplateView
 from robofork_app.views import vehicle_view, mqtt_test_view
-from robofork_app.views.login_view import *
-from robofork_app.views.vehicle_control_view import *
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
+from robofork_app.views import operation_plan_view
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status
 
 
 urlpatterns = [
     # ログイン
-    path('', LoginView.as_view(), name='login'),
+    path('', TemplateView.as_view(template_name='robofork_app/login.html'), name='login'),
 
     # NKC管理画面
     path('admin/location/', TemplateView.as_view(template_name='robofork_app/admin_location/index.html'), name='admin_location_index'),
@@ -22,10 +22,10 @@ urlpatterns = [
     path('<int:location_id>/vehicle_status/', TemplateView.as_view(template_name='robofork_app/vehicle_status/index.html'), name='vehicle_status_index'),
     path('<int:location_id>/operation_plan/', OperationPlanIndexView.as_view(), name='operation_plan_index'),
     path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', OperationPlanDetailView.as_view(), name='operation_plan_detail'),
-    path('<int:location_id>/operation_plan/new', TemplateView.as_view(template_name='robofork_app/operation_plan/detail.html'), name='operation_plan_new'),
+    path('<int:location_id>/operation_plan/new', operation_plan_view.detail_new, name='operation_plan_new'),
 
     # 車両マニュアル操作
-    path('vehicle/control/<int:vehicle_id>', VehicleControlView.as_view(), name='vehicle_control'),
+    path('vehicle/control/<int:vehicle_id>', TemplateView.as_view(template_name='robofork_app/vehicle_control/index.html'), name='vehicle_control'),
 
     # API
     path('api/mqtt/send', mqtt.send),
