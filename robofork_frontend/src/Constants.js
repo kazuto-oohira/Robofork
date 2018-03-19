@@ -34,7 +34,7 @@ export const TASK_LABELS = {
   [TASK_LIFTUP_WITH_TURN]:   '荷上げ(旋回あり)',
   [TASK_LIFTDOWN]:           '荷下げ',
   [TASK_LIFTDOWN_WITH_TURN]: '荷下げ(旋回あり)',
-  [TASK_NOTHING]:            'なにもしない',
+  [TASK_NOTHING]:            '-',
 };
 
 // タスク: Speed の初期値

@@ -1,6 +1,5 @@
 <template>
   <div class="operation-plan-detail">
-    <h1>運行計画詳細</h1>
     <div class="row">
       <div class="col-md-12">
         <operation-plan-info
@@ -16,27 +15,34 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6">
-        <h2>マップ画面</h2>
-        <map-viewer
-          :width="config.imageWidth"
-          :height="config.imageHeight"
-          :scaleX="Number(config.scaleX)"
-          :scaleY="Number(config.scaleY)"
-          :offsetX="Number(config.offsetX)"
-          :offsetY="Number(config.offsetY)"
-          :imageUrl="config.imageUrl"
-          :commands="commands"
-          :mainNodes="mainNodes"
-          :subNodes="subNodes"
-          :animate="animate"
-          :animateIndex="animateIndex"
-          :selectedCommandIndex.sync="selectedCommandIndex"
-          @addMark="addMark"
-          @updateMark="updateMark"
-        ></map-viewer>
+      <div class="col-md-12">
+        <div class="x_panel">
+          <div class="x_title">
+            <h2>運行計画マップ</h2>
+            <div class="clearfix"></div>
+          </div>
+          <div class="x_content">
+            <map-viewer
+              :width="config.imageWidth"
+              :height="config.imageHeight"
+              :scaleX="Number(config.scaleX)"
+              :scaleY="Number(config.scaleY)"
+              :offsetX="Number(config.offsetX)"
+              :offsetY="Number(config.offsetY)"
+              :imageUrl="config.imageUrl"
+              :commands="commands"
+              :mainNodes="mainNodes"
+              :subNodes="subNodes"
+              :animate="animate"
+              :animateIndex="animateIndex"
+              :selectedCommandIndex.sync="selectedCommandIndex"
+              @addMark="addMark"
+              @updateMark="updateMark"
+            ></map-viewer>
+          </div>
+        </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-12">
         <h2>指示画面</h2>
         <command-viewer
           :commands="commands"

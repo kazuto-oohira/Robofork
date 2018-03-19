@@ -1,88 +1,90 @@
 <template>
-  <div class="container-fluid" id="map-viewer">
+  <div id="map-viewer">
     <div class="row">
-      <div class="map-container"
-        :style="{ width: `${width}px`, height: `${height}px` }"
-        :class="{
-          'routing': enableRouting,
-          'point-edit': enablePointEdit,
-        }"
-        @click.self="mark($event.offsetX, $event.offsetY)"
-      >
-        <img v-if="imageUrl" class="map-image" :src="imageUrl">
-        <div class="map-draw-layer">
-          <!-- subNodes -->
-          <template v-for="subNode in subNodes">
-          <div
-            v-for="node in subNode.nodes"
-            v-if="enableSubNodes"
-            class="subnode"
-            :style="{
-              transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
-            }"
-            :title="node.id"
-          ></div>
-          </template>
-
-          <!-- mainNodes -->
-          <div
-            v-for="node in mainNodes"
-            class="mainnode"
-            draggable="true"
-            :class="{
-              latest: isLatest(node.id),
-              selected: isSelectedCommand(node.id),
-            }"
-            :style="{
-              transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
-            }"
-            :title="node.id"
-            @mousedown.self="select(node.id)"
-            @dragend="move($event, mappedX(node.x), mappedY(node.y), node.id)"
-          >
-            <img
-              src="/static/robofork_app/img/robofork.svg"
-              alt=""
-              width="30"
-              height="30"
-              v-if="isLatest(node.id)"
+      <div class="col-md-8">
+        <div class="map-container"
+          :style="{ width: `${width}px`, height: `${height}px` }"
+          :class="{
+            'routing': enableRouting,
+            'point-edit': enablePointEdit,
+          }"
+          @click.self="mark($event.offsetX, $event.offsetY)"
+        >
+          <img v-if="imageUrl" class="map-image" :src="imageUrl">
+          <div class="map-draw-layer">
+            <!-- subNodes -->
+            <template v-for="subNode in subNodes">
+            <div
+              v-for="node in subNode.nodes"
+              v-if="enableSubNodes"
+              class="subnode"
               :style="{
-                transform: `rotate(${latestDegree}deg)`
+                transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
+              }"
+              :title="node.id"
+            ></div>
+            </template>
+
+            <!-- mainNodes -->
+            <div
+              v-for="node in mainNodes"
+              class="mainnode"
+              draggable="true"
+              :class="{
+                latest: isLatest(node.id),
+                selected: isSelectedCommand(node.id),
+              }"
+              :style="{
+                transform: `translate(${mappedX(node.x)}px, ${mappedY(node.y)}px)`
+              }"
+              :title="node.id"
+              @mousedown.self="select(node.id)"
+              @dragend="move($event, mappedX(node.x), mappedY(node.y), node.id)"
+            >
+              <img
+                src="/static/robofork_app/img/robofork.svg"
+                alt=""
+                width="30"
+                height="30"
+                v-if="isLatest(node.id)"
+                :style="{
+                  transform: `rotate(${latestDegree}deg)`
+                }"
+              >
+            </div>
+
+            <!-- roboork -->
+            <div
+              class="robofork"
+              :class="{ animate: enableRobofork }"
+              :style="{
+                transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`,
+                'transition-duration': `${animationSpeed}ms`
               }"
             >
-          </div>
-
-          <!-- roboork -->
-          <div
-            class="robofork"
-            :class="{ animate: enableRobofork }"
-            :style="{
-              transform: `translate(${mappedX(roboforkX)}px, ${mappedY(roboforkY)}px)`,
-              'transition-duration': `${animationSpeed}ms`
-            }"
-          >
-            <img
-              src="/static/robofork_app/img/robofork.svg"
-              alt=""
-              width="30"
-              height="30"
-              :style="{
-                transform: `rotate(${roboforkDegree}deg)`
-              }"
-            >
+              <img
+                src="/static/robofork_app/img/robofork.svg"
+                alt=""
+                width="30"
+                height="30"
+                :style="{
+                  transform: `rotate(${roboforkDegree}deg)`
+                }"
+              >
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-sm-6">
+      <!--
+      <div class="col-md-4">
         <div class="checkbox">
           <label>
             <input type="checkbox" v-model="checkSubNodes"> サブノードも含めて表示する
           </label>
         </div>
       </div>
-      <div class="col-sm-6 btn-group">
+      -->
+      <div class="col-md-4 btn-group">
         <button
           class="btn btn-default"
           :class="{ 'btn-primary': enableRouting }"
@@ -298,8 +300,12 @@ export default {
 </script>
 
 <style scoped>
+#map-viewer > .row > .col-md-8 {
+  background-color: #8c8c8c;
+}
 .map-container {
   position: relative;
+  margin: 0 auto;
 }
 
 .map-container.routing:after {

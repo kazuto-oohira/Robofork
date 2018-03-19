@@ -1,10 +1,10 @@
 <template>
-  <div class="container-fluid" id="command-viewer">
+  <div id="command-viewer">
     <div class="row table-container pre-scrollable" ref="scrollContainer">
-      <table class="table table-hover">
+      <table class="table table-striped jambo_table bulk_action">
         <thead>
           <tr>
-            <th>No</th>
+            <!--<th>No</th>-->
             <th>Task</th>
             <th>AfterTask</th>
             <th>Speed</th>
@@ -25,7 +25,7 @@
             :class="{ 'active': isSelectedCommand(command.id) }"
             @click="selectColumn(command.id)"
           >
-            <th scope="row">{{ index + 1 }}</th>
+            <!--<td scope="row">{{ index + 1 }}</td>-->
             <td>{{ command.task | taskLabel }}</td>
             <td>
               <span v-if="!isSelectedCommand(command.id)">{{ command.afterTask | afterTaskLabel }}</span>
@@ -54,7 +54,7 @@
             </td>
             <td>
               <button
-                class="btn btn-warning"
+                class="btn btn-danger btn-xs"
                 type="button"
                 v-if="command.isMain && command.id !== 0"
                 :disabled="disableRemove"
@@ -195,7 +195,6 @@ export default {
   min-height: 350px;
   box-sizing: border-box;
   padding: 1px;
-  border: 1px solid #333;
 }
 
 .table th,
@@ -205,7 +204,6 @@ export default {
 }
 
 .table tr {
-  height: 6rem;
 }
 
 .after-task {
