@@ -62,36 +62,23 @@
                 <table class="table table-striped jambo_table bulk_action">
                   <thead>
                   <tr class="headings">
-                    <th class="column-title">車両ID</th>
+                    <th class="column-title">車両名</th>
                     <th class="column-title">状態</th>
                     <th class="column-title">運行計画</th>
                     <th class="column-title"></th>
                   </tr>
                   </thead>
                   <tbody>
+                  {% for vehicle in vehicles %}
                   <tr>
-                    <td style="font-size:125%;">FX15-1</td>
-                    <td style="font-size:125%;">運行</td>
-                    <td style="font-size:125%;">R05-1段目からR06-2段目へ</td>
+                    <td>{{ vehicle.name }}</td>
+                    <td>-</td>
+                    <td>-</td>
                     <td class="text-right">
-                      <a class="btn btn-danger btn-sm">停止</a>
+                      <a class="btn btn-danger btn-xs">停止</a>
                     </td>
                   </tr>
-                  <tr>
-                    <td style="font-size:125%;">FX15-2</td>
-                    <td style="font-size:125%;">運行</td>
-                    <td style="font-size:125%;">R01-1段目からR04-1段目</td>
-                    <td class="text-right">
-                      <a class="btn btn-danger btn-sm">停止</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-size:125%;">FX15-3</td>
-                    <td style="font-size:125%;">待機</td>
-                    <td style="font-size:125%;"></td>
-                    <td class="text-right">
-                    </td>
-                  </tr>
+                  {% endfor %}
                   </tbody>
                 </table>
               </div>
@@ -101,65 +88,40 @@
 
         <div class="x_panel">
           <div class="x_title">
-            <h3>運行計画の実行</h3>
+            <h2>運行計画の実行</h2>
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
-            <p class="text-muted">
-              画面が狭いから別画面へ移動する？
-            </p>
             <div class="row">
               <div class="col-md-12">
                 <table class="table table-striped jambo_table bulk_action">
                   <thead>
                   <tr class="headings">
-                    <th class="column-title">運行計画</th>
-                    <th class="column-title">車両ID</th>
+                    <th class="column-title">運行計画名</th>
+                    <th class="column-title">説明</th>
+                    <th class="column-title">車両名</th>
                     <th class="column-title">状態</th>
                     <th class="column-title">バッテリー</th>
                     <th class="column-title"></th>
                   </tr>
                   </thead>
                   <tbody>
+                  {% for operation_plan in operation_plans %}
                   <tr>
-                    <td style="font-size:125%;">R05-1段目からR06-2段目へ</td>
-                    <td style="font-size:125%;">FX15-1</td>
-                    <td style="font-size:125%;">運行</td>
-                    <td style="font-size:125%;">
+                    <td>{{ operation_plan.name }}</td>
+                    <td>{{ operation_plan.explain }}</td>
+                    <td>{{ operation_plan.vehicle.name }}</td>
+                    <td>-</td>
+                    <td>
                       <div class="progress progress_sm">
                         <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="57" aria-valuenow="56" style="width: 57%;"></div>
                       </div>
                     </td>
                     <td class="text-right">
-                      <a class="btn btn-primary" disabled="">計画実行(START)</a>
+                      <a class="btn btn-primary">運行開始</a>
                     </td>
                   </tr>
-                  <tr>
-                    <td style="font-size:125%;">R01-1段目からR04-1段目</td>
-                    <td style="font-size:125%;">FX15-2</td>
-                    <td style="font-size:125%;">運行</td>
-                    <td style="font-size:125%;">
-                      <div class="progress progress_sm">
-                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="86" aria-valuenow="85" style="width: 86%;"></div>
-                      </div>
-                    </td>
-                    <td class="text-right">
-                      <a class="btn btn-primary" disabled="">計画実行(START)</a>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="font-size:125%;">R05-1段目->R02-2段目</td>
-                    <td style="font-size:125%;">FX15-3</td>
-                    <td style="font-size:125%;">待機</td>
-                    <td style="font-size:125%;">
-                      <div class="progress progress_sm">
-                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="100" aria-valuenow="100" style="width: 100%;"></div>
-                      </div>
-                    </td>
-                    <td class="text-right">
-                      <a class="btn btn-primary">計画実行(START)</a>
-                    </td>
-                  </tr>
+                  {% endfor %}
                   </tbody>
                 </table>
               </div>

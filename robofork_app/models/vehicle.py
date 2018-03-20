@@ -14,9 +14,9 @@ class Vehicle(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-
-    def get_list(self, *, location_id=-1):
-        pass
+    @classmethod
+    def get_list(cls, *, location_id):
+        return cls.objects.filter(location_id = location_id)
 
 
     def as_json(self):

@@ -21,3 +21,7 @@ class VehicleOperationPlan(models.Model):
             return 1
         else:
             return records[0].id + 1
+
+    @classmethod
+    def get_list(cls, *, location_id):
+        return cls.objects.filter(location_id=location_id)
