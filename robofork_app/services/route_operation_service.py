@@ -19,8 +19,8 @@ class RouteOperationService:
         if len(route_operation_json) == 0:
             return
 
-        # 101(件数)
-        mqtt.send(vehicle_id, "101",
+        # 件数
+        mqtt.send(vehicle_id, "108",
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(route_operation_json)) + "00000000")
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
 
@@ -67,13 +67,14 @@ class RouteOperationService:
                 cls.__send_route_data(vehicle_id, data)
             """
 
-        # 104
+        # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, "104",
+        mqtt.send(vehicle_id, "10B",
                   utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000")
 
     @classmethod
     def __send_route_data(cls, vehicle_id, populated_data):
+        # 位置
         can_data = (
             utility.to_hex(populated_data["index"]) +
             utility.to_hex(utility.to_can_signed(populated_data["x"])) +
@@ -81,9 +82,9 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["speed"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, "102", can_data)
+        mqtt.send(vehicle_id, "109", can_data)
 
-        # 103
+        # タスク
         can_data = (
             utility.to_hex(populated_data["index"]) +
             utility.to_hex(populated_data["task"], 2) +
@@ -92,4 +93,4 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["height_lift"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, "103", can_data)
+        mqtt.send(vehicle_id, "10A", can_data)

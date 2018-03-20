@@ -23,7 +23,7 @@ def route_execute(request):
         # 件数を取得してPreMap送信
         row_count = sum(1 for row in reader)
         f.seek(0)
-        mqtt.send("1", "101", utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
+        mqtt.send("1", "108", utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
         time.sleep(wait_time_sec)
         print("START " + str(row_count))
 
@@ -39,7 +39,7 @@ def route_execute(request):
             # print(data)
 
             time.sleep(wait_time_sec)
-            mqtt.send("1", "102", data)
+            mqtt.send("1", "109", data)
 
             # 103
             data = (
@@ -52,12 +52,12 @@ def route_execute(request):
             # print(data)
 
             time.sleep(wait_time_sec)
-            mqtt.send("1", "103", data)
+            mqtt.send("1", "10A", data)
 
             index += 1
         
         time.sleep(wait_time_sec)
-        mqtt.send("1", '104', (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
+        mqtt.send("1", '10B', (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
 
     return JsonResponse({'result': True})
 
