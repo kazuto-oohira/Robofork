@@ -15,6 +15,10 @@ class Vehicle(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 
+    def get_list(self, *, location_id=-1):
+        pass
+
+
     def as_json(self):
         return {
             "name": self.name,

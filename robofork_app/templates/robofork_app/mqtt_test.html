@@ -5,7 +5,7 @@
   <div class="container" style="background-color:#F7F7F7;">
     <div class="row">
       <div class="col-md-12">
-        <h2>通信テスト</h2>
+        <h1>通信テスト - 車両ID#{{ vehicle_id }}</h1>
 
         <div class="x_panel">
           <div class="x_title"><h3>CAN送信データ</h3></div>
@@ -142,6 +142,9 @@
     <script type="text/javascript">
     // Roboforkステータス変更
     $(function() {
+        // 車両ID取得
+        var vehicleId = window.location.href.split("/").slice(-1)[0];
+
         // 初期データ設定
         $('#rbfk_status_json').val(JSON.stringify({
             "vehicle_status": {
@@ -150,6 +153,7 @@
                 "status_name": "非常停止"
             }
         }, undefined, 4));
+        $('#rbfk_status_id').val(vehicleId);
         $('#rbfk_status_x').val('-9.56');
         $('#rbfk_status_y').val('-0.26');
         $('#rbfk_status_task').val('0');
@@ -209,10 +213,13 @@
 
     // ルート走行
     $(function() {
+        // 車両ID取得
+        var vehicleId = window.location.href.split("/").slice(-1)[0];
+
         // ルート走行実行ボタン
         $('#route-execute').click(function() {
             $.ajax({
-                url: '/mqtt_test/route_execute'
+                url: '/mqtt_test/' + vehicleId + 'route_execute/'
             }).done(function(data) {
                 if (data["result"] && data["result"] == true) {
                     $('#route-execute').popover('show');
@@ -232,12 +239,16 @@
 
     // CANテスト送信/受信
     $(function() {
+        // 車両ID取得
+        var vehicleId = window.location.href.split("/").slice(-1)[0];
+
         // 送信ボタンクリック
         $('#can_send').click(function() {
             $.ajax({
-                url: 'api/mqtt/send',
+                url: '/api/mqtt/send',
                 type: 'POST',
                 data: {
+                    vehicle_id: vehicleId,
                     can_id: $('#can_id').val(),
                     can_data: $('#can_data').val()
                 }

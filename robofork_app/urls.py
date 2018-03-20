@@ -37,8 +37,8 @@ urlpatterns = [
     path('api/vehicle_operation_status/load', vehicle_operation_status.load),
 
     # MQTT テスト
-    path('mqtt_test', mqtt_test_view.index),
-    path('mqtt_test/route_execute', mqtt_test_view.route_execute),
+    path('mqtt_test/<int:vehicle_id>', mqtt_test_view.index),
+    path('mqtt_test/<int:vehicle_id>/route_execute', mqtt_test_view.route_execute),
 
     # 以下はまだテスト
     path('vehicle', vehicle_view.index, name='vehicle_index'),

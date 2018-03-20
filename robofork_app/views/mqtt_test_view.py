@@ -8,11 +8,11 @@ import time
 from robofork_app.libs import utility, mqtt
 
 
-def index(request):
-    return render(request, 'robofork_app/mqtt_test.html', None)
+def index(request, vehicle_id):
+    return render(request, 'robofork_app/mqtt_test.html', {"vehicle_id":vehicle_id})
 
 
-def route_execute(request):
+def route_execute(request, vehicle_id):
     wait_time_sec = 0.025
     sign_offset = 32768
 
@@ -23,7 +23,7 @@ def route_execute(request):
         # 件数を取得してPreMap送信
         row_count = sum(1 for row in reader)
         f.seek(0)
-        mqtt.send("1", "108", utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
+        mqtt.send(vehicle_id, "108", utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
         time.sleep(wait_time_sec)
         print("START " + str(row_count))
 
@@ -39,7 +39,7 @@ def route_execute(request):
             # print(data)
 
             time.sleep(wait_time_sec)
-            mqtt.send("1", "109", data)
+            mqtt.send(vehicle_id, "109", data)
 
             # 103
             data = (
@@ -52,12 +52,12 @@ def route_execute(request):
             # print(data)
 
             time.sleep(wait_time_sec)
-            mqtt.send("1", "10A", data)
+            mqtt.send(vehicle_id, "10A", data)
 
             index += 1
         
         time.sleep(wait_time_sec)
-        mqtt.send("1", '10B', (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
+        mqtt.send(vehicle_id, '10B', (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
 
     return JsonResponse({'result': True})
 
