@@ -31,9 +31,20 @@
 - model: robofork_app.Vehicle
   pk: 1
   fields:
+    name: 1号機
+    vehicle_no: '#1'
+    vehicle_model_id: 1
+    location_id: 1
+    created_at: 2018-03-18T00:00:00
+    updated_at: 2018-03-18T00:00:00
+
+- model: robofork_app.Vehicle
+  pk: 3
+  fields:
     name: 3号機
     vehicle_no: '#3'
     vehicle_model_id: 1
+    location_id: 1
     created_at: 2018-03-18T00:00:00
     updated_at: 2018-03-18T00:00:00
 

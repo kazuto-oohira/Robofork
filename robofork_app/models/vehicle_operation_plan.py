@@ -24,4 +24,4 @@ class VehicleOperationPlan(models.Model):
 
     @classmethod
     def get_list(cls, *, location_id):
-        return cls.objects.filter(location_id=location_id)
+        return cls.objects.filter(location_id=location_id).order_by("id")

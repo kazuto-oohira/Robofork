@@ -16,7 +16,7 @@ class Vehicle(models.Model):
 
     @classmethod
     def get_list(cls, *, location_id):
-        return cls.objects.filter(location_id = location_id)
+        return cls.objects.filter(location_id = location_id).order_by("location_id")
 
 
     def as_json(self):

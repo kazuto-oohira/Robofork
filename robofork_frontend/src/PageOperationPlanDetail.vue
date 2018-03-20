@@ -365,6 +365,7 @@ export default {
         method: 'post',
         url: Constants.SAVE_ENDPOINT(this.vehicleOperationPlanId),
         data: {
+          location_id: this.locationId,
           commands: this.commands,
           planInfo: this.planInfo,
         },
