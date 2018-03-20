@@ -21,6 +21,7 @@ class Vehicle(models.Model):
 
     def as_json(self):
         return {
+            "id": self.id,
             "name": self.name,
             "vehicle_no": self.vehicle_no,
             "vehicle_model": self.vehicle_model.as_json() if self.vehicle_model else None,

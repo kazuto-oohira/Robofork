@@ -24,8 +24,10 @@
           <div class="form-group">
             <label class="control-label col-md-2" for="vehicle">車両 <span class="required">*</span></label>
             <div class="col-md-10">
-              <select id="vehicle" class="form-control">
-                <option value="1">3号機</option>
+              <select id="vehicle" class="form-control" @change="changeValue">
+                <option v-for="v in this.planInfo.vehicles" v-bind:value="v.id">
+                  {{ v.name }}
+                </option>
               </select>
             </div>
           </div>

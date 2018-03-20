@@ -16,7 +16,7 @@ def load(request, vehicle_operation_plan_id):
         "priority": vehicle_operation_plan.priority,
         "commands":
             json.loads(vehicle_operation_plan.route_operation_json) if vehicle_operation_plan.route_operation_json else [],
-        "vehicle": vehicle_operation_plan.vehicle.as_json() if vehicle_operation_plan.vehicle else None,
+        "vehicle": vehicle_operation_plan.vehicle.id if vehicle_operation_plan.vehicle else None,
     }
 
     return JsonResponse(result_data)
@@ -34,8 +34,8 @@ def save(request, vehicle_operation_plan_id):
     data_json = json.loads(request.body)
 
     vehicle_operation_plan.id = vehicle_operation_plan_id
-    vehicle_operation_plan.vehicle_id = 1   # TODO: 車両IDが固定
-    vehicle_operation_plan.location_id = data_json["location_id"]
+    vehicle_operation_plan.location_id = int(data_json["location_id"])
+    vehicle_operation_plan.vehicle_id = int(data_json["planInfo"]["vehicle"])
 
     vehicle_operation_plan.name = data_json["planInfo"]["name"]
     vehicle_operation_plan.explain = data_json["planInfo"]["explain"]

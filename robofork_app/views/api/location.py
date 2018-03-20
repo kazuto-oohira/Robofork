@@ -19,8 +19,8 @@ def map_config(request, location_id):
 
     # 場所に所属する車両
     vehicles = Vehicle.get_list(location_id=location_id)
-    map_info["vehicles"] = []
+    map_info["config"]["vehicles"] = []
     for vehicle in vehicles:
-        map_info["vehicles"].append(vehicle.as_json())
+        map_info["config"]["vehicles"].append(vehicle.as_json())
 
     return JsonResponse(map_info)
