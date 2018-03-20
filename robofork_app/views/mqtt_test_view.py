@@ -23,7 +23,7 @@ def route_execute(request):
         # 件数を取得してPreMap送信
         row_count = sum(1 for row in reader)
         f.seek(0)
-        mqtt.send("1", "101", utility.to_can_data(utility.to_hex(999) + utility.to_hex(row_count) + "00000000"))
+        mqtt.send("1", "101", utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
         time.sleep(wait_time_sec)
         print("START " + str(row_count))
 
@@ -31,26 +31,25 @@ def route_execute(request):
         index = 1
         for row in reader:
             # 102
-            data = utility.to_can_data(
-                utility.to_hex(index) +
-                utility.to_hex(int(float(row[1])) + sign_offset) +
-                utility.to_hex(int(float(row[2])) + sign_offset) +
-                utility.to_hex(int(float(row[4])) + sign_offset)
-            )
-            print(data)
+            data = (
+                    utility.to_hex(index) +
+                    utility.to_hex(int(float(row[1])) + sign_offset) +
+                    utility.to_hex(int(float(row[2])) + sign_offset) +
+                    utility.to_hex(int(float(row[4])) + sign_offset))
+            # print(data)
 
             time.sleep(wait_time_sec)
             mqtt.send("1", "102", data)
 
             # 103
-            data = utility.to_can_data(
+            data = (
                 utility.to_hex(index) +
                 utility.to_hex(int(row[3]), 2) +
                 utility.to_hex(int(row[5]), 2) +
                 utility.to_hex(int(float(row[6])) + sign_offset) +
                 utility.to_hex(int(float(row[7])) + sign_offset)
             )
-            print(data)
+            # print(data)
 
             time.sleep(wait_time_sec)
             mqtt.send("1", "103", data)
@@ -58,7 +57,7 @@ def route_execute(request):
             index += 1
         
         time.sleep(wait_time_sec)
-        mqtt.send("1", '104', utility.to_can_data(utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
+        mqtt.send("1", '104', (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
 
     return JsonResponse({'result': True})
 
