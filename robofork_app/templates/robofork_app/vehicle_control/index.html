@@ -2,58 +2,138 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>手動操作 | Robofork</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/bootstrap-3.3.7/css/bootstrap.min.css' %}" />
-    <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
-    <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
-    <script src="{% static 'robofork_app/vendor/nipplejs.0.6.8.js' %}"></script>
-    <style type="text/css">
-        body {
-            background-color: #5e5e5e;
-        }
-        #control-container {
-            position: absolute;
-            top: 10px; left: 10px; bottom: 10px; right: 10px;
-            background-color: gray;
-        }
-        #control-vertical {
-            position: absolute;
-            top: 2%; left: 2%;
-            width: 25%; height: 95%;
-            background-color: #5e5e5e;
-        }
-        #control-horizontal {
-            position: absolute;
-            top: 2%; left: 28%;
-            width: 50%; height: 95%;
-            background-color: #5e5e5e;
-        }
-        #control-other {
-            position: absolute;
-            top: 2%; left: 80%;
-            width: 18%; height: 95%;
-            background-color: #5e5e5e;
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>手動操作 | Robofork</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/bootstrap-3.3.7/css/bootstrap.min.css' %}"/>
+  <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
+  <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+  <script src="{% static 'robofork_app/vendor/nipplejs.0.6.8.js' %}"></script>
+  <style type="text/css">
+    body {
+      background-color: #5e5e5e;
+      color: #ffffff;
+    }
+
+    #control-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      bottom: 10px;
+      right: 10px;
+      background-color: gray;
+    }
+
+    #control-vertical {
+      position: absolute;
+      top: 2%;
+      left: 2%;
+      width: 25%;
+      height: 95%;
+      background-color: #5e5e5e;
+    }
+
+    #control-vertical > #control-vertical-label-front {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 120%;
+    }
+
+    #control-vertical > #control-vertical-label-back {
+      position: absolute;
+      bottom: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 120%;
+    }
+
+    #control-horizontal {
+      position: absolute;
+      top: 2%;
+      left: 28%;
+      width: 50%;
+      height: 95%;
+      background-color: #5e5e5e;
+    }
+
+    #control-horizontal > #control-horizontal-label {
+      position: absolute;
+      top: 10px;
+      width: 100%;
+      text-align: center;
+      font-size: 120%;
+    }
+
+    #control-other {
+      position: absolute;
+      top: 2%;
+      left: 80%;
+      width: 18%;
+      height: 95%;
+      background-color: #5e5e5e;
+    }
+
+    #manual-control-start-message {
+      position: absolute;
+      top: 45%;
+      width: 80%;
+      font-size: 120%;
+      text-align: center;
+    }
+
+    #control-other > div {
+      margin-bottom: 20px;
+    }
+    #control-other .btn-lg {
+      width: 100%;
+      margin-bottom: 5px;
+    }
+    #control-other .btn-lg.half{
+      float: left;
+      width: 48%;
+      margin-left: 2%;
+      margin-bottom: 5px;
+    }
+  </style>
 </head>
 <body>
-    <div id="control-container">
-        <div id="control-vertical"></div>
-        <div id="control-horizontal"></div>
-        <div id="control-other">
-            <button id="btn-manual" class="btn btn-danger btn-lg">手動</button>
-            <button id="btn-auto" class="btn btn-primary btn-lg">自動</button>
-        </div>
+<div id="control-container">
+  <div id="control-vertical" class="manual-control">
+    <div id="control-vertical-label-front">前進</div>
+    <div id="control-vertical-label-back">後進(フォーク側)</div>
+  </div>
+  <div id="control-horizontal" class="manual-control">
+    <div id="control-horizontal-label">左右</div>
+  </div>
+
+  <div id="manual-control-start-message">手動操作をする場合は"手動"ボタンをタップしてください</div>
+
+  <div id="control-other">
+    <div>
+      <button id="btn-manual" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-user"></span> 手動</button>
+      <button id="btn-auto" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-ban-circle"></span> 自動</button>
     </div>
+    <br><br>
+    <div class="manual-control">
+      <button id="btn-fork-up" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-arrow-up"></span></button>
+      <button id="btn-fork-down" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-arrow-down"></span></button>
+    </div>
+    <div class="manual-control">
+      <button id="btn-tilt-up" class="btn btn-warning btn-lg half"><span class="glyphicon glyphicon-chevron-left"></span></button>
+      <button id="btn-tilt-down" class="btn btn-warning btn-lg half"><span class="glyphicon glyphicon-chevron-right"></span></button>
+    </div>
+  </div>
+
+</div>
 </body>
 <script type="text/javascript">
-    $(function() {
+    $(function () {
         // JoyStick生成
         var commonOptions = {
             mode: 'static',
-            threshold: 0.1,
+            threshold: 0.2,
             position: {
                 top: '50%', left: '50%',
             },
@@ -68,6 +148,9 @@
             size: 225,
         }));
 
+        // 初期はJoyStick非表示
+        enableManualMode(false);
+
         var onMoveVertical = false;
         var onMoveHorizontal = false;
         var onVerticalDirection = 'up';
@@ -75,7 +158,8 @@
         var onVerticalForce = 0;
         var onHorizontalForce = 0;
 
-        nippleVertical.on('start end', function(event, data) {
+        // ジョイスティック 上下方向
+        nippleVertical.on('start end', function (event, data) {
             if (event.type === 'start') {
                 onMoveVertical = true;
             } else {
@@ -84,7 +168,7 @@
                 onVerticalForce = 0;
             }
         });
-        nippleVertical.on('move plain', function(event, data) {
+        nippleVertical.on('move plain', function (event, data) {
             // なぜかxyが取れない場合があるので
             if (data.direction && data.direction.y) {
                 onVerticalDirection = data.direction.y;
@@ -92,7 +176,8 @@
             }
         });
 
-        nippleHorizontal.on('start end', function(event, data) {
+        // ジョイスティック 左右方向
+        nippleHorizontal.on('start end', function (event, data) {
             if (event.type === 'start') {
                 onMoveHorizontal = true;
             } else {
@@ -101,7 +186,7 @@
                 onHorizontalForce = 0;
             }
         });
-        nippleHorizontal.on('move plain', function(event, data) {
+        nippleHorizontal.on('move plain', function (event, data) {
             // なぜかxyが取れない場合があるので
             if (data.direction && data.direction.x) {
                 onHorizontalDirection = data.direction.x;
@@ -109,12 +194,11 @@
             }
         });
 
-        setInterval(function() {
+        setInterval(function () {
             if (onMoveVertical || onMoveHorizontal) {
                 //console.log(onVerticalDirection + '/' + onVerticalForce + ' ' + onHorizontalDirection + '/' + onHorizontalForce);
 
                 // データ編集
-                var offset = 32768;
                 var verticalMinus = 1;
                 var horizontalMinus = 1;
                 var sendData = '00';
@@ -158,6 +242,8 @@
                         qos: 0
                     }
                 });
+            }
+            /* 前は0を送り続けないと止まらなかったけど、修正されたらしいので一度0送るのやめてみる
             } else {
                 var sendData = '00';
                 sendData += toHex(changeCanUnSignedToSigned(0)) + toHex(changeCanUnSignedToSigned(0));
@@ -172,10 +258,29 @@
                     }
                 });
             }
+            */
         }, 200);
 
         // 手動・自動
-        $('#btn-auto, #btn-manual').click(function(data) {
+        $('#btn-auto, #btn-manual').on('touchstart', function (data) {
+            var sendData = '0000010000000000';
+            if (data.target.id === 'btn-manual') {
+                sendData = '0000000000000000'
+            }
+            $.ajax({
+                url: '/api/mqtt/send',
+                type: 'POST',
+                data: {
+                    can_id: '104',
+                    can_data: sendData
+                }
+            }).done(function() {
+                enableManualMode(data.target.id === 'btn-manual');
+            });
+        });
+
+        // フォークアップ・ダウン
+        $('#btn-fork-up, #btn-fork-down').on('touchstart', function (data) {
             var sendData = '0000010000000000';
             if (data.target.id === 'btn-manual') {
                 sendData = '0000000000000000'
@@ -199,6 +304,16 @@
                 return value + 32768;
             } else {
                 return 0;
+            }
+        }
+
+        function enableManualMode(isEnable) {
+            if (isEnable) {
+                $('.manual-control').show();
+                $('#manual-control-start-message').hide();
+            } else {
+                $('.manual-control').hide();
+                $('#manual-control-start-message').show();
             }
         }
     });
