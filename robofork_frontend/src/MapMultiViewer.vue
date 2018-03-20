@@ -293,6 +293,9 @@ export default {
   background-color: #f0ad4e;
   color: #fff;
 }
+.map-container {
+  margin: 0 auto;
+}
 
 .popover.my-warning.top > .arrow:after {
   border-top-color: #f0ad4e;
