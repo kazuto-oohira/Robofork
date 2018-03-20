@@ -5,7 +5,7 @@ from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
 
 class RouteOperationService:
 
-    CAN_SEND_WAIT_TIME_SEC = 0.035
+    CAN_SEND_WAIT_TIME_SEC = 0.025
 
     @classmethod
     def execute_route_operation(cls, vehicle_operation_plan_id=1):
@@ -24,48 +24,49 @@ class RouteOperationService:
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(route_operation_json)) + "00000000")
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
 
-        for index, row in enumerate(route_operation_json):
-            # 初期値設定＆Populate
-            data = {
-                "index": index,
-                "x": int(float(row.get("x", 0)) * 1000),
-                "y": int(float(row.get("y", 0)) * 1000),
-                "speed": int(row.get("speed", 0)),
-                "task": int(row.get("task", 255)),
-                "after_task": int(row.get("afterTask", 255)),
-                "flag_stop": int(row.get("stop", 0)),
-                "angle": int(row.get("angle", 0)),
-                "height_lift": int(row.get("liftHeight", 0))
-            }
+        for i in range(2):  # どうにもECUがCANを取りこぼすので2回連続で送る
+            for index, row in enumerate(route_operation_json):
+                # 初期値設定＆Populate
+                data = {
+                    "index": index,
+                    "x": int(float(row.get("x", 0)) * 1000),
+                    "y": int(float(row.get("y", 0)) * 1000),
+                    "speed": int(row.get("speed", 0)),
+                    "task": int(row.get("task", 255)),
+                    "after_task": int(row.get("afterTask", 255)),
+                    "flag_stop": int(row.get("stop", 0)),
+                    "angle": int(row.get("angle", 0)),
+                    "height_lift": int(row.get("liftHeight", 0))
+                }
 
-            # ===================================
-            # AfterTaskを1行で送信するバージョン
-            # ===================================
-            # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
-            if data["after_task"] != 255:
-                data["task"] = data["after_task"]
-                data["flag_stop"] = 1
+                # ===================================
+                # AfterTaskを1行で送信するバージョン
+                # ===================================
+                # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
+                if data["after_task"] != 255:
+                    data["task"] = data["after_task"]
+                    data["flag_stop"] = 1
 
-            # 送信
-            cls.__send_route_data(vehicle_id, data)
-
-            # ===================================
-            # AfterTaskを2行にして送信するバージョン
-            # ===================================
-            """
-            # AfterTaskが定義されていれば、flag_stopをONに
-            if data["after_task"] != 255:
-                data["flag_stop"] = 1
-
-            # 送信
-            cls.__send_route_data(vehicle_id, data)
-
-            # AfterTaskが定義されていれば、AfterTaskをTaskに置き換えて再送信
-            if data["after_task"] != 255:
-                data["flag_stop"] = 0
-                data["task"] = data["after_task"]
+                # 送信
                 cls.__send_route_data(vehicle_id, data)
-            """
+
+                # ===================================
+                # AfterTaskを2行にして送信するバージョン
+                # ===================================
+                """
+                # AfterTaskが定義されていれば、flag_stopをONに
+                if data["after_task"] != 255:
+                    data["flag_stop"] = 1
+    
+                # 送信
+                cls.__send_route_data(vehicle_id, data)
+    
+                # AfterTaskが定義されていれば、AfterTaskをTaskに置き換えて再送信
+                if data["after_task"] != 255:
+                    data["flag_stop"] = 0
+                    data["task"] = data["after_task"]
+                    cls.__send_route_data(vehicle_id, data)
+                """
 
         # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
