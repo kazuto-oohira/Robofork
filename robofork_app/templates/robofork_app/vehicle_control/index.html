@@ -130,6 +130,8 @@
 </body>
 <script type="text/javascript">
     $(function () {
+        var SEND_DURATION_MS = 200;
+
         // JoyStick生成
         var commonOptions = {
             mode: 'static',
@@ -259,7 +261,7 @@
                 });
             }
             */
-        }, 200);
+        }, SEND_DURATION_MS);
 
         // 手動・自動
         $('#btn-auto, #btn-manual').on('touchstart', function (data) {
@@ -280,19 +282,63 @@
         });
 
         // フォークアップ・ダウン
+        var forkInterval = null;
         $('#btn-fork-up, #btn-fork-down').on('touchstart', function (data) {
-            var sendData = '0000010000000000';
-            if (data.target.id === 'btn-manual') {
-                sendData = '0000000000000000'
+            if (forkInterval) {
+                return;
             }
-            $.ajax({
-                url: '/api/mqtt/send',
-                type: 'POST',
-                data: {
-                    can_id: '104',
-                    can_data: sendData
-                }
-            });
+            var liftHeightHex = toHex(Math.floor(changeCanUnSignedToSigned((0))));
+            if (data.target.id === 'btn-fork-up') {
+                liftHeightHex = toHex(Math.floor(changeCanUnSignedToSigned((2500))));
+            }
+            var sendData = "0000000000" + liftHeightHex + "00";
+            console.log(sendData);
+
+            forkInterval = setInterval(function() {
+                console.log(sendData);
+                $.ajax({
+                    url: '/api/mqtt/send',
+                    type: 'POST',
+                    data: {
+                        can_id: '105',
+                        can_data: sendData,
+                    }
+                });
+            }, SEND_DURATION_MS);
+        });
+        $('#btn-fork-up, #btn-fork-down').on('touchend touchcancel', function (data) {
+            clearInterval(forkInterval);
+            forkInterval = null;
+        });
+
+        // チルトアップ・ダウン
+        var tiltInterval = null;
+        $('#btn-tilt-up, #btn-tilt-down').on('touchstart', function (data) {
+            if (tiltInterval) {
+                return;
+            }
+            var tiltHex = toHex(2);
+            if (data.target.id === 'btn-tilt-up') {
+                tiltHex = toHex(4);
+            }
+            var sendData = "000000000000" + tiltHex;
+            console.log(sendData);
+
+            tiltInterval = setInterval(function() {
+                console.log(sendData);
+                $.ajax({
+                    url: '/api/mqtt/send',
+                    type: 'POST',
+                    data: {
+                        can_id: '105',
+                        can_data: sendData,
+                    }
+                });
+            }, SEND_DURATION_MS);
+        });
+        $('#btn-tilt-up, #btn-tilt-down').on('touchend touchcancel', function (data) {
+            clearInterval(tiltInterval);
+            tiltInterval = null;
         });
 
         function toHex(v) {
