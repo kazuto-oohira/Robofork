@@ -56,7 +56,7 @@ class RouteOperationService:
                     data["flag_stop"] = 1
 
                 # 最後の行なら必ずflag_stopをONにする
-                if (index - 1) == len(edit_route_operation):
+                if index == len(edit_route_operation):
                     data["flag_stop"] = 1
 
                 # 送信
@@ -109,3 +109,5 @@ class RouteOperationService:
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
         mqtt.send(vehicle_id, CAN_ID_MAP_INFO_2, can_data)
+
+        print("Route GO: " + str(populated_data))
