@@ -24,6 +24,7 @@ export const TASK_LIFTUP             = 3;
 export const TASK_LIFTUP_WITH_TURN   = 4;
 export const TASK_LIFTDOWN           = 5;
 export const TASK_LIFTDOWN_WITH_TURN = 6;
+export const TASK_PAUSE              = 7;
 export const TASK_NOTHING            = 255;
 
 // タスクラベル
@@ -35,6 +36,7 @@ export const TASK_LABELS = {
   [TASK_LIFTUP_WITH_TURN]:   '荷上げ(旋回あり)',
   [TASK_LIFTDOWN]:           '荷下げ',
   [TASK_LIFTDOWN_WITH_TURN]: '荷下げ(旋回あり)',
+  [TASK_PAUSE]:              '一時停止',
   [TASK_NOTHING]:            '-',
 };
 
