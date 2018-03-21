@@ -15,17 +15,24 @@ class RouteOperationService:
         vehicle_operation_plan = VehicleOperationPlan.objects.get(pk=vehicle_operation_plan_id)
         route_operation_json = json.loads(vehicle_operation_plan.route_operation_json)
 
-        # 件数を取得してPreMap送信
         if len(route_operation_json) == 0:
             return
 
-        # 件数
+        # なにもしないタスク(255)は送らない
+        edit_route_operation = []
+        for row in route_operation_json:
+            if row.get("task", 255) != 255:
+                edit_route_operation.append(row)
+
+        # 件数を取得してPreMap送信
         mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_MAP_PRE_INFO,
-                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(route_operation_json)) + "00000000")
+                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(edit_route_operation)) + "00000000")
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
 
         for i in range(2):  # どうにもECUがCANを取りこぼすので2回連続で送る
-            for index, row in enumerate(route_operation_json):
+            index = 1
+            for row in edit_route_operation:
+
                 # 初期値設定＆Populate
                 data = {
                     "index": index,
@@ -57,16 +64,18 @@ class RouteOperationService:
                 # AfterTaskが定義されていれば、flag_stopをONに
                 if data["after_task"] != 255:
                     data["flag_stop"] = 1
-    
+
                 # 送信
                 cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
-    
+
                 # AfterTaskが定義されていれば、AfterTaskをTaskに置き換えて再送信
                 if data["after_task"] != 255:
                     data["flag_stop"] = 0
                     data["task"] = data["after_task"]
                     cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
                 """
+
+                index += 1
 
         # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
