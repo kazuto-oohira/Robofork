@@ -97,7 +97,7 @@ export default {
         }
 
         const parsedData = JSON.parse(event.data);
-        console.log(parsedData);
+        // console.log(parsedData);
 
         if (('reload' in parsedData) && parsedData.reload) {
           this.initialize();

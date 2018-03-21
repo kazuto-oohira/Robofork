@@ -1,16 +1,10 @@
 $(function() {
-    // TODO: 緊急停止状態を取得する
+    // 緊急停止監視開始
+    watchEmergencyStatus();
     changeEmergencyStatus(false);
 
     // 緊急停止ボタン
     $('.button-emergency, .button-emergency-cancel').click(function() {
-
-        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
-        client.onmessage = function(event) {
-            console.log(event);
-        }
-
-
         var $this = $(this);
         var emergencyType = $this.data('emergency-type');
         var isCancel = $this.hasClass('button-emergency-cancel');
@@ -60,6 +54,42 @@ $(function() {
         placement: 'left',
         trigger: 'manual'
     });
+
+    // 各車両と緊急停止を監視する
+    function watchEmergencyStatus() {
+        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        client.onmessage = function(event) {
+            var parsedData = JSON.parse(event.data);
+
+            // 各車両
+            for (var i = 0; i < parsedData["vehicles"].length; i++) {
+                $('#vehicle_status_1_' + parsedData["vehicles"][i]["id"]).text(parsedData["vehicles"][i]["vehicle_status"]["status_name"]);
+                $('#vehicle_operation_name_1_' + parsedData["vehicles"][i]["id"]).text(
+                    $('#operation_plan_' + parsedData["vehicles"][i]["vehicle_status"]["vehicle_operation_plan_id"]).text()
+                );
+            }
+
+            // 緊急状態化？
+            var isEmergency = false;
+            for (var i = 0; i < parsedData["vehicles"].length; i++) {
+                if (parsedData["vehicles"][i] && parsedData["vehicles"][i]["vehicle_status"]
+                    && parsedData["vehicles"][i]["vehicle_status"]["status_code"] != 0) {
+                    isEmergency = true;
+                }
+            }
+
+            if (parsedData["status"] == 2) {
+                changeEmergencyStatus(true);
+            } else {
+                changeEmergencyStatus(false);
+            }
+
+            changeEmergencyStatus(isEmergency);
+        }
+        client.onerror = function(error) {
+            console.log(error);
+        }
+    }
 
     // 緊急停止時の外観を設定する
     function changeEmergencyStatus(isEmergency) {

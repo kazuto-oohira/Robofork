@@ -104,7 +104,7 @@
           <div class="col-md-12">
             <label>進行方向: {{ dirLabel }}</label>
             <br>
-            <button @click="reverse()" :disabled="disableReverse" class="btn btn-info">向きを反転する</button>
+            <button @click="reverse()" :disabled="disableReverse" class="btn btn-info">進行方向反転</button>
           </div>
         </div>
         <hr>

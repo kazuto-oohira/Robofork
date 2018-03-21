@@ -78,8 +78,8 @@
                   {% for vehicle in vehicles %}
                   <tr>
                     <td>{{ vehicle.name }}</td>
-                    <td>-</td>
-                    <td>-</td>
+                    <td id="vehicle_status_1_{{ vehicle.id }}">-</td>
+                    <td id="vehicle_operation_name_1_{{ vehicle.id }}">-</td>
                     <td class="text-right">
                       <a class="btn btn-danger btn-xs">停止</a>
                     </td>
@@ -114,13 +114,13 @@
                   <tbody>
                   {% for operation_plan in operation_plans %}
                   <tr>
-                    <td>{{ operation_plan.name }}</td>
+                    <td id="operation_plan_{{ operation_plan.id }}">{{ operation_plan.name }}</td>
                     <td>{{ operation_plan.explain }}</td>
                     <td>{{ operation_plan.vehicle.name }}</td>
-                    <td>-</td>
+                    <td id="vehicle_status_1[{{ vehicle.id }}]">-</td>
                     <td>
                       <div class="progress progress_sm">
-                        <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="57" aria-valuenow="56" style="width: 57%;"></div>
+                        <div class="progress-bar bg-green" role="progressbar" style="width: 78%;"></div>
                       </div>
                     </td>
                     <td class="text-right">

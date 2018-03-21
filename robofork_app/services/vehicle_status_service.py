@@ -15,7 +15,6 @@ class VehicleStatusService:
             vehicle_status = self.__vehicle_status_list[vehicle_id]
         else:
             vehicle_status = VehicleStatus(vehicle_id)
-            self.__vehicle_status_list[vehicle_id] = vehicle_status
 
         if data["id"] == can_const.CAN_ID_FORK_STATUS_1:
             self.__set_vehicle_status_1(vehicle_status, data)
@@ -34,8 +33,11 @@ class VehicleStatusService:
         elif data["id"] == can_const.CAN_ID_FORK_ARM_SLANT:
             self.__set_vehicle_lift_slant(vehicle_status, data)
 
+        self.__vehicle_status_list[vehicle_id] = vehicle_status
+
 
     def get_vehicle_status(self, vehicle_id):
+
         if vehicle_id in self.__vehicle_status_list.keys():
             vehicle_status = self.__vehicle_status_list[vehicle_id]
         else:
@@ -54,7 +56,6 @@ class VehicleStatusService:
 
                         "battery": vehicle_status.battery,
                         "weight_road_cell": vehicle_status.weight_road_cell,
-                        "lift_height": vehicle_status.lift_height,
                         "lift_height": vehicle_status.lift_height,
                         "interlock_fork_tip_1": vehicle_status.interlock_fork_tip_1,
                         "interlock_fork_tip_2": vehicle_status.interlock_fork_tip_2,
@@ -200,8 +201,8 @@ class VehicleStatus:
     def get_status_code(self):
         if self.interlock_fork_tip_1 or self.interlock_fork_tip_2 or self.interlock_fork_tip_3 or self.interlock_fork_tip_4:
             return 2
-        elif self.interlock_pallet_switch:
-            return 0
+        # elif self.interlock_pallet_switch:
+        #     return 0
         elif self.interlock_ground_hole_right or self.interlock_ground_hole_left or self.interlock_ground_hole_center:
             return 2
         elif self.interlock_lrf_front or self.interlock_lrf_front:
