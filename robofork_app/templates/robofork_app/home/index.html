@@ -5,13 +5,16 @@
 {% block body_class %}nav-md{% endblock %}
 {% block page_style_sheets %}
   <style type="text/css">
-  .app-container {
-    background-color: #8c8c8c;
+  #emergency-status-label-parent {
+    overflow: visible;  /* 隣にあるラベルを正しく表示さるため */
   }
   </style>
 {% endblock %}
 {% block page_scripts %}
   {% render_bundle 'main' 'js' %}
+  <script type="text/javascript">
+  var rbfkHomeIndexLocationId = "{{ location_id }}";
+  </script>
   <script type="text/javascript" src="{{ STATIC_URL }}robofork_app/js/home.js"></script>
 {% endblock %}
 
@@ -33,8 +36,16 @@
           </div>
           <div class="x_content">
             <div class="row">
-              <div class="col-md-12">
-                <a href="" class="btn btn-lg btn-danger col-md-offset-3 col-md-6"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 緊急停止</a>
+              <div class="col-md-4">
+                <button class="button-emergency btn btn-lg btn-danger col-md-12" data-emergency-type="0"><span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span> 緊急停止</button>
+              </div>
+              <div class="col-md-4">
+                <button class="button-emergency btn btn-sm btn-warning" data-emergency-type="1">[DEMO]障害物検知1</button>
+                <button class="button-emergency-cancel btn btn-sm btn-success" data-emergency-type="1">[DEMO]障害物解除1</button>
+              </div>
+              <div class="col-md-4">
+                <button class="button-emergency btn btn-sm btn-warning" data-emergency-type="2">[DEMO]障害物検知2</button>
+                <button class="button-emergency-cancel btn btn-sm btn-success" data-emergency-type="2">[DEMO]障害物解除2</button>
               </div>
             </div>
           </div>
@@ -42,9 +53,7 @@
 
         <div class="x_panel">
           <div class="x_title">
-            <h2>現在の状況
-              <small>Roboforkの位置やステータスが表示されます</small>
-            </h2>
+            <h2 id="emergency-status-label-parent">現在の状況　<label id="emergency-status-label" class="label label-danger"></label></h2>
             <div class="clearfix"></div>
           </div>
           <div class="x_content">

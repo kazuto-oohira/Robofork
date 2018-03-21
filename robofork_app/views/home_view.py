@@ -10,6 +10,7 @@ def index(request, location_id):
     operation_plans = VehicleOperationPlan.get_list(location_id=location_id)
 
     return render(request, 'robofork_app/home/index.html', {
+        'location_id': location_id,
         'vehicles': vehicles,
         'operation_plans': operation_plans,
     })
