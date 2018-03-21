@@ -13,12 +13,14 @@ import utility
 mqtt_sub_qos = 0
 
 # コマンド引数処理
-mqtt_server = '127.0.0.1'
 web_socket_server = '127.0.0.1'
+mqtt_server = '127.0.0.1'
+elastic_server = '127.0.0.1'
 
-if len(sys.argv) == 3:
+if len(sys.argv) == 4:
+    web_socket_server = sys.argv[1]
     mqtt_server = sys.argv[1]
-    web_socket_server = sys.argv[2]
+    elastic_server = sys.argv[3]
 
 
 # The callback for when the client receives a CONNACK response from the server.
