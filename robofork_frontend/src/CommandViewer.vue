@@ -96,6 +96,7 @@ export default {
         { index: Constants.TASK_NOTHING,  label: Constants.TASK_LABELS[Constants.TASK_NOTHING] },
         { index: Constants.TASK_LIFTUP,   label: Constants.TASK_LABELS[Constants.TASK_LIFTUP] },
         { index: Constants.TASK_LIFTDOWN, label: Constants.TASK_LABELS[Constants.TASK_LIFTDOWN] },
+        { index: Constants.TASK_PAUSE, label: Constants.TASK_LABELS[Constants.TASK_PAUSE] },
       ],
     }
   },
@@ -122,7 +123,13 @@ export default {
     },
 
     flagStop() {
-      return this.commands.map((item, index) => item.afterTask !== Constants.TASK_NOTHING ? 1 : 0);
+      return this.commands.map((item, index) => {
+        if (item.afterTask === Constants.TASK_NOTHING || item.afterTask === Constants.TASK_PAUSE) {
+          return 0;
+        } else {
+          return 1;
+        }
+      });
     },
   },
 
