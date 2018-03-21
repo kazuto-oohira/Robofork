@@ -219,7 +219,7 @@
         // ルート走行実行ボタン
         $('#route-execute').click(function() {
             $.ajax({
-                url: '/mqtt_test/' + vehicleId + 'route_execute/'
+                url: '/mqtt_test/' + vehicleId + '/route_execute'
             }).done(function(data) {
                 if (data["result"] && data["result"] == true) {
                     $('#route-execute').popover('show');

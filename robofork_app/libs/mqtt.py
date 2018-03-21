@@ -11,7 +11,7 @@ MQTT_QOS_GOOD = 1
 def send(vehicle_id, can_id, can_data, qos=MQTT_QOS_GOOD):
     """
     MQTTへ送信する
-    :param serial_number: フォーク識別No
+    :param vehicle_id: フォーク識別No
     :param can_id: CAN-ID(HEX形式)
     :param can_data: (HEX形式)
     :param qos: QoS(0-1) 2はなぜか動かない
@@ -28,7 +28,7 @@ def send(vehicle_id, can_id, can_data, qos=MQTT_QOS_GOOD):
     # MQTT送信
     client = mqtt.Client(protocol=mqtt.MQTTv311)
     client.connect(settings.MQTT_SERVER['IP'], settings.MQTT_SERVER['PORT'], 60)
-    client.publish("Robofork/" + vehicle_id + "/toR", payload=payload_json, qos=qos)
+    client.publish("Robofork/" + str(vehicle_id) + "/toR", payload=payload_json, qos=qos)
     client.disconnect()
 
     return True
