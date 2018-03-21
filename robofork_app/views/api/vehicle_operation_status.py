@@ -56,8 +56,6 @@ def ws_disconnect(message):
 
 
 def ws_message(message):
-    print(message.content)
-
     Group("operation_status").send({
         "text": message.content['text'],
     })
