@@ -45,14 +45,13 @@ def on_message(client, userdata, msg):
     # print(msg.topic + " " + str(msg.payload))
     global vehicle_status
 
-    # TODO: 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
-    # VehicleStatusServiceへ設定する
+    # TODO: 本当はElasticSerachに投げたい。いまはメモリ内データとしてclassに保持
     mqtt_data = json.loads(msg.payload.decode('ASCII'))
 
+    # VehicleStatusServiceへ設定する
     vehicle_id = mqtt_data["serial_number"]
     vehicle_status.set_data(vehicle_id, mqtt_data)
-    result_data = vehicle_status.get_vehicle_status(vehicle_id)
-    result_data_json = json.dumps(result_data)
+    result_data_json = json.dumps(vehicle_status.get_vehicle_status(vehicle_id))
     print(result_data_json)
 
     # ステータス用ソケットへ
