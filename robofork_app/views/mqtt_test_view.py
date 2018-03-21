@@ -29,11 +29,10 @@ def route_execute(request, vehicle_id):
         print("START " + str(row_count))
 
         # 1件ごと
-        index = 1
         for row in reader:
             # 102
             data = (
-                    utility.to_hex(index) +
+                    utility.to_hex(int(row[0])) +
                     utility.to_hex(int(float(row[1])) + sign_offset) +
                     utility.to_hex(int(float(row[2])) + sign_offset) +
                     utility.to_hex(int(float(row[4])) + sign_offset))
@@ -44,7 +43,7 @@ def route_execute(request, vehicle_id):
 
             # 103
             data = (
-                utility.to_hex(index) +
+                utility.to_hex(int(row[0])) +
                 utility.to_hex(int(row[3]), 2) +
                 utility.to_hex(int(row[5]), 2) +
                 utility.to_hex(int(float(row[6])) + sign_offset) +
@@ -54,8 +53,6 @@ def route_execute(request, vehicle_id):
 
             time.sleep(wait_time_sec)
             mqtt.send(vehicle_id, CAN_ID_MAP_INFO_2, data)
-
-            index += 1
         
         time.sleep(wait_time_sec)
         mqtt.send(vehicle_id, CAN_ID_ACTION, (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
