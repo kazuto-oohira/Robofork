@@ -14,17 +14,15 @@
 
             <!-- page content -->
             <div class="right_col" role="main">
+              {% for vehicle in vehicles %}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="x_panel">
                             <div class="x_title">
-                                <h3>FX15-1</h3>
+                                <h3>{{ vehicle.name }}（{{ vehicle.vehicle_model.name }}）</h3>
                                 <div class="clearfix"></div>
                             </div>
                             <div class="x_content">
-                                <p class="text-muted">
-                                    XXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                </p>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-6 col-xs-12">
                                         <div class="x_panel">
@@ -56,53 +54,10 @@
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-12">
-                        <div class="x_panel">
-                            <div class="x_title">
-                                <h3>FX15-2</h3>
-                                <div class="clearfix"></div>
-                            </div>
-                            <div class="x_content">
-                                <p class="text-muted">
-                                    XXXXXXXXXXXXXXXXXXXXXXXXXXXX
-                                </p>
-                                <div class="row">
-                                    <div class="col-md-4 col-sm-6 col-xs-12">
-                                        <div class="x_panel">
-                                            <div class="x_title">
-                                                <h4>バッテリー</h4>
-                                            </div>
-                                            <div class="x_content">
-                                                <div class="x_content">
-                                                    <iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
-                                                    <canvas id="mybarChart2" width="303" height="151" style="width: 303px; height: 151px;"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-4 col-sm-6 col-xs-12">
-                                        <div class="x_panel">
-                                            <div class="x_title">
-                                                <h4>稼働時間</h4>
-                                            </div>
-                                            <div class="x_content">
-                                                <div class="x_content">
-                                                    <iframe class="chartjs-hidden-iframe" style="width: 100%; display: block; border: 0px; height: 0px; margin: 0px; position: absolute; left: 0px; right: 0px; top: 0px; bottom: 0px;"></iframe>
-                                                    <canvas id="canvasDoughnut2" width="303" height="151" style="width: 303px; height: 151px;"></canvas>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
+              {% endfor %}
             </div>
             <!-- /page content -->
-
         </div>
     </div>
-    <!-- /compose -->
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from robofork_app.views import vehicle_view, mqtt_test_view, home_view
+from robofork_app.views import vehicle_view, mqtt_test_view, home_view, vehicle_status_view
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
 from robofork_app.views import operation_plan_view
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status
@@ -19,7 +19,7 @@ urlpatterns = [
 
     # 各配置場所 管理画面
     path('<int:location_id>/', home_view.index, name='home_index'),
-    path('<int:location_id>/vehicle_status/', TemplateView.as_view(template_name='robofork_app/vehicle_status/index.html'), name='vehicle_status_index'),
+    path('<int:location_id>/vehicle_status/', vehicle_status_view.index, name='vehicle_status_index'),
     path('<int:location_id>/operation_plan/', OperationPlanIndexView.as_view(), name='operation_plan_index'),
     path('<int:location_id>/operation_plan/<int:vehicle_operation_plan_id>', OperationPlanDetailView.as_view(), name='operation_plan_detail'),
     path('<int:location_id>/operation_plan/new', operation_plan_view.detail_new, name='operation_plan_new'),
