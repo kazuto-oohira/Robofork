@@ -4,12 +4,6 @@ from robofork_app.libs import mqtt
 from robofork_app.services import can_const
 from robofork_app.models import Vehicle
 
-from django.shortcuts import get_object_or_404
-import django.urls as urls
-import json
-
-from robofork_app.models.location import Location
-
 
 @csrf_exempt
 def execute(request, location_id):
@@ -31,5 +25,7 @@ def execute(request, location_id):
     vehicles = Vehicle.get_list(location_id=location_id)
     for vehicle in vehicles:
         mqtt.send(vehicle.id, can_const.CAN_ID_EMERGENCY, data)
+
+    # TODO: 最新ステータスに反映
 
     return JsonResponse({ "result": True })
