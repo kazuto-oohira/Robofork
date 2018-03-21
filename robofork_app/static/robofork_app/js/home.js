@@ -1,7 +1,8 @@
 $(function() {
     // TODO: 緊急停止状態を取得する
     changeEmergencyStatus(false);
-    
+
+    // 緊急停止ボタン
     $('.button-emergency, .button-emergency-cancel').click(function() {
         var $this = $(this);
         var emergencyType = $this.data('emergency-type');
@@ -26,12 +27,34 @@ $(function() {
             }
         });
     });
-
     $('.button-emergency, .button-emergency-cancel').parent().popover({
-        content: '送信しました',
+        content: '発報しました',
         trigger: 'manual'
     });
 
+    // 運行開始
+    $('.button-route-execute').click(function() {
+        var $this = $(this);
+        var routeId = $this.data('route-id');
+
+        $.ajax({
+            url: '/api/operation_plan/' + routeId + '/execute'
+        }).done(function(data) {
+            if (data["result"] && data["result"] === true) {
+                $this.popover('show');
+                setTimeout(function() {
+                    $this.popover('hide');
+                }, 1500);
+            }
+        });
+    });
+    $('.button-route-execute').popover({
+        content: '運行要求を送信しました',
+        placement: 'left',
+        trigger: 'manual'
+    });
+
+    // 緊急停止時の外観を設定する
     function changeEmergencyStatus(isEmergency) {
         // ステータス毎の色やClass
         var bgColor = isEmergency ? "#FF4444" : "#8c8c8c";
