@@ -1,7 +1,7 @@
 import json
 import paho.mqtt.client as mqtt
 from django.conf import settings
-from robofork_app.libs import utility
+from . import utility
 
 # MQTT QoS
 MQTT_QOS_NORMAL = 0
