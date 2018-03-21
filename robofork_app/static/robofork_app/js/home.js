@@ -33,6 +33,35 @@ $(function() {
         trigger: 'manual'
     });
 
+    // 車両停止
+    $('.button-vehicle-stop').click(function() {
+        var $this = $(this);
+        var vehicleId = $this.data('vehicle-id');
+
+        // TODO: ごめん。時間ないからちょくでMQTT叩く
+        $.ajax({
+            url: '/api/mqtt/send',
+            method: 'POST',
+            data: {
+                vehicle_id: vehicleId,
+                can_id: '40F',
+                can_data: '0001000000000000'
+            }
+        }).done(function(data) {
+            if (data["result"] && data["result"] === true) {
+                $this.popover('show');
+                setTimeout(function() {
+                    $this.popover('hide');
+                }, 1500);
+            }
+        });
+    });
+    $('.button-vehicle-stop').popover({
+        content: '停止要求を送信しました',
+        placement: 'left',
+        trigger: 'manual'
+    });
+
     // 運行開始
     $('.button-route-execute').click(function() {
         var $this = $(this);
