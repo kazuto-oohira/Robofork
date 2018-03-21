@@ -6,11 +6,10 @@ import paho.mqtt.client as mqtt
 signal.signal(signal.SIGINT, signal.default_int_handler)
 
 # Web's library Import
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/libs')
-import utility
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/services')
-# import can_const
-# import route_operation_status
+# 読み込むPythonファイルのImportがおかしいとエラーになるぞ
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app')
+from libs import utility
+from services import can_const, route_operation_status_service
 
 # MQTT QoS
 mqtt_sub_qos = 0
