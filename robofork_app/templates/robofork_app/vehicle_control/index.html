@@ -250,8 +250,6 @@
                         qos: 0
                     }
                 });
-            }
-            /* 前は0を送り続けないと止まらなかったけど、修正されたらしいので一度0送るのやめてみる
             } else {
                 var sendData = '00';
                 sendData += toHex(changeCanUnSignedToSigned(0)) + toHex(changeCanUnSignedToSigned(0));
@@ -267,7 +265,6 @@
                     }
                 });
             }
-            */
         }, SEND_DURATION_MS);
 
         // 手動・自動
