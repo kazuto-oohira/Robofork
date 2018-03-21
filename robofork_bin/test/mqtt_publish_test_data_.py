@@ -2,7 +2,7 @@
 MQTTへ送られるデータを模擬する
 """
 import sys, csv, time, datetime
-import paho.mqtt.publish as publish
+import paho.mqtt.client as mqtt_client
 
 # Shell起動, Background起動時もSIGINTをKeyboardInterruptで捕まえる
 import signal
@@ -22,12 +22,17 @@ if len(sys.argv) == 3:
 def publish_test_data():
     try:
         while True:
+            client = mqtt_client.Client(protocol=mqtt_client.MQTTv311)
+            client.connect(mqtt_server, keepalive=60)
+
             with open(test_data_file) as f:
                 reader = csv.reader(f, delimiter="#")
                 for row in reader:
-                    publish.single(row[0], row[1], hostname=mqtt_server, qos=mqtt_pub_qos)
+                    client.publish(row[0], row[1])
+
                     print(str(datetime.datetime.now()) + " " + row[0] + "#" + row[1])
                     time.sleep(0.05)
+
     except KeyboardInterrupt:
         sys.exit()
 
