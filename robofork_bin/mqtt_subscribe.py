@@ -8,6 +8,9 @@ signal.signal(signal.SIGINT, signal.default_int_handler)
 # Web's library Import
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/libs')
 import utility
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/services')
+# import can_const
+# import route_operation_status
 
 # MQTT QoS
 mqtt_sub_qos = 0
@@ -19,13 +22,20 @@ elastic_server = '127.0.0.1'
 
 if len(sys.argv) == 4:
     web_socket_server = sys.argv[1]
-    mqtt_server = sys.argv[1]
+    mqtt_server = sys.argv[2]
     elastic_server = sys.argv[3]
 
+# WebSocket
+web_socket = None
+web_socket_test = None
 
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
+
+    # WebSocket接続
+    web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+    web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
 
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
@@ -39,7 +49,9 @@ def on_message(client, userdata, msg):
     # TODO: 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
     # RoboforkStatusへ（ひとまず402だけ）
     data = json.loads(msg.payload.decode('ASCII'))
+    # if data["id"] == can_const.CAN_ID_FORK_STATUS_2:
     if data["id"] == "402":
+        vehicle_id = data["serial_number"]
         x = utility.from_can_singed(int(data["data"][0] + data["data"][1], 16)) / 1000
         y = utility.from_can_singed(int(data["data"][2] + data["data"][3], 16)) / 1000
         speed = utility.from_can_singed(int(data["data"][4] + data["data"][5], 16))
@@ -49,7 +61,7 @@ def on_message(client, userdata, msg):
             "reload": False,
             "vehicles": [
                 {
-                    "id": "1",
+                    "id": vehicle_id,
                     "vehicle_status": {
                         "vehicle_operation_plan_id": 1,
                         "status_code": 0,
@@ -67,7 +79,7 @@ def on_message(client, userdata, msg):
                 }
             ]
         }
-        # print(json.dumps(result, indent=4))
+        print(json.dumps(result, indent=4))
 
         ws2 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
         ws2.send(json.dumps(result))
@@ -98,4 +110,12 @@ while True:
         sys.exit()
     except:
         print("MQTT Error:", sys.exc_info()[0])
+
+        # WebSocket Close
+        try:
+            websocket.close()
+            web_socket_test.close()
+        except:
+            pass
+
         time.sleep(5)
