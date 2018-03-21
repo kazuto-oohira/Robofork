@@ -1,8 +1,8 @@
 import sys, os
-sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app')
+sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
 
 from . import can_const
-from libs import utility
+from robofork_app.libs import utility
 
 
 class VehicleStatusService:

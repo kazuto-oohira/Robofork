@@ -2,48 +2,42 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from channels import Group
-from django.shortcuts import get_object_or_404
-from robofork_app.libs import mqtt
-from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
-
+from robofork_app.models.vehicle import Vehicle
 
 @csrf_exempt
 def load(request):
-    return JsonResponse(
-        {
-            "vehicles": [
+    # TODO: Locationが1固定
+    vehicles = Vehicle.get_list(location_id=1)
+
+    result = {
+        "vehicles": []
+    }
+
+    for vehicle in vehicles:
+        vehicle_data = {
+            "id": vehicle.id,
+            "name": vehicle.name,
+            "no": vehicle.vehicle_no,
+            "vehicle_model_name": vehicle.vehicle_model.name,
+            "vehicle_status": {
+                "vehicle_operation_plan_id": 0,
+                "status_code": 0,
+                "status_name": "-",
+            },
+            "vehicle_positions": [
                 {
-                    "id": 1,
-                    "name": "滋賀#1",
-                    "no": "SG-FX15-1",
-                    "vehicle_model_name": "FX15",
-                    "vehicle_status": {
-                        "vehicle_operation_plan_id": 1,
-                        "status_code": 0,
-                        "status_name": "-"
-                    },
-                    "vehicle_positions": [
-                        {
-                            "datetime": "2018-03-20T09:00:00+09:00",
-                            "x": "-9.57",
-                            "y": "-4.50",
-                            "task": 0,
-                            "speed": 1000,
-                            "angle": 0
-                        },
-                        {
-                            "datetime": "2018-03-20T09:00:01+09:00",
-                            "x": "-9.67",
-                            "y": "-4.80",
-                            "task": 0,
-                            "speed": 1000,
-                            "angle": 0
-                        }
-                    ]
+                    "datetime": "2018-03-20T09:00:00+09:00",
+                    "x": "-7.90",
+                    "y": "-1.20",
+                    "task": 255,
+                    "speed": 0,
+                    "angle": 0
                 }
             ]
         }
-    )
+        result["vehicles"].append(vehicle_data)
+
+    return JsonResponse(result)
 
 
 def ws_add(message):
