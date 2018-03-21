@@ -16,7 +16,7 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app/
 mqtt_sub_qos = 0
 
 # コマンド引数処理
-web_socket_server = '127.0.0.1'
+web_socket_server = '127.0.0.1:8000'
 mqtt_server = '127.0.0.1'
 elastic_server = '127.0.0.1'
 

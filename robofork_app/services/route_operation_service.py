@@ -38,7 +38,8 @@ class RouteOperationService:
                     "index": index,
                     "x": int(float(row.get("x", 0)) * 1000),
                     "y": int(float(row.get("y", 0)) * 1000),
-                    "speed": int(row.get("speed", 0)),
+                    "speed": int(1000),
+                    # "speed": int(row.get("speed", 0)),    # なぜか速度がこないけどまぁいいや
                     "task": int(row.get("task", 255)),
                     "after_task": int(row.get("afterTask", 255)),
                     "flag_stop": int(row.get("stop", 0)),
@@ -52,6 +53,10 @@ class RouteOperationService:
                 # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
                 if data["after_task"] != 255:
                     data["task"] = data["after_task"]
+                    data["flag_stop"] = 1
+
+                # 最後の行なら必ずflag_stopをONにする
+                if (index - 1) == len(edit_route_operation):
                     data["flag_stop"] = 1
 
                 # 送信
