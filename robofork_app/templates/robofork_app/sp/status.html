@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>{{ location.name }} | Robofork</title>
+  <title>{{ vehicle.name }}ステータス | Robofork</title>
   <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/bootstrap-3.3.7/css/bootstrap.min.css' %}"/>
   <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
   <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
@@ -31,14 +31,14 @@
 </head>
 <body>
 <div class="container">
-  <h4><span class="glyphicon glyphicon-home" aria-hidden="true"></span> {{ location.name }} 操作メニュー</h4>
+  <h4><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ vehicle.name }} ステータス</h4>
   <hr>
   <div class="row">
     {% for vehicle in vehicles %}
       <h5>　　{{ vehicle.name }} - {{ vehicle.vehicle_no }} ({{ vehicle.vehicle_model.name }})</h5>
       <div class="col-sm-12 text-center">
         <hr class="light">
-        <a href="/sp/vehicle/status/{{ vehicle.id }}" class="btn btn-success btn-lg">状況表示</a>　　
+        <a href="" class="btn btn-success btn-lg">状況表示</a>　　
         <a href="/sp/vehicle/control/{{ vehicle.id }}" class="btn btn-warning btn-lg">手動操作</a>
       </div>
     {% endfor %}
@@ -46,5 +46,9 @@
 </div>
 </body>
 <script type="text/javascript">
+$(function () {
+    // 車両ID取得
+    var vehicleId = window.location.href.split("/").slice(-1)[0];
+});
 </script>
 </html>

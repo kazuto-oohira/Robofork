@@ -9,3 +9,16 @@ def index(request, location_id):
         'location': location,
         'vehicles': vehicles,
     })
+
+def control(request, vehicle_id):
+    vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
+    return render(request, 'robofork_app/sp/control.html', {
+        'vehicle': vehicle,
+    })
+
+
+def status(request, vehicle_id):
+    vehicle = get_object_or_404(Vehicle, pk=vehicle_id)
+    return render(request, 'robofork_app/sp/status.html', {
+        'vehicle': vehicle,
+    })

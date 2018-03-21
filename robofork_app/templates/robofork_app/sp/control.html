@@ -134,8 +134,8 @@
         var SEND_DURATION_MS = 200;
 
         // 車両ID取得
-        var vehicleId = window.location.href.split("/").slice(-1)[0];
-        $('#label_vehicle_id').text('車両#' + vehicleId);
+        var vehicleId = "{{ vehicle.id }}"
+        $('#label_vehicle_id').text("{{ vehicle.name }}");
 
         // JoyStick生成
         var commonOptions = {
