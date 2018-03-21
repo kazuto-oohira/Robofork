@@ -33,3 +33,6 @@ def to_can_signed(value):
 
 def from_can_singed(value):
     return value - 32768
+
+def from_can_singed_2(value):
+    return -(value & 0b1000000000000000) | (value & 0b0111111111111111)
