@@ -5,6 +5,7 @@ from django.conf import settings
 from os import path
 import csv
 import time
+from robofork_app.services.can_const import *
 from robofork_app.libs import utility, mqtt
 
 
@@ -23,7 +24,7 @@ def route_execute(request, vehicle_id):
         # 件数を取得してPreMap送信
         row_count = sum(1 for row in reader)
         f.seek(0)
-        mqtt.send(vehicle_id, "108", utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
+        mqtt.send(vehicle_id, CAN_ID_MAP_PRE_INFO, utility.to_hex(999) + utility.to_hex(row_count) + "00000000")
         time.sleep(wait_time_sec)
         print("START " + str(row_count))
 
@@ -39,7 +40,7 @@ def route_execute(request, vehicle_id):
             # print(data)
 
             time.sleep(wait_time_sec)
-            mqtt.send(vehicle_id, "109", data)
+            mqtt.send(vehicle_id, CAN_ID_MAP_INFO_1, data)
 
             # 103
             data = (
@@ -52,12 +53,12 @@ def route_execute(request, vehicle_id):
             # print(data)
 
             time.sleep(wait_time_sec)
-            mqtt.send(vehicle_id, "10A", data)
+            mqtt.send(vehicle_id, CAN_ID_MAP_INFO_2, data)
 
             index += 1
         
         time.sleep(wait_time_sec)
-        mqtt.send(vehicle_id, '10B', (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
+        mqtt.send(vehicle_id, CAN_ID_ACTION, (utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000"))
 
     return JsonResponse({'result': True})
 

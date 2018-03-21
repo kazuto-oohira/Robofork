@@ -1,4 +1,5 @@
 import time, csv, json
+from .can_const import *
 from robofork_app.libs import utility, mqtt
 from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
 
@@ -13,14 +14,13 @@ class RouteOperationService:
         # ルート情報を取得する（取得不可なら落ちる）
         vehicle_operation_plan = VehicleOperationPlan.objects.get(pk=vehicle_operation_plan_id)
         route_operation_json = json.loads(vehicle_operation_plan.route_operation_json)
-        vehicle_id = "1"
 
         # 件数を取得してPreMap送信
         if len(route_operation_json) == 0:
             return
 
         # 件数
-        mqtt.send(vehicle_id, "108",
+        mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_MAP_PRE_INFO,
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(route_operation_json)) + "00000000")
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
 
@@ -48,7 +48,7 @@ class RouteOperationService:
                     data["flag_stop"] = 1
 
                 # 送信
-                cls.__send_route_data(vehicle_id, data)
+                cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
 
                 # ===================================
                 # AfterTaskを2行にして送信するバージョン
@@ -59,18 +59,18 @@ class RouteOperationService:
                     data["flag_stop"] = 1
     
                 # 送信
-                cls.__send_route_data(vehicle_id, data)
+                cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
     
                 # AfterTaskが定義されていれば、AfterTaskをTaskに置き換えて再送信
                 if data["after_task"] != 255:
                     data["flag_stop"] = 0
                     data["task"] = data["after_task"]
-                    cls.__send_route_data(vehicle_id, data)
+                    cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
                 """
 
         # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, "10B",
+        mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_ACTION,
                   utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000")
 
     @classmethod
@@ -83,7 +83,7 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["speed"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, "109", can_data)
+        mqtt.send(vehicle_id, CAN_ID_MAP_INFO_1, can_data)
 
         # タスク
         can_data = (
@@ -94,4 +94,4 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["height_lift"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, "10A", can_data)
+        mqtt.send(vehicle_id, CAN_ID_MAP_INFO_2, can_data)
