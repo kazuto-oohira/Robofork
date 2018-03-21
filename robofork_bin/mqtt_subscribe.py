@@ -32,10 +32,6 @@ web_socket_test = None
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
 
-    # WebSocket接続
-    web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
-    web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
-
     # Subscribing in on_connect() means that if we lose the connection and
     # reconnect then subscriptions will be renewed.
     client.subscribe("Robofork/+/toS", qos=mqtt_sub_qos)
@@ -78,21 +74,20 @@ def on_message(client, userdata, msg):
                 }
             ]
         }
-        print(json.dumps(result, indent=4))
+        # print(json.dumps(result))
 
-        ws2 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
-        ws2.send(json.dumps(result))
-        ws2.close()
+        # ステータス用ソケットへ
+        web_socket.send(json.dumps(result))
 
     # MQTTテストへ
-    ws = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
-    ws.send(msg.payload.decode('ASCII'))
-    ws.close()
+    web_socket_test.send(msg.payload.decode('ASCII'))
 
 
-# MQTT
 while True:
     try:
+        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+        web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
+
         client = mqtt.Client(protocol=mqtt.MQTTv311)
         client.on_connect = on_connect
         client.on_message = on_message
@@ -112,7 +107,7 @@ while True:
 
         # WebSocket Close
         try:
-            websocket.close()
+            web_socket.close()
             web_socket_test.close()
         except:
             pass
