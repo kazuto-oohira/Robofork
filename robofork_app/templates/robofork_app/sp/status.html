@@ -13,42 +13,101 @@
       background-color: #2F3F52;
       color: #ffffff;
     }
+    body.emergency {
+      background-color: #FF4444;
+    }
     hr {
-      margin: 5px 0;
+      margin: 5px 10px;
       opacity: 0.5;
     }
     hr.light {
-      margin: 4px;
-      opacity: 0.25;
+      background-color: #2F3F52;
     }
-    a {
-      width: 40%;
+    .row {
+      margin: 10px;
     }
-    .col-sm-12 {
-      margin-bottom: 35px;
+    .col-xs-12 {
+      padding: 15px 10px;
+      border-radius: 4px;
+      background-color: #F7F7F7;
+      color: #2F3F52;
+    }
+    .col-xs-12 h5 {
+      margin-top: 0;
+      font-weight: 700;
     }
   </style>
 </head>
-<body>
-<div class="container">
-  <h4><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ vehicle.name }} ステータス</h4>
-  <hr>
-  <div class="row">
-    {% for vehicle in vehicles %}
-      <h5>　　{{ vehicle.name }} - {{ vehicle.vehicle_no }} ({{ vehicle.vehicle_model.name }})</h5>
-      <div class="col-sm-12 text-center">
+<body class="">
+  <div class="container">
+    <h4><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> {{ vehicle.name }} ステータス</h4>
+    <hr>
+    <div class="row">
+      <div class="col-xs-12">
+        <h5>現在の運行計画</h5>
         <hr class="light">
-        <a href="" class="btn btn-success btn-lg">状況表示</a>　　
-        <a href="/sp/vehicle/control/{{ vehicle.id }}" class="btn btn-warning btn-lg">手動操作</a>
+        <div id="task_name">ー</div>
+        <div id="task_explain">　</div>
       </div>
-    {% endfor %}
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <h5>ステータス</h5>
+        <hr class="light">
+        <div id="status_name">ー</div>
+      </div>
+    </div>
   </div>
-</div>
 </body>
 <script type="text/javascript">
 $(function () {
     // 車両ID取得
-    var vehicleId = window.location.href.split("/").slice(-1)[0];
+    var vehicleId = "{{ vehicle.id }}"
+
+    // 各車両と緊急停止を監視する
+    watchEmergencyStatus();
+
+    function watchEmergencyStatus() {
+        var lastId = -1;
+
+        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        client.onmessage = function(event) {
+            var parsedData = JSON.parse(event.data);
+
+            // 各車両
+            for (var i = 0; i < parsedData["vehicles"].length; i++) {
+                if (vehicleId != parsedData["vehicles"][i]["id"]) {
+                    continue;
+                }
+
+                var vehicleData = parsedData["vehicles"][i];
+
+                $('#task_name').text(vehicleData["vehicle_status"]["vehicle_operation_plan_id"])
+                $('#status_name').text(vehicleData['vehicle_status']['status_name']);
+
+                // タスク名取得
+                if (lastId != vehicleData["vehicle_status"]["vehicle_operation_plan_id"]) {
+                    $.ajax({
+                        url: '/api/operation_plan/' + vehicleData["vehicle_status"]["vehicle_operation_plan_id"] + '/load'
+                    }).done(function(data) {
+                        $('#task_name').text(data.name);
+                        $('#task_explain').text(data.explain);
+                        lastId = data.id;
+                    });
+                }
+
+                // 緊急？
+                if (vehicleData["vehicle_status"] != 0) {
+                    $('.container').addClass('emergency');
+                } else {
+                    $('.container').removeClass('emergency');
+                }
+            }
+        }
+        client.onerror = function(error) {
+            console.log(error);
+        }
+    }
 });
 </script>
 </html>
