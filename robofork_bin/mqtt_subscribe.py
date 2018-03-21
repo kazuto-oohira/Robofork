@@ -9,7 +9,7 @@ signal.signal(signal.SIGINT, signal.default_int_handler)
 # 読み込むPythonファイルのImportがおかしいとエラーになるぞ
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app')
 from libs import utility
-from services import can_const, route_operation_status_service
+from services import can_const, vehicle_status_service
 
 # MQTT QoS
 mqtt_sub_qos = 0
@@ -28,6 +28,10 @@ if len(sys.argv) == 4:
 web_socket = None
 web_socket_test = None
 
+# データを保持するクラス
+vehicle_status = vehicle_status_service.VehicleStatusService()
+
+
 # The callback for when the client receives a CONNACK response from the server.
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code " + str(rc))
@@ -40,45 +44,20 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     # print(msg.topic + " " + str(msg.payload))
+    global vehicle_status
 
     # TODO: 本当はElasticSerachに直接投げたい。それからElasticのPUSH系があればそこから通知っぽく
-    # RoboforkStatusへ（ひとまず402だけ）
-    data = json.loads(msg.payload.decode('ASCII'))
-    # if data["id"] == can_const.CAN_ID_FORK_STATUS_2:
-    if data["id"] == "402":
-        vehicle_id = data["serial_number"]
-        x = utility.from_can_singed(int(data["data"][0] + data["data"][1], 16)) / 1000
-        y = utility.from_can_singed(int(data["data"][2] + data["data"][3], 16)) / 1000
-        speed = utility.from_can_singed(int(data["data"][4] + data["data"][5], 16))
-        angle = utility.from_can_singed(int(data["data"][6] + data["data"][7], 16)) * 10
+    # VehicleStatusServiceへ設定する
+    mqtt_data = json.loads(msg.payload.decode('ASCII'))
 
-        result = {
-            "reload": False,
-            "vehicles": [
-                {
-                    "id": vehicle_id,
-                    "vehicle_status": {
-                        "vehicle_operation_plan_id": 1,
-                        "status_code": 0,
-                        "status_name": "--"
-                    },
-                    "vehicle_positions": [
-                        {
-                            "x": x,
-                            "y": y,
-                            "task": 0,
-                            "speed": speed,
-                            "angle": angle
-                        }
-                    ]
-                }
-            ]
-        }
-        # print(json.dumps(result))
+    vehicle_id = mqtt_data["serial_number"]
+    vehicle_status.set_data(vehicle_id, mqtt_data)
+    result_data = vehicle_status.get_vehicle_status(vehicle_id)
+    result_data_json = json.dumps(result_data)
+    print(result_data_json)
 
-        # ステータス用ソケットへ
-        web_socket.send(json.dumps(result))
-
+    # ステータス用ソケットへ
+    web_socket.send(result_data_json)
     # MQTTテストへ
     web_socket_test.send(msg.payload.decode('ASCII'))
 
@@ -112,4 +91,4 @@ while True:
         except:
             pass
 
-        time.sleep(5)
+        time.sleep(2.5)
