@@ -2,14 +2,16 @@ $(function() {
     // TODO: 緊急停止状態を取得する
     changeEmergencyStatus(false);
     
-    $('.button-emergency').click(function() {
+    $('.button-emergency, .button-emergency-cancel').click(function() {
         var $this = $(this);
-        var type = $this.data('emergency-type');
+        var emergencyType = $this.data('emergency-type');
+        var isCancel = $this.hasClass('button-emergency-cancel');
         $.ajax({
             url: '/api/emergency/' + rbfkHomeIndexLocationId + '/execute',
             method: 'POST',
             data: {
-                emergency_type: type
+                emergency_type: emergencyType,
+                is_cancel: isCancel ? "1" : "",
             }
         }).done(function(data) {
             if (data["result"] && data["result"] === true) {
@@ -18,10 +20,14 @@ $(function() {
                     $this.parent().popover('hide');
                 }, 1500);
             }
+
+            if (!isCancel) {
+                changeEmergencyStatus(true);
+            }
         });
     });
 
-    $('.button-emergency').parent().popover({
+    $('.button-emergency, .button-emergency-cancel').parent().popover({
         content: '送信しました',
         trigger: 'manual'
     });
