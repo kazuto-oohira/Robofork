@@ -8,8 +8,7 @@ signal.signal(signal.SIGINT, signal.default_int_handler)
 # Web's library Import
 # 読み込むPythonファイルのImportがおかしいとエラーになるぞ
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../robofork_app')
-from libs import utility
-from services import can_const, vehicle_status_service
+from services import vehicle_status_service
 
 # MQTT QoS
 mqtt_sub_qos = 0
