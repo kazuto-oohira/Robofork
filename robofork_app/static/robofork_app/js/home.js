@@ -4,6 +4,13 @@ $(function() {
 
     // 緊急停止ボタン
     $('.button-emergency, .button-emergency-cancel').click(function() {
+
+        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        client.onmessage = function(event) {
+            console.log(event);
+        }
+
+
         var $this = $(this);
         var emergencyType = $this.data('emergency-type');
         var isCancel = $this.hasClass('button-emergency-cancel');
