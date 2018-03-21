@@ -24,9 +24,21 @@ class RouteOperationService:
             if row.get("task", 255) != 255:
                 edit_route_operation.append(row)
 
+        # 件数
+        route_len = len(edit_route_operation)
+
+        # ===================================
+        # AfterTaskを2行にして送信するバージョン
+        # ===================================
+        add_count = 0
+        for row in route_operation_json:
+            if row.get("after_task", 255) != 255:
+                add_count += 1
+        route_len = add_count
+
         # 件数を取得してPreMap送信
         mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_MAP_PRE_INFO,
-                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(edit_route_operation)) + "00000000")
+                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(route_len) + "00000000")
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
 
         for i in range(2):  # どうにもECUがCANを取りこぼすので2回連続で送る
@@ -50,22 +62,21 @@ class RouteOperationService:
                 # ===================================
                 # AfterTaskを1行で送信するバージョン
                 # ===================================
-                # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
-                if data["after_task"] != 255:
-                    data["task"] = data["after_task"]
-                    data["flag_stop"] = 1
-
-                # 最後の行なら必ずflag_stopをONにする
-                if index == len(edit_route_operation):
-                    data["flag_stop"] = 1
-
-                # 送信
-                cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
+                # # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
+                # if data["after_task"] != 255:
+                #     data["task"] = data["after_task"]
+                #     data["flag_stop"] = 1
+                #
+                # # 最後の行なら必ずflag_stopをONにする
+                # if index == len(edit_route_operation):
+                #     data["flag_stop"] = 1
+                #
+                # # 送信
+                # cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
 
                 # ===================================
                 # AfterTaskを2行にして送信するバージョン
                 # ===================================
-                """
                 # AfterTaskが定義されていれば、flag_stopをONに
                 if data["after_task"] != 255:
                     data["flag_stop"] = 1
@@ -78,7 +89,6 @@ class RouteOperationService:
                     data["flag_stop"] = 0
                     data["task"] = data["after_task"]
                     cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
-                """
 
                 index += 1
 
