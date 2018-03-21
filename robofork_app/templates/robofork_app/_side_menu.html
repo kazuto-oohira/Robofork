@@ -12,7 +12,7 @@
             <div class="menu_section">
               <ul class="nav side-menu">
                 <li class="{{ home_index|default:"" }}"><a href="{% url 'home_index' 1 %}"><i class="fa fa-home"></i> HOME </a></li>
-                <li class="{{ vehicle_status_index|default:"" }}"><a href="{% url 'vehicle_status_index' 1 %}"><i class="fa fa-bar-chart-o"></i> 車両ステータス </a></li>
+{#                <li class="{{ vehicle_status_index|default:"" }}"><a href="{% url 'vehicle_status_index' 1 %}"><i class="fa fa-bar-chart-o"></i> 車両ステータス </a></li>#}
                 <li class="{{ operation_plan_index|default:"" }}"><a href="{% url 'operation_plan_index' 1 %}"><i class="fa fa-flag-checkered"></i> 運行計画 </a></li>
               </ul>
             </div>

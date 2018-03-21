@@ -25,7 +25,7 @@ urlpatterns = [
     path('<int:location_id>/operation_plan/new', operation_plan_view.detail_new, name='operation_plan_new'),
 
     # 車両マニュアル操作
-    path('vehicle/control/<int:vehicle_id>', TemplateView.as_view(template_name='robofork_app/vehicle_control/index.html'), name='vehicle_control'),
+    path('vehicle/control/<int:vehicle_id>', TemplateView.as_view(template_name='robofork_app/sp/vehicle_control/index.html'), name='vehicle_control'),
 
     # API
     path('api/mqtt/send', mqtt.send),
