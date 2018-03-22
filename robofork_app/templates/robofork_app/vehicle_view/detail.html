@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block title %}車両明細 | Robofork{% endblock %}
+{% block body_class %}nav-md{% endblock %}
 
 {% block content %}
   <div class="container body">
@@ -43,6 +44,9 @@
                                        name="{{ form.vehicle_no.html_name }}" placeholder="車両ID"
                                        value="{{ form.vehicle_no.value|default_if_none:'' }}"/>
                                 <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
+                            </div>
+                            <div class="well">
+                              車両型式の紐付け、配置場所の紐付け、キャリブレーション情報の紐付け、有効無効、メンテナンス情報の登録などを行います。
                             </div>
                             <button type="submit" class="btn btn-primary">登録</button>
                         </form>
