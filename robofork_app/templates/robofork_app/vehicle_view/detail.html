@@ -13,11 +13,11 @@
         <div class="row">
           <div class="col-md-12">
             {% if form.errors %}
-                <div class="col-md-8 alert alert-danger" role="alert">
-                    {% for field, error in form.errors.items %}
-                        {{ field|escape }}: {{ error|escape }}
-                    {% endfor %}
-                </div>
+              <div class="col-md-8 alert alert-danger" role="alert">
+                {% for field, error in form.errors.items %}
+                  {{ field|escape }}: {{ error|escape }}
+                {% endfor %}
+              </div>
             {% endif %}
             <div class="x_panel">
               <div class="x_title">
@@ -26,30 +26,47 @@
               </div>
               <div class="x_content">
                 <div class="col-md-8">
-                    {% if form.instance.id %}
-                        <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal">
-                    {% else %}
-                        <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
-                    {% endif %}
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="vehicle_name">車両名</label>
-                                <input type="text" class="form-control" id="{{ form.name.auto_id }}" name="{{ form.name.html_name }}"
-                                       placeholder="車両名" value="{{ form.name.value|default_if_none:'' }}"/>
-                                <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
-                            </div>
-                            <div class="form-group">
-                                <label for="vehicle_vehicle_no">車両名</label>
-                                <input type="text" class="form-control" id="{{ form.vehicle_no.auto_id }}"
-                                       name="{{ form.vehicle_no.html_name }}" placeholder="車両ID"
-                                       value="{{ form.vehicle_no.value|default_if_none:'' }}"/>
-                                <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
-                            </div>
-                            <div class="well">
-                              車両型式の紐付け、配置場所の紐付け、キャリブレーション情報の紐付け、有効無効、メンテナンス情報の登録などを行います。
-                            </div>
-                            <button type="submit" class="btn btn-primary">登録</button>
-                        </form>
+                  {% if form.instance.id %}
+                    <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal">
+                  {% else %}
+                    <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
+                  {% endif %}
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="vehicle_name">車両名</label>
+                    <input type="text" class="form-control" id="{{ form.name.auto_id }}"
+                           name="{{ form.name.html_name }}"
+                           placeholder="車両名" value="{{ form.name.value|default_if_none:'' }}"/>
+                    <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">車両No</label>
+                    <input type="text" class="form-control" id="{{ form.vehicle_no.auto_id }}"
+                           name="{{ form.vehicle_no.html_name }}" placeholder="車両No"
+                           value="{{ form.vehicle_no.value|default_if_none:'' }}"/>
+                    <small id="emailHelp" class="form-text text-muted">車両を識別するID等を入力してください</small>
+                  </div>
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">配置場所</label>
+                    <select id="{{ form.location.auto_id }}" name="{{ form.location.html_name }}">
+                      <option value="0">(指定しない)</option>
+                      <option value="1">滋賀工場</option>
+                    </select>
+                    <div>
+                      <small id="emailHelp" class="form-text text-muted">配置する場所を選択してください。まだ配置しない場合は"選択しない"を選択してください
+                      </small>
+                    </div>
+                    <div class="form-group">
+                      <label for="vehicle_vehicle_no">メモ</label>
+                      <textarea name="vehicle_vehicle_extra_info_json" id="vehicle_vehicle_extra_info_json"
+                                rows="10"></textarea>
+                      <small id="emailHelp" class="form-text text-muted">部品交換メモなどを入力してください</small>
+                    </div>
+                    <div class="well">
+                      車両型式の紐付け、配置場所の紐付け、キャリブレーション情報の紐付け、有効無効、メンテナンス情報の登録などを行います。d
+                    </div>
+                    <button type="submit" class="btn btn-primary">登録</button>
+                  </form>
                 </div>
               </div>
             </div>
