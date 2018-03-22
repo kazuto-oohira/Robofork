@@ -35,6 +35,7 @@ urlpatterns = [
     path('sp/<int:location_id>/', sp_view.index),
     path('sp/vehicle/control/<int:vehicle_id>', sp_view.control),
     path('sp/vehicle/status/<int:vehicle_id>', sp_view.status),
+    path('sp/vehicle/operation_plan/<int:vehicle_id>', sp_view.operation_plan),
 
     # API
     path('api/mqtt/send', mqtt.send),

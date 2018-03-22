@@ -1,0 +1,89 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>{{ vehicle.name }}ステータス | Robofork</title>
+  <link rel="stylesheet" type="text/css" href="{% static 'robofork_app/vendor/bootstrap-3.3.7/css/bootstrap.min.css' %}"/>
+  <script src="{% static 'robofork_app/vendor/jquery.3.2.1.js' %}"></script>
+  <script src="{% static 'robofork_app/vendor/bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+  <style type="text/css">
+    body {
+      background-color: #2F3F52;
+      color: #ffffff;
+    }
+    .row {
+      margin: 5px;
+    }
+    .icon-button {
+      width: 100%;
+      height: 100px;
+      font-size: 120%;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body class="">
+  <div class="container">
+    <div class="row">
+      {% for operation_plan in operation_plan_list %}
+      <div class="col-xs-6">
+        <button class="icon-button btn btn-success">{{ operation_plan.name }}</button>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+<script type="text/javascript">
+$(function () {
+    // 車両ID取得
+    var vehicleId = "{{ vehicle.id }}"
+
+    // 各車両と緊急停止を監視する
+    watchEmergencyStatus();
+
+    function watchEmergencyStatus() {
+        var lastId = -1;
+
+        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        client.onmessage = function(event) {
+            var parsedData = JSON.parse(event.data);
+
+            // 各車両
+            for (var i = 0; i < parsedData["vehicles"].length; i++) {
+                if (vehicleId != parsedData["vehicles"][i]["id"]) {
+                    continue;
+                }
+
+                var vehicleData = parsedData["vehicles"][i];
+
+                $('#task_name').text(vehicleData["vehicle_status"]["vehicle_operation_plan_id"])
+                $('#status_name').text(vehicleData['vehicle_status']['status_name']);
+
+                // タスク名取得
+                if (lastId != vehicleData["vehicle_status"]["vehicle_operation_plan_id"]) {
+                    $.ajax({
+                        url: '/api/operation_plan/' + vehicleData["vehicle_status"]["vehicle_operation_plan_id"] + '/load'
+                    }).done(function(data) {
+                        $('#task_name').text(data.name);
+                        $('#task_explain').text(data.explain);
+                        lastId = data.id;
+                    });
+                }
+
+                // 緊急？
+                if (vehicleData["vehicle_status"] != 0) {
+                    $('.container').addClass('emergency');
+                } else {
+                    $('.container').removeClass('emergency');
+                }
+            }
+        }
+        client.onerror = function(error) {
+            console.log(error);
+        }
+    }
+});
+</script>
+</html>
