@@ -85,7 +85,7 @@ class RouteOperationService:
         # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
         mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_ACTION,
-                  utility.to_hex(999) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000")
+                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000")
 
     @classmethod
     def __send_route_data(cls, vehicle_id, populated_data):

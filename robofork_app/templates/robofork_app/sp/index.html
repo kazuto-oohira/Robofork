@@ -44,15 +44,16 @@
     {% endfor %}
   </div>
   <div class="row">
-    <button id="button-emergency-stop" class="btn btn-danger btn-lg col-xs-12" style="height:80px">緊急停止</button>
+    <button id="button-emergency-stop" class="btn btn-danger btn-lg col-xs-12" style="height:80px;">緊急停止</button>
   </div>
 </div>
 </body>
 <script type="text/javascript">
 $(function() {
+    var rbfkSpIndexLocationId = "{{ location.id }}";
     $('#button-emergency-stop').click(function() {
         $.ajax({
-            url: '/api/emergency/' + rbfkHomeIndexLocationId + '/execute',
+            url: '/api/emergency/' + rbfkSpIndexLocationId + '/execute',
             method: 'POST',
             data: {
                 emergency_type: 0,

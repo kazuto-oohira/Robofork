@@ -54,7 +54,7 @@
 
         <div class="x_panel">
           <div class="x_title">
-            <h2 id="emergency-status-label-parent">現在の状況　<label id="emergency-status-label" class="label label-danger"></label></h2>
+            <h2 id="emergency-status-label-parent">現在の状況</h2>
             <div class="clearfix"></div>
           </div>
           <div class="x_content">
@@ -82,7 +82,9 @@
                     <td id="vehicle_status_1_{{ vehicle.id }}">-</td>
                     <td id="vehicle_operation_name_1_{{ vehicle.id }}">-</td>
                     <td class="text-right">
-                      <a class="button-vehicle-stop btn btn-danger btn-xs" data-vehicle-id="{{ vehicle.id }}">停止</a>
+                      <a class="button-vehicle-auto btn btn-primary btn-xs" data-vehicle-id="{{ vehicle.id }}" data-is-to-auto="yes">自動</a>
+                      <a class="button-vehicle-manual btn btn-success btn-xs" data-vehicle-id="{{ vehicle.id }}" data-is-to-manual="">手動</a>
+                      <a class="button-vehicle-stop btn btn-danger btn-sm" data-vehicle-id="{{ vehicle.id }}">停止</a>
                     </td>
                   </tr>
                   {% endfor %}

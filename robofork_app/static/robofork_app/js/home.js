@@ -33,6 +33,36 @@ $(function() {
         trigger: 'manual'
     });
 
+    // 手動・自動
+    $('.button-vehicle-auto, .button-vehicle-manual').click(function() {
+        var $this = $(this);
+        var vehicleId = $this.data('vehicle-id');
+        var isToAuto = $this.data('is-to-auto');
+
+        // TODO: ごめん。時間ないからちょくでMQTT叩く
+        $.ajax({
+            url: '/api/mqtt/send',
+            method: 'POST',
+            data: {
+                vehicle_id: vehicleId,
+                can_id: '10B',
+                can_data: isToAuto ? '0000000100000000' : '0000000000000000'
+            }
+        }).done(function(data) {
+            if (data["result"] && data["result"] === true) {
+                $this.popover('show');
+                setTimeout(function() {
+                    $this.popover('hide');
+                }, 1500);
+            }
+        });
+    });
+    $('.button-vehicle-auto, .button-vehicle-manual').popover({
+        content: '送信しました',
+        placement: 'left',
+        trigger: 'manual'
+    });
+
     // 車両停止
     $('.button-vehicle-stop').click(function() {
         var $this = $(this);
@@ -124,13 +154,8 @@ $(function() {
     function changeEmergencyStatus(isEmergency) {
         // ステータス毎の色やClass
         var bgColor = isEmergency ? "#FF4444" : "#8c8c8c";
-        var labelClass = isEmergency ? "label-danger" : "label-success";
-        var labelString = isEmergency ? "緊急停止中(車両単体含む)" : "通常運行中";
 
         // 変化
         $('.app-container').css('backgroundColor', bgColor);
-        $('#emergency-status-label')
-            .removeClass("label-danger label-success").addClass(labelClass);
-        $('#emergency-status-label').text(labelString);
     }
 });
