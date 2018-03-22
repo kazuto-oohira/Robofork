@@ -47,7 +47,7 @@
                         <td>{{ row.priority }}</td>
                         <td class="text-right">
                           <a href="{% url 'operation_plan_detail' location_id row.id %}" class="btn btn-primary btn-xs">詳細</a>
-                          <a class="btn btn-danger btn-xs">削除</a>
+                          <a class="btn btn-danger btn-xs" disabled>削除</a>
                         </td>
                       </tr>
                     {% empty %}
