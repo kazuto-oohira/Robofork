@@ -38,13 +38,28 @@
       <h5>　　{{ vehicle.name }} - {{ vehicle.vehicle_no }} ({{ vehicle.vehicle_model.name }})</h5>
       <div class="col-sm-12 text-center">
         <hr class="light">
-        <a href="/sp/vehicle/status/{{ vehicle.id }}" class="btn btn-success btn-lg">状況表示</a>　　
+        <a href="/sp/vehicle/status/{{ vehicle.id }}" class="btn btn-success btn-lg">状況表示</a>
         <a href="/sp/vehicle/control/{{ vehicle.id }}" class="btn btn-warning btn-lg">手動操作</a>
       </div>
     {% endfor %}
   </div>
+  <div class="row">
+    <button id="button-emergency-stop" class="btn btn-danger btn-lg col-xs-12" style="height:80px">緊急停止</button>
+  </div>
 </div>
 </body>
 <script type="text/javascript">
+$(function() {
+    $('#button-emergency-stop').click(function() {
+        $.ajax({
+            url: '/api/emergency/' + rbfkHomeIndexLocationId + '/execute',
+            method: 'POST',
+            data: {
+                emergency_type: 0,
+                is_cancel: false,
+            }
+        })
+    });
+});
 </script>
 </html>
