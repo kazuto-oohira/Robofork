@@ -1,5 +1,5 @@
-import time, csv, json
-from .can_const import *
+import time, json
+from . import can_const
 from robofork_app.libs import utility, mqtt
 from robofork_app.models.vehicle_operation_plan import VehicleOperationPlan
 
@@ -21,12 +21,19 @@ class RouteOperationService:
         # なにもしないタスク(255)は送らない
         edit_route_operation = []
         for row in route_operation_json:
-            if row.get("task", 255) != 255:
+            if row["task"] != can_const.ROUTE_TASK_DO_NOTHING:
                 edit_route_operation.append(row)
 
+        # AfterTaskを2行で送信する場合は件数確認
+        route_count = 0
+        for row in edit_route_operation:
+            route_count += 1
+            if row["afterTask"] != can_const.ROUTE_TASK_DO_NOTHING:
+                route_count += 1
+
         # 件数を取得してPreMap送信
-        mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_MAP_PRE_INFO,
-                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(len(edit_route_operation)) + "00000000")
+        mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_MAP_PRE_INFO,
+                  utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(route_count) + "00000000")
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
 
         for i in range(2):  # どうにもECUがCANを取りこぼすので2回連続で送る
@@ -50,6 +57,7 @@ class RouteOperationService:
                 # ===================================
                 # AfterTaskを1行で送信するバージョン
                 # ===================================
+                """
                 # AfterTaskが定義されていればflag_stopをONにして、TaskをAfterTaskで置き換える
                 if data["after_task"] != 255:
                     data["task"] = data["after_task"]
@@ -61,11 +69,11 @@ class RouteOperationService:
 
                 # 送信
                 cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
+                """
 
                 # ===================================
                 # AfterTaskを2行にして送信するバージョン
                 # ===================================
-                """
                 # AfterTaskが定義されていれば、flag_stopをONに
                 if data["after_task"] != 255:
                     data["flag_stop"] = 1
@@ -78,13 +86,12 @@ class RouteOperationService:
                     data["flag_stop"] = 0
                     data["task"] = data["after_task"]
                     cls.__send_route_data(vehicle_operation_plan.vehicle_id, data)
-                """
 
                 index += 1
 
         # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_operation_plan.vehicle_id, CAN_ID_ACTION,
+        mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_ACTION,
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000")
 
     @classmethod
@@ -97,7 +104,7 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["speed"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, CAN_ID_MAP_INFO_1, can_data)
+        mqtt.send(vehicle_id, can_const.CAN_ID_MAP_INFO_1, can_data)
 
         # タスク
         can_data = (
@@ -108,6 +115,4 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["height_lift"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, CAN_ID_MAP_INFO_2, can_data)
-
-        print("Route GO: " + str(populated_data))
+        mqtt.send(vehicle_id, can_const.CAN_ID_MAP_INFO_2, can_data)
