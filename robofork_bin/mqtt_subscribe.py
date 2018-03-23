@@ -18,10 +18,9 @@ web_socket_server = '127.0.0.1:8000'
 mqtt_server = '127.0.0.1'
 elastic_server = '127.0.0.1'
 
-if len(sys.argv) == 4:
-    web_socket_server = sys.argv[1]
-    mqtt_server = sys.argv[2]
-    elastic_server = sys.argv[3]
+if len(sys.argv) == 2:
+    mqtt_server = sys.argv[1]
+    elastic_server = sys.argv[1]
 
 # WebSocket
 web_socket = None
