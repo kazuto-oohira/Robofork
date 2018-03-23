@@ -142,29 +142,18 @@ class VehicleStatusService:
 
 
 class VehicleStatus:
-    TASK_FORWARD = 0
-    TASK_REVERSE = 1
-    TASK_TURN = 2
-    TASK_LIFTUP = 3
-    TASK_LIFTUP_WITH_TURN = 4
-    TASK_LIFTDOWN = 5
-    TASK_LIFTDOWN_WITH_TURN = 6
-    TASK_PAUSE = 7
-    TASK_NOTHING = 255
-
-
     @classmethod
     def get_task_name(cls, task_code):
         task_name_list = {
-            cls.TASK_FORWARD: "前進",
-            cls.TASK_REVERSE: "バック",
-            cls.TASK_TURN: "旋回（回転）",
-            cls.TASK_LIFTUP: "荷上げ",
-            cls.TASK_LIFTUP_WITH_TURN: "荷上げ(旋回あり)",
-            cls.TASK_LIFTDOWN: "荷下げ",
-            cls.TASK_LIFTDOWN_WITH_TURN: "荷下げ(旋回あり)",
-            cls.TASK_PAUSE: "一時停止",
-            cls.TASK_NOTHING: "-",
+            can_const.ROUTE_TASK_FORWARD: "前進",
+            can_const.ROUTE_TASK_REVERSE: "バック",
+            can_const.ROUTE_TASK_TURN: "旋回（回転）",
+            can_const.ROUTE_TASK_LIFTUP: "荷上げ",
+            can_const.ROUTE_TASK_LIFTUP_WITH_TURN: "荷上げ(旋回あり)",
+            can_const.ROUTE_TASK_LIFTDOWN: "荷下げ",
+            can_const.ROUTE_TASK_LIFTDOWN_WITH_TURN: "荷下げ(旋回あり)",
+            can_const.ROUTE_TASK_PAUSE: "一時停止",
+            can_const.ROUTE_TASK_NOTHING: "-",
         }
         return task_name_list.get(task_code, "----")
 
