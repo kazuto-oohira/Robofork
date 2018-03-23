@@ -60,7 +60,7 @@
 
                   <div class="form-group">
                     <label for="vehicle_vehicle_no">メモ</label>
-                      <textarea name="vehicle_vehicle_extra_info_json" id="vehicle_vehicle_extra_info_json" cols="30" rows="10" style="width: 100%;"></textarea>
+                      <textarea name="extra_info_json" id="extra_info_json" cols="30" rows="10" style="width: 100%;"></textarea>
                       <small id="emailHelp" class="form-text text-muted">部品交換メモなどを入力してください</small>
                   </div>
                   <div class="well">
@@ -68,7 +68,6 @@
                   </div>
 
                   <input type="hidden" name="{{ form.vehicle_model.html_name }}" value="1" />
-                  <input type="hidden" name="extra_info_json" value="{}" />
 
                   <button type="submit" class="btn btn-primary">登録</button>
                   </form>
