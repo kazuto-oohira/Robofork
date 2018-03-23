@@ -277,8 +277,8 @@ export default {
     },
 
     updateMark(id, _mark) {
-      Vue.set(this.marks[id], 'x', _mark.x);
-      Vue.set(this.marks[id], 'y', _mark.y);
+      Vue.set(this.marks[id], 'x', this.rounded(_mark.x));
+      Vue.set(this.marks[id], 'y', this.rounded(_mark.y));
     },
 
     removeMark(id) {
@@ -305,8 +305,8 @@ export default {
       while(Math.abs(diffX) < Math.abs(width) || Math.abs(diffY) < Math.abs(height)) {
         subNodes.push({
           id: this.generateId(),
-          x: String(Number(startX) + diffX),
-          y: String(Number(startY) + diffY),
+          x: String(this.rounded(Number(startX) + diffX)),
+          y: String(this.rounded(Number(startY) + diffY)),
         });
         diffX += unitX;
         diffY += unitY;
