@@ -355,9 +355,6 @@ export default {
       if (this.marks.length <= 1) {
         return;
       }
-
-      const currentMark = this.marks[this.marks.length - 1];
-      Vue.set(currentMark, 'task', currentMark.task === Constants.TASK_FORWARD ? Constants.TASK_REVERSE : Constants.TASK_FORWARD);
     },
 
     changePlanInfoValue(value) {

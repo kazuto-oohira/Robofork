@@ -102,9 +102,21 @@
         <hr>
         <div class="row">
           <div class="col-md-12">
-            <label>進行方向: {{ dirLabel }}</label>
-            <br>
-            <button @click="reverse()" :disabled="disableReverse" class="btn btn-info">進行方向反転</button>
+            <p>次の進行方向</p>
+            <div class="btn-group">
+              <button
+                class="btn btn-default"
+                :class="{ 'btn-primary': enableForwardDir }"
+                @click="changeDir(true)"
+                :disabled="disableChangeDir"
+              >{{ labelDirForward }}</button>
+              <button
+                class="btn btn-default"
+                :class="{ 'btn-primary': enableReverseDir }"
+                @click="changeDir(false)"
+                :disabled="disableChangeDir"
+                >{{ labelDirReverse }}</button>
+            </div>
           </div>
         </div>
         <hr>
@@ -155,6 +167,8 @@ export default {
       checkSubNodes: true,
       modeIndex: 0,
       animationSpeed: Constants.ANIMATION_SPEED,
+      labelDirForward: Constants.DIR_FORWARD,
+      labelDirReverse: Constants.DIR_REVERSE,
     }
   },
 
@@ -173,6 +187,14 @@ export default {
 
     enablePointEdit() {
       return this.modeIndex === Constants.MODE_POINT_EDIT;
+    },
+
+    enableForwardDir() {
+      return !!this.currentDir;
+    },
+
+    enableReverseDir() {
+      return !this.currentDir;
     },
 
     unitX() {
@@ -264,16 +286,8 @@ export default {
       return !this.hasCommands || !this.animate;
     },
 
-    disableReverse() {
-      return !this.hasCommands || this.animate;
-    },
-
-    dirLabel() {
-      if (!this.hasCommands) {
-        return '-';
-      }
-
-      return this.currentDir ? Constants.DIR_FORWARD : Constants.DIR_REVERSE;
+    disableChangeDir() {
+      return !this.hasCommands || this.animate || (this.modeIndex !== Constants.MODE_ROUTING);
     },
   },
 
@@ -360,7 +374,11 @@ export default {
       this.$emit('stop');
     },
 
-    reverse() {
+    changeDir(nextDir) {
+      if (nextDir === this.currentDir) {
+        return;
+      }
+
       this.$emit('reverse');
     },
   },
