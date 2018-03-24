@@ -208,9 +208,9 @@
                 // データ編集
                 var verticalMinus = 1;
                 var horizontalMinus = 1;
-                var sendData = '00';
 
                 // 速度(-1000〜0〜1000)
+                var speed = 0;
                 if (onVerticalDirection === 'up') {
                     verticalMinus = 1;
                 } else if (onVerticalDirection === 'down') {
@@ -222,9 +222,10 @@
                 if (onVerticalForce >= 1) {
                     verticalForce = 1;
                 }
-                sendData += toHex(Math.round(changeCanUnSignedToSigned(verticalForce * 1000 * verticalMinus)));
+                speed = (Math.round(verticalForce * 1000 * verticalMinus));
 
                 // ステア角(-90度〜0〜90度)
+                var stairAngle = 0;
                 if (onHorizontalDirection === 'right') {
                     horizontalMinus = -1;
                 } else if (onHorizontalDirection === 'left') {
@@ -238,52 +239,37 @@
                 }
 
                 // 0.0〜1.0を0.0度〜90.0度へ変換
-                sendData += toHex(Math.floor(changeCanUnSignedToSigned((horizontalForce * (90 - 0) * 10) * horizontalMinus)));
+                stairAngle = Math.floor((horizontalForce * 90 * 10) * horizontalMinus);
 
                 $.ajax({
-                    url: '/api/mqtt/send',
+                    url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        vehicle_id: vehicleId,
-                        can_id: '105',
-                        can_data: sendData + '000000',
-                        qos: 0
+                        speed: speed,
+                        stair_angle: stairAngle,
                     }
-                });
+                }).done(function() {}).fail(function() {});
             } else {
-                var sendData = '00';
-                sendData += toHex(changeCanUnSignedToSigned(0)) + toHex(changeCanUnSignedToSigned(0));
-
+                // TODO: いまはゼロをJSで投げてるけど、WiFiが切れた場合の安全性などを考慮すると、IoT-GWで常にゼロを投げるようにしたい
                 $.ajax({
-                    url: '/api/mqtt/send',
+                    url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
-                    data: {
-                        vehicle_id: vehicleId,
-                        can_id: '105',
-                        can_data: sendData + '000000',
-                        qos: 0
-                    }
-                });
+                }).done(function() {}).fail(function() {});
             }
         }, SEND_DURATION_MS);
 
         // 手動・自動
         $('#btn-auto, #btn-manual').on('touchstart', function (data) {
-            var sendData = '0000010000000000';
-            if (data.target.id === 'btn-manual') {
-                sendData = '0000000000000000'
-            }
             $.ajax({
-                url: '/api/mqtt/send',
+                url: '/api/vehicle/auto_flag/' + vehicleId,
                 type: 'POST',
                 data: {
-                    vehicle_id: vehicleId,
-                    can_id: '10B',
-                    can_data: sendData
+                    set_auto_flag: data.target.id === 'btn-manual' ? 0 : 1,
+                    stair_angle: 0,
                 }
             }).done(function() {
                 enableManualMode(data.target.id === 'btn-manual');
-            });
+            }).fail(function() {});
         });
 
         // フォークアップ・ダウン
@@ -292,24 +278,15 @@
             if (forkInterval) {
                 return;
             }
-            var liftHeightHex = toHex(Math.floor(changeCanUnSignedToSigned((0))));
-            if (data.target.id === 'btn-fork-up') {
-                liftHeightHex = toHex(Math.floor(changeCanUnSignedToSigned((2500))));
-            }
-            var sendData = "0000000000" + liftHeightHex + "00";
-            console.log(sendData);
 
             forkInterval = setInterval(function() {
-                console.log(sendData);
                 $.ajax({
-                    url: '/api/mqtt/send',
+                    url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        vehicle_id: vehicleId,
-                        can_id: '105',
-                        can_data: sendData,
+                        fork_up: data.target.id === 'btn-fork-up' ? 1 : -1
                     }
-                });
+                }).done(function () {}).fail(function () {});
             }, SEND_DURATION_MS);
         });
         $('#btn-fork-up, #btn-fork-down').on('touchend touchcancel', function (data) {
@@ -323,42 +300,23 @@
             if (tiltInterval) {
                 return;
             }
-            var tiltHex = toHex(2);
-            if (data.target.id === 'btn-tilt-up') {
-                tiltHex = toHex(4);
-            }
-            var sendData = "000000000000" + tiltHex;
-            console.log(sendData);
 
             tiltInterval = setInterval(function() {
-                console.log(sendData);
                 $.ajax({
-                    url: '/api/mqtt/send',
+                    url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        vehicle_id: vehicleId,
-                        can_id: '105',
-                        can_data: sendData,
+                        speed: 0,
+                        stair_angle: 0,
+                        tilt_up: data.target.id === 'btn-tilt-up'
                     }
-                });
+                }).done(function () {}).fail(function () {});
             }, SEND_DURATION_MS);
         });
         $('#btn-tilt-up, #btn-tilt-down').on('touchend touchcancel', function (data) {
             clearInterval(tiltInterval);
             tiltInterval = null;
         });
-
-        function toHex(v) {
-            return (('0000' + v.toString(16).toUpperCase()).substr(-4));
-        }
-
-        function changeCanUnSignedToSigned(value) {
-            if (!isNaN(value)) {
-                return value + 32768;
-            } else {
-                return 0;
-            }
-        }
 
         function enableManualMode(isEnable) {
             if (isEnable) {

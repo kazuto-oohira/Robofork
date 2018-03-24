@@ -3,7 +3,7 @@ from django.views.generic import TemplateView
 from robofork_app.views import vehicle_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
 from robofork_app.views import operation_plan_view
-from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency
+from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency, vehicle_control
 
 
 urlpatterns = [
@@ -39,6 +39,8 @@ urlpatterns = [
 
     # API
     path('api/mqtt/send', mqtt.send),
+    path('api/vehicle/control/<int:vehicle_id>', vehicle_control.manual_control),
+    path('api/vehicle/auto_flag/<int:vehicle_id>', vehicle_control.auto_control_flag),
     path('api/file/<int:file_id>', file.file, name='api_file'),
     path('api/emergency/<int:location_id>/execute', emergency.execute),
     path('api/location/<int:location_id>/map_config', location.map_config),
@@ -58,3 +60,6 @@ urlpatterns = [
     path('vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
     path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
 ]
+from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency
+
+

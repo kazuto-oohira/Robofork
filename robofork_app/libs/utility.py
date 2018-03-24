@@ -28,7 +28,7 @@ def to_can_signed(value):
     :param value:
     :return:
     """
-    return value + 32768
+    return int(value) + 32768
 
 
 def from_can_singed(value):
