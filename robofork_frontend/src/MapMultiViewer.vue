@@ -27,9 +27,13 @@
               :data-content="statusName[index]"
               data-animation="false"
               :data-status-code="statusCode[index]"
+              :class="{
+                show: selectedVehicleIndex === index,
+              }"
               :style="{
                 transform: `translate(${mappedX(roboforkX[index])}px, ${mappedY(roboforkY[index])}px)`
               }"
+              @click="selectVehicle(index)"
             >
               <img
                 src="/static/robofork_app/img/robofork.svg"
@@ -68,6 +72,7 @@ export default {
 
   data() {
     return {
+      selectedVehicleIndex: -1,
     }
   },
 
@@ -237,6 +242,15 @@ export default {
         $(`#${popoverTarget}`).addClass(Constants.STATUS_CODE_CLASSNAMES[statusCode]);
       });
     },
+
+    selectVehicle(index) {
+      if (this.selectedVehicleIndex === index) {
+        this.selectedVehicleIndex = -1;
+        return;
+      }
+
+      this.selectedVehicleIndex = index;
+    },
   },
 }
 </script>
@@ -289,10 +303,21 @@ export default {
 
 <style>
 /* outer component styles */
+.map-draw-layer .robofork + .popover {
+  visibility: hidden;
+}
+
+.map-draw-layer .robofork.show + .popover,
+.map-draw-layer .popover.my-warning,
+.map-draw-layer .popover.my-danger {
+  visibility: visible;
+}
+
 .popover.my-warning {
   background-color: #f0ad4e;
   color: #fff;
 }
+
 .map-container {
   margin: 0 auto;
 }
