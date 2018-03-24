@@ -10,7 +10,6 @@
             <th>Speed</th>
             <th>Angle</th>
             <th>Lift</th>
-            <th>Stop</th>
             <th>X</th>
             <th>Y</th>
             <th>Delete</th>
@@ -43,7 +42,6 @@
               <span v-if="!isSelectedCommand(command.id)">{{ liftHeight[index] }}</span>
               <input class="form-control lift-height" v-if="isSelectedCommand(command.id)" v-model="command.liftHeight">
             </td>
-            <td>{{ flagStop[index] }}</td>
             <td>
               <span v-if="!isSelectedCommand(command.id)">{{ command.x }}</span>
               <input class="form-control coordinate" v-if="isSelectedCommand(command.id)" v-model="command.x">
@@ -119,16 +117,6 @@ export default {
         }
 
         return 0;
-      });
-    },
-
-    flagStop() {
-      return this.commands.map((item, index) => {
-        if (item.afterTask === Constants.TASK_NOTHING || item.afterTask === Constants.TASK_PAUSE) {
-          return 0;
-        } else {
-          return 1;
-        }
       });
     },
   },
