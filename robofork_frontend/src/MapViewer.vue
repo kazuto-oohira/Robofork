@@ -98,6 +98,15 @@
               @click="selectPointEdit"
             >ポイント編集モード</button>
           </div>
+          <div class="col-md-12">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" :disabled="disableNormalization" v-model="checkNormalization">
+                45度単位でマップ上にポイントする
+              </label>
+            </div>
+          </div>
+
         </div>
         <hr>
         <div class="row">
@@ -165,6 +174,7 @@ export default {
   data() {
     return {
       checkSubNodes: true,
+      checkNormalization: true,
       modeIndex: 0,
       animationSpeed: Constants.ANIMATION_SPEED,
       labelDirForward: Constants.DIR_FORWARD,
@@ -274,6 +284,10 @@ export default {
       return (current.task === Constants.TASK_FORWARD ? 0 : 1) * 180 + degree;
     },
 
+    disableNormalization() {
+      return this.modeIndex !== Constants.MODE_ROUTING;
+    },
+
     disableClear() {
       return !this.hasCommands;
     },
@@ -296,6 +310,14 @@ export default {
       // ルート追加モードでなければマップを選択しても何もしない
       if (this.modeIndex !== Constants.MODE_ROUTING) {
         return;
+      }
+
+      // 45度単位の座標の正規化を必要に応じて行う
+      if (this.checkNormalization) {
+        const prevX = Number(this.mappedX(this.mainNodes[this.mainNodes.length - 1].x));
+        const prevY = Number(this.mappedY(this.mainNodes[this.mainNodes.length - 1].y));
+
+        [ x, y ] = this.normalize(prevX, prevY, x, y);
       }
 
       this.$emit('addMark', {
@@ -336,6 +358,20 @@ export default {
     unmappedY(y) {
       const offsetMappedY = -Number(y) / this.unitY;
       return String(offsetMappedY - this.offsetY);
+    },
+
+    normalize(pX, pY, cX, cY) {
+      const width = Number(cX) - Number(pX);
+      const height = Number(cY) - Number(pY);
+      const degree = Math.atan2(width, height) * 180 / Math.PI;
+      const hypotenuse = Math.sqrt(width ** 2 + height ** 2);
+
+      // normalize each 45 degrees
+      const normalizedDegree = Math.round(degree / 45) * 45;
+      const nX = pX + hypotenuse * Math.sin(normalizedDegree * Math.PI / 180);
+      const nY = pY + hypotenuse * Math.cos(normalizedDegree * Math.PI / 180);
+
+      return [nX, nY];
     },
 
     degree(aX, aY, bX, bY) {
