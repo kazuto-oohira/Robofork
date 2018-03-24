@@ -171,7 +171,10 @@ export default {
         }
 
         // subNode
-        nodes.push(...subNode.nodes);
+        nodes.push(...subNode.nodes.map(item => Object.assign(item, {
+          speed: current.speed,
+          angle: current.angle,
+        })));
 
         // mainNode
         nodes.push(current);

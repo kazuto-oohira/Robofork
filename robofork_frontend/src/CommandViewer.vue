@@ -36,7 +36,10 @@
                 <option v-for="choice in afterTaskChoices" :value="choice.index">{{ choice.label }}</option>
               </select>
             </td>
-            <td>{{ command.speed }}</td>
+            <td>
+              <span v-if="!isSelectedCommand(command.id)">{{ command.speed }}</span>
+              <input class="form-control speed" v-if="isSelectedCommand(command.id)" v-model="command.speed">
+            </td>
             <td>{{ command.angle }}</td>
             <td>
               <span v-if="!isSelectedCommand(command.id)">{{ liftHeight[index] }}</span>
