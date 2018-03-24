@@ -15,8 +15,14 @@
           <div class="form-group">
             <label class="control-label col-md-2" for="name">名称 <span class="required">*</span></label>
             <div class="col-md-10">
-              <input type="text" id="name" required="required" class="form-control"
-                     :value="this.planInfo.name" @input="changeValue">
+              <input
+                type="text"
+                id="name"
+                required="required"
+                class="form-control"
+                v-model="planInfo.name"
+                @input="changeValue"
+              >
             </div>
           </div>
 
@@ -24,8 +30,8 @@
           <div class="form-group">
             <label class="control-label col-md-2" for="vehicle">車両 <span class="required">*</span></label>
             <div class="col-md-10">
-              <select id="vehicle" class="form-control" @change="changeValue">
-                <option v-for="v in this.planInfo.vehicles" v-bind:value="v.id">
+              <select id="vehicle" class="form-control" @change="changeValue" v-model="planInfo.vehicle">
+                <option v-for="v in vehicles" :value="v.id">
                   {{ v.name }}
                 </option>
               </select>
@@ -36,8 +42,14 @@
           <div class="form-group">
             <label class="control-label col-md-2" for="explain">説明</label>
             <div class="col-md-10">
-              <textarea name="explain" id="explain" rows="2" class="form-control"
-                        :value="this.planInfo.explain" @input="changeValue"></textarea>
+              <textarea
+                name="explain"
+                id="explain"
+                rows="2"
+                class="form-control"
+                v-model="planInfo.explain"
+                @input="changeValue"
+              ></textarea>
             </div>
           </div>
         </div>
@@ -49,8 +61,15 @@
           <div class="form-group">
             <label class="control-label col-md-4" for="priority">優先度 <span class="required">*</span></label>
             <div class="col-md-8">
-              <input type="text" id="priority" required="required" class="form-control" style="width:75px;"
-                     :value="this.planInfo.priority" @input="changeValue">
+              <input
+                type="text"
+                id="priority"
+                required="required"
+                class="form-control"
+                style="width:75px;"
+                v-model="planInfo.priority"
+                @input="changeValue"
+              >
               <small>0が標準。数値が高いほど優先度が高くなる<br/>車両交差時に優先度に応じて走行する</small>
             </div>
           </div>
@@ -80,6 +99,7 @@ export default {
 
   props: [
     'planInfo',
+    'vehicles',
   ],
 
   data() {
@@ -87,10 +107,8 @@ export default {
   },
 
   methods: {
-    changeValue(event) {
-      let ret = {}
-      ret[event.target.id] = event.target.value;
-      this.$emit('changeValue', ret);
+    changeValue() {
+      this.$emit('update:planInfo', this.planInfo);
     }
   },
 }

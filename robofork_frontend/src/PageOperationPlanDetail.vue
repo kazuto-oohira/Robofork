@@ -3,7 +3,8 @@
     <div class="row">
       <div class="col-md-12">
         <operation-plan-info
-          :planInfo="this.planInfo"
+          :planInfo.sync="planInfo"
+          :vehicles="config.vehicles"
           @changeValue="changePlanInfoValue"
         ></operation-plan-info>
       </div>
@@ -201,11 +202,6 @@ export default {
           throw new Error('not exist config');
         }
 
-        // 新規作成時はloadCommandsPromiseが失敗するので
-        this.planInfo = {
-          vehicles: this.config.vehicles,
-        }
-
         return loadCommandsPromise;
       })
       .then(response => {
@@ -225,7 +221,6 @@ export default {
           explain: commands.explain || "",
           priority: commands.priority || 0,
           vehicle: commands.vehicle,
-          vehicles: this.config.vehicles,
         }
       })
       .catch(error => {
