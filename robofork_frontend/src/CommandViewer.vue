@@ -8,7 +8,6 @@
             <th>Task</th>
             <th>AfterTask</th>
             <th>Speed</th>
-            <th>Angle</th>
             <th>Lift</th>
             <th>X</th>
             <th>Y</th>
@@ -40,7 +39,6 @@
               <span v-if="!isSelectedCommand(command.id)">{{ command.speed }}</span>
               <input class="form-control speed" v-if="isSelectedCommand(command.id)" v-model="command.speed">
             </td>
-            <td>{{ command.angle }}</td>
             <td>
               <span v-if="!isSelectedCommand(command.id)">{{ liftHeight[index] }}</span>
               <input class="form-control lift-height" v-if="isSelectedCommand(command.id)" v-model="command.liftHeight">
