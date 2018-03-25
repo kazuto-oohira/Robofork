@@ -30,6 +30,4 @@ def execute(request, location_id):
         for vehicle in vehicles:
             mqtt.send(vehicle.id, can_const.CAN_ID_EMERGENCY, data)
 
-    # TODO: 最新ステータスに反映
-
     return JsonResponse({ "result": True })
