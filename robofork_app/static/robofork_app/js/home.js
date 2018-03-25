@@ -39,14 +39,11 @@ $(function() {
         var vehicleId = $this.data('vehicle-id');
         var isToAuto = $this.data('is-to-auto');
 
-        // TODO: ごめん。時間ないからちょくでMQTT叩く
         $.ajax({
-            url: '/api/mqtt/send',
+            url: '/api/vehicle/auto_flag/' + vehicleId,
             method: 'POST',
             data: {
-                vehicle_id: vehicleId,
-                can_id: '10B',
-                can_data: isToAuto ? '0000000100000000' : '0000000000000000'
+                set_auto_flag: isToAuto ? 1 : 0
             }
         }).done(function(data) {
             if (data["result"] && data["result"] === true) {
@@ -70,12 +67,12 @@ $(function() {
 
         // TODO: ごめん。時間ないからちょくでMQTT叩く
         $.ajax({
-            url: '/api/mqtt/send',
+            url: '/api/emergency/' + rbfkHomeIndexLocationId + '/execute',
             method: 'POST',
             data: {
+                emergency_type: "0",
                 vehicle_id: vehicleId,
-                can_id: '40F',
-                can_data: '0001000000000000'
+                // is_cancel: isCancel ? "1" : "",
             }
         }).done(function(data) {
             if (data["result"] && data["result"] === true) {

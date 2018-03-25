@@ -10,7 +10,7 @@ def auto_control_flag(request, vehicle_id=0):
 
     # データ作成して送信
     send_data = utility.to_hex(0, 4) + utility.to_hex(set_auto_flag, 2) + utility.to_hex(0, 10)
-    mqtt.send(vehicle_id, can_const.CAN_ID_ACTION, send_data, qos=mqtt.MQTT_QOS_NORMAL)
+    mqtt.send(vehicle_id, can_const.CAN_ID_ACTION, send_data)
 
     return JsonResponse({ "result": True })
 
@@ -44,5 +44,23 @@ def manual_control(request, vehicle_id=0):
                 utility.to_hex(fork_up_value, 4) + \
                 utility.to_hex(tilt_up_value, 2)
     mqtt.send(vehicle_id, can_const.CAN_ID_MANUAL_CTRL, send_data, qos=mqtt.MQTT_QOS_NORMAL)
+
+    return JsonResponse({ "result": True })
+
+
+@csrf_exempt
+def operation_flag(request, vehicle_id=0):
+    emergency_flag = int(request.POST.get('emergency_flag', 0))
+    demo_obstacle_flag_1 = int(request.POST.get('demo_obstacle_flag_1', 0))
+    demo_obstacle_flag_2 = int(request.POST.get('demo_obstacle_flag_2', 0))
+
+    # データ作成して送信
+    send_data = \
+        utility.to_hex(emergency_flag, 2) + \
+        utility.to_hex(demo_obstacle_flag_1, 2) + \
+        utility.to_hex(demo_obstacle_flag_2, 2) + \
+        utility.to_hex(0, 10)
+
+    mqtt.send(vehicle_id, can_const.CAN_ID_EMERGENCY, send_data)
 
     return JsonResponse({ "result": True })

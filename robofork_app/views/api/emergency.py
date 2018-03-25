@@ -10,6 +10,7 @@ def execute(request, location_id):
     # 送信データ作成
     emergency_type = request.POST.get('emergency_type', "0")
     is_cancel = request.POST.get('is_cancel')
+    vehicle_id = int(request.POST.get('vehicle_id', 0))
 
     if is_cancel:
         data = "0000000000000000"
@@ -21,10 +22,13 @@ def execute(request, location_id):
         }
         data = data_list.get(emergency_type, "0000000000000000")
 
-    # 存在する全車両に緊急指示を投げる
-    vehicles = Vehicle.get_list(location_id=location_id)
-    for vehicle in vehicles:
-        mqtt.send(vehicle.id, can_const.CAN_ID_EMERGENCY, data)
+    if vehicle_id > 0:
+        mqtt.send(vehicle_id, can_const.CAN_ID_EMERGENCY, data)
+    else:
+        # 存在する全車両に緊急指示を投げる
+        vehicles = Vehicle.get_list(location_id=location_id)
+        for vehicle in vehicles:
+            mqtt.send(vehicle.id, can_const.CAN_ID_EMERGENCY, data)
 
     # TODO: 最新ステータスに反映
 
