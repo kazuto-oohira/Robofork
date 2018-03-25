@@ -47,7 +47,8 @@ urlpatterns = [
     path('api/operation_plan/<int:vehicle_operation_plan_id>/save', vehicle_operation_plan.save),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/execute', vehicle_operation_plan.execute),
-    path('api/vehicle_operation_status/load', vehicle_operation_status.load),
+    path('api/vehicle_operation_status/<int:location_id>/load/', vehicle_operation_status.load),
+    path('api/vehicle_operation_status/load/', vehicle_operation_status.load),  # 不要になったら消す
 
     # MQTT テスト
     path('mqtt_test/<int:vehicle_id>', mqtt_test_view.index),

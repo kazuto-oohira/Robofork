@@ -5,9 +5,8 @@ from channels import Group
 from robofork_app.models.vehicle import Vehicle
 
 @csrf_exempt
-def load(request):
-    # TODO: Locationが1固定
-    vehicles = Vehicle.get_list(location_id=1)
+def load(request, location_id=1):
+    vehicles = Vehicle.get_list(location_id=location_id)
 
     result = {
         "vehicles": []
@@ -40,16 +39,16 @@ def load(request):
     return JsonResponse(result)
 
 
-def ws_add(message):
+def ws_add(message, location_id=1):
     message.reply_channel.send({"accept": True})
     Group("operation_status").add(message.reply_channel)
 
 
-def ws_disconnect(message):
+def ws_disconnect(message, location_id=1):
     Group("operation_status").discard(message.reply_channel)
 
 
-def ws_message(message):
+def ws_message(message, location_id=1):
     Group("operation_status").send({
         "text": message.content['text'],
     })

@@ -65,7 +65,6 @@ $(function() {
         var $this = $(this);
         var vehicleId = $this.data('vehicle-id');
 
-        // TODO: ごめん。時間ないからちょくでMQTT叩く
         $.ajax({
             url: '/api/emergency/' + rbfkHomeIndexLocationId + '/execute',
             method: 'POST',
