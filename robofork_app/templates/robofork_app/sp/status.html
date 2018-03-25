@@ -61,7 +61,8 @@
 </body>
 <script type="text/javascript">
     $(function () {
-        // 車両ID取得
+        // 各種ID取得
+        var locationId = "{{ vehicle.location_id }}"
         var vehicleId = "{{ vehicle.id }}"
 
         // 各車両と緊急停止を監視する
@@ -70,7 +71,7 @@
         function watchEmergencyStatus() {
             var lastId = -1;
 
-            var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+            var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status/" + locationId);
             client.onmessage = function(event) {
                 var parsedData = JSON.parse(event.data);
 

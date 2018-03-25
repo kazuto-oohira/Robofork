@@ -112,7 +112,7 @@ $(function() {
 
     // 各車両と緊急停止を監視する
     function watchEmergencyStatus() {
-        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        var client = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status/" + rbfkHomeIndexLocationId);
         client.onmessage = function(event) {
             var parsedData = JSON.parse(event.data);
 

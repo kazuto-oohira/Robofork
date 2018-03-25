@@ -161,7 +161,7 @@
         $('#rbfk_status_angle').val('0');
 
         // WebSocket定義
-        var socket = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status");
+        var socket = new WebSocket("ws://" + window.location.host + "/vehicle_operation_status/1");
         socket.addEventListener('open', function (event) {
             console.log("WebSocket(/vehicle_operation_status) Connected!");
         });

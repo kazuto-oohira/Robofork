@@ -13,11 +13,12 @@ from robofork_app.services import vehicle_status_service
 # MQTT QoS
 mqtt_sub_qos = 0
 
-# コマンド引数処理
+location_id = "1"   # TODO: mqtt_subscribeのlocation_idはどうする？
 web_socket_server = '127.0.0.1:8000'
 mqtt_server = '127.0.0.1'
 elastic_server = '127.0.0.1'
 
+# コマンド引数処理
 if len(sys.argv) == 2:
     mqtt_server = sys.argv[1]
     elastic_server = sys.argv[1]
@@ -50,18 +51,22 @@ def on_message(client, userdata, msg):
     # VehicleStatusServiceへ設定する
     vehicle_id = mqtt_data["serial_number"]
     vehicle_status.set_data(vehicle_id, mqtt_data)
-    result_data_json = json.dumps(vehicle_status.get_vehicle_status(vehicle_id))
-    print(result_data_json)
 
-    # ステータス用ソケットへ
-    web_socket.send(result_data_json)
+    # クライアントへPublishするデータ取得
+    result_data = vehicle_status.get_vehicle_status(vehicle_id)
+    if result_data:
+        # ステータス用ソケットへ
+        result_data_json = json.dumps(result_data)
+        web_socket.send(result_data_json)
+        # print(result_data_json)
+
     # MQTTテストへ
     web_socket_test.send(msg.payload.decode('ASCII'))
 
 
 while True:
     try:
-        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/" + location_id)
         web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
 
         client = mqtt.Client(protocol=mqtt.MQTTv311)

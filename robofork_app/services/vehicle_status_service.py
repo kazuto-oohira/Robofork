@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, datetime
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/../')
 
 from . import can_const
@@ -6,8 +6,11 @@ from robofork_app.libs import utility
 
 
 class VehicleStatusService:
+    PUBLISH_TO_CLIENT_INTERVAL_SEC = 1.5
+
     def __init__(self):
         self.__vehicle_status_list = {}
+        self.__last_publish_to_client = datetime.datetime.now()
 
 
     def set_data(self, vehicle_id, data):
@@ -37,6 +40,13 @@ class VehicleStatusService:
 
 
     def get_vehicle_status(self, vehicle_id):
+        # 最後にデータをPublishした時刻と現在時刻を比較して、Interval時間を過ぎていなかったらNoneを戻る
+        # クライアントへ送信しない。WebSocketの負荷軽減対策
+        if datetime.datetime.now() < \
+                (self.__last_publish_to_client + datetime.timedelta(seconds=self.PUBLISH_TO_CLIENT_INTERVAL_SEC)):
+            return None
+        else:
+            self.__last_publish_to_client = datetime.datetime.now()
 
         if vehicle_id in self.__vehicle_status_list.keys():
             vehicle_status = self.__vehicle_status_list[vehicle_id]
@@ -45,10 +55,11 @@ class VehicleStatusService:
             self.__vehicle_status_list[vehicle_id] = vehicle_status
 
         return {
-            "reload": False,
+            "reload": False,    # TODO: 不要になったら消す
             "vehicles": [
                 {
                     "id": vehicle_status.vehicle_id,
+                    "reload": False,
                     "vehicle_status": {
                         "vehicle_operation_plan_id": vehicle_status.operation_id,
                         "status_code": vehicle_status.get_status_code(),
