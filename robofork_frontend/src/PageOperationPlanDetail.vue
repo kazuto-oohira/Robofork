@@ -370,8 +370,10 @@ export default {
         },
       })
       .then(() => {
-        // jQuery使っちゃってごめんなさい...
-        $(document).trigger('showInfoAlert', { message: '保存しました' });
+        const saveCallback = this.$root.saveCallback;
+        if (saveCallback in window && typeof window[saveCallback] === 'function') {
+          window[saveCallback]();
+        }
       });
     },
 

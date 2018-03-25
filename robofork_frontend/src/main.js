@@ -21,8 +21,18 @@ const router = new VueRouter({
   ],
 });
 
+const root = document.getElementById('app');
+
 new Vue({
-  el: '#app',
+  el: root,
   render: h => h(App),
   router,
+  data() {
+    // Vue.js 外との連携のため、 callback 呼ぶ穴を data attr 経由であける
+    return {
+      saveCallback: root.dataset.save,
+      cancelCallback: root.dataset.cancel,
+      updateCallback: root.dataset.update,
+    }
+  },
 });

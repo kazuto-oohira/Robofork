@@ -20,7 +20,17 @@
         <!-- page content -->
         <div class="right_col" role="main">
             <!-- Vue.js Contents -->
-            <div id="app"></div>
+            <div
+              id="app"
+              data-save="roboforkSaveCallback"
+              data-cancel="roboforkCancelCallback"
+              data-update="roboforkUpdateCallback"
+            ></div>
+          <script>
+window.roboforkSaveCallback = function() {
+  $(document).trigger('showInfoAlert', { message: '保存しました' });
+};
+          </script>
         </div>
     </div>
 {% endblock %}
