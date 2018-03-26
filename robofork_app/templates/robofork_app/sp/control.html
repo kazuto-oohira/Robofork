@@ -135,29 +135,12 @@
 
         // 車両ID取得
         var vehicleId = "{{ vehicle.id }}"
-        $('#label_vehicle_id').text("{{ vehicle.name }}");
+        $('#label_vehicle_id').text('{{ vehicle.name }}');
 
-        // JoyStick生成
-        var commonOptions = {
-            mode: 'static',
-            threshold: 0.2,
-            position: {
-                top: '50%', left: '50%',
-            },
-            restOpacity: 0.75
-        };
-        var nippleVertical = nipplejs.create($.extend(commonOptions, {
-            zone: document.getElementById('control-vertical'),
-            size: 150,
-        }));
-        var nippleHorizontal = nipplejs.create($.extend(commonOptions, {
-            zone: document.getElementById('control-horizontal'),
-            size: 225,
-        }));
-
-        // 初期はJoyStick非表示
-        enableManualMode(false);
-
+        // 全体で利用するインスタンス変数みたいなの
+        var loopInterval = null;
+        var nippleVertical = null;
+        var nippleHorizontal = null;
         var onMoveVertical = false;
         var onMoveHorizontal = false;
         var onVerticalDirection = 'up';
@@ -165,99 +148,12 @@
         var onVerticalForce = 0;
         var onHorizontalForce = 0;
 
-        // ジョイスティック 上下方向
-        nippleVertical.on('start end', function (event, data) {
-            if (event.type === 'start') {
-                onMoveVertical = true;
-            } else {
-                onMoveVertical = false;
-                onVerticalDirection = 'up';
-                onVerticalForce = 0;
-            }
-        });
-        nippleVertical.on('move plain', function (event, data) {
-            // なぜかxyが取れない場合があるので
-            if (data.direction && data.direction.y) {
-                onVerticalDirection = data.direction.y;
-                onVerticalForce = data.force;
-            }
-        });
+        // 最初は手動制御OFF
+        enableManualMode(false);
 
-        // ジョイスティック 左右方向
-        nippleHorizontal.on('start end', function (event, data) {
-            if (event.type === 'start') {
-                onMoveHorizontal = true;
-            } else {
-                onMoveHorizontal = false;
-                onHorizontalDirection = 'left';
-                onHorizontalForce = 0;
-            }
-        });
-        nippleHorizontal.on('move plain', function (event, data) {
-            // なぜかxyが取れない場合があるので
-            if (data.direction && data.direction.x) {
-                onHorizontalDirection = data.direction.x;
-                onHorizontalForce = data.force;
-            }
-        });
-
-        setInterval(function () {
-            if (onMoveVertical || onMoveHorizontal) {
-                //console.log(onVerticalDirection + '/' + onVerticalForce + ' ' + onHorizontalDirection + '/' + onHorizontalForce);
-
-                // データ編集
-                var verticalMinus = 1;
-                var horizontalMinus = 1;
-
-                // 速度(-1000〜0〜1000)
-                var speed = 0;
-                if (onVerticalDirection === 'up') {
-                    verticalMinus = 1;
-                } else if (onVerticalDirection === 'down') {
-                    verticalMinus = -1;
-                } else {
-                    return;
-                }
-                var verticalForce = onVerticalForce;
-                if (onVerticalForce >= 1) {
-                    verticalForce = 1;
-                }
-                speed = (Math.round(verticalForce * 1000 * verticalMinus));
-
-                // ステア角(-90度〜0〜90度)
-                var stairAngle = 0;
-                if (onHorizontalDirection === 'right') {
-                    horizontalMinus = -1;
-                } else if (onHorizontalDirection === 'left') {
-                    horizontalMinus = 1;
-                } else {
-                    return;
-                }
-                var horizontalForce = onHorizontalForce;
-                if (onHorizontalForce >= 1) {
-                    horizontalForce = 1;
-                }
-
-                // 0.0〜1.0を0.0度〜90.0度へ変換
-                stairAngle = Math.floor((horizontalForce * 90 * 10) * horizontalMinus);
-
-                $.ajax({
-                    url: '/api/vehicle/control/' + vehicleId,
-                    type: 'POST',
-                    data: {
-                        speed: speed,
-                        stair_angle: stairAngle,
-                    }
-                }).done(function() {}).fail(function() {});
-            } else {
-                // TODO: いまはゼロをJSで投げてるけど、WiFiが切れた場合の安全性などを考慮すると、IoT-GWで常にゼロを投げるようにしたい
-                $.ajax({
-                    url: '/api/vehicle/control/' + vehicleId,
-                    type: 'POST',
-                }).done(function() {}).fail(function() {});
-            }
-        }, SEND_DURATION_MS);
-
+        /**
+         * イベントハンドラ
+         */
         // 手動・自動
         $('#btn-auto, #btn-manual').on('touchstart', function (data) {
             $.ajax({
@@ -318,13 +214,167 @@
             tiltInterval = null;
         });
 
+        function removeJoyStick() {
+            var removeEventFn = function(nipple) {
+                if (nipple) {
+                    nipple.off('start end');
+                    nipple.off('move plain');
+                    nipple.destroy();
+                }
+            };
+            removeEventFn(nippleVertical);
+            removeEventFn(nippleHorizontal);
+
+            nippleVertical = null;
+            nippleHorizontal = null;
+            onMoveVertical = false;
+            onMoveHorizontal = false;
+            onVerticalDirection = 'up';
+            onHorizontalDirection = 'left';
+            onVerticalForce = 0;
+            onHorizontalForce = 0;
+        }
+
+        function createJoyStick() {
+            // 事前にJoyStickをリセット
+            removeJoyStick();
+
+            // JoyStick生成
+            var commonOptions = {
+                mode: 'static',
+                threshold: 0.2,
+                position: {
+                    top: '50%', left: '50%',
+                },
+                restOpacity: 0.75
+            };
+            nippleVertical = nipplejs.create($.extend(commonOptions, {
+                zone: document.getElementById('control-vertical'),
+                size: 150,
+            }));
+            nippleHorizontal = nipplejs.create($.extend(commonOptions, {
+                zone: document.getElementById('control-horizontal'),
+                size: 225,
+            }));
+
+            // ジョイスティック 上下方向
+            nippleVertical.on('start end', function (event, data) {
+                if (event.type === 'start') {
+                    onMoveVertical = true;
+                } else {
+                    onMoveVertical = false;
+                    onVerticalDirection = 'up';
+                    onVerticalForce = 0;
+                }
+            });
+            nippleVertical.on('move plain', function (event, data) {
+                // なぜかxyが取れない場合があるので
+                if (data.direction && data.direction.y) {
+                    onVerticalDirection = data.direction.y;
+                    onVerticalForce = data.force;
+                }
+            });
+
+            // ジョイスティック 左右方向
+            nippleHorizontal.on('start end', function (event, data) {
+                if (event.type === 'start') {
+                    onMoveHorizontal = true;
+                } else {
+                    onMoveHorizontal = false;
+                    onHorizontalDirection = 'left';
+                    onHorizontalForce = 0;
+                }
+            });
+            nippleHorizontal.on('move plain', function (event, data) {
+                // なぜかxyが取れない場合があるので
+                if (data.direction && data.direction.x) {
+                    onHorizontalDirection = data.direction.x;
+                    onHorizontalForce = data.force;
+                }
+            });
+        }
+
+        function manualControlLoop() {
+            if (onMoveVertical || onMoveHorizontal) {
+                //console.log(onVerticalDirection + '/' + onVerticalForce + ' ' + onHorizontalDirection + '/' + onHorizontalForce);
+
+                // データ編集
+                var verticalMinus = 1;
+                var horizontalMinus = 1;
+
+                // 速度(-1000〜0〜1000)
+                var speed = 0;
+                if (onVerticalDirection === 'up') {
+                    verticalMinus = 1;
+                } else if (onVerticalDirection === 'down') {
+                    verticalMinus = -1;
+                } else {
+                    return;
+                }
+                var verticalForce = onVerticalForce;
+                if (onVerticalForce >= 1) {
+                    verticalForce = 1;
+                }
+                speed = (Math.round(verticalForce * 1000 * verticalMinus));
+
+                // ステア角(-90度〜0〜90度)
+                var stairAngle = 0;
+                if (onHorizontalDirection === 'right') {
+                    horizontalMinus = -1;
+                } else if (onHorizontalDirection === 'left') {
+                    horizontalMinus = 1;
+                } else {
+                    return;
+                }
+                var horizontalForce = onHorizontalForce;
+                if (onHorizontalForce >= 1) {
+                    horizontalForce = 1;
+                }
+
+                // 0.0〜1.0を0.0度〜90.0度へ変換
+                stairAngle = Math.floor((horizontalForce * 90 * 10) * horizontalMinus);
+
+                $.ajax({
+                    url: '/api/vehicle/control/' + vehicleId,
+                    type: 'POST',
+                    data: {
+                        speed: speed,
+                        stair_angle: stairAngle,
+                    }
+                }).done(function() {}).fail(function() {});
+            } else {
+                // TODO: いまはゼロをJSで投げてるけど、WiFi切断時の安全性などを考慮するとIoT-GWで常にゼロを投げるようにしたい
+                $.ajax({
+                    url: '/api/vehicle/control/' + vehicleId,
+                    type: 'POST',
+                }).done(function() {}).fail(function() {});
+            }
+        }
+
         function enableManualMode(isEnable) {
             if (isEnable) {
+                // 画面変更
                 $('.manual-control').show();
                 $('#manual-control-start-message').hide();
+
+                // JoyStic作成
+                createJoyStick();
+
+                // 手動制御ループ開始
+                loopInterval = setInterval(manualControlLoop, SEND_DURATION_MS);
             } else {
-                $('.manual-control').hide();
+                // JoyStickの削除
+                removeJoyStick();
+
+                // 画面変更
                 $('#manual-control-start-message').show();
+                $('.manual-control').hide();
+
+                // 手動制御ループを止める
+                if (loopInterval) {
+                    clearInterval(loopInterval);
+                    loopInterval = null;
+                }
             }
         }
     });
