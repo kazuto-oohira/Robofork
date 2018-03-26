@@ -7,10 +7,7 @@ channel_routing = [
     route("websocket.disconnect", mqtt_test_view.ws_disconnect, path="/mqtt_test_ws"),
 
     route("websocket.connect", vehicle_operation_status.ws_add, path="/vehicle_operation_status/<int:location_id>"),
-    route("websocket.connect", vehicle_operation_status.ws_add, path="/vehicle_operation_status"),  # 不要になったら消す
     route("websocket.receive", vehicle_operation_status.ws_message, path="/vehicle_operation_status/<int:location_id"),
-    route("websocket.receive", vehicle_operation_status.ws_message, path="/vehicle_operation_status"),  # 不要になったら消す
     route("websocket.disconnect", vehicle_operation_status.ws_disconnect, path="/vehicle_operation_status/<int:location_id"),
-    route("websocket.disconnect", vehicle_operation_status.ws_disconnect, path="/vehicle_operation_status"),    # 不要になったら消す
 ]
 
