@@ -32,7 +32,7 @@ new Vue({
     return {
       saveCallback: root.dataset.save,
       cancelCallback: root.dataset.cancel,
-      updateCallback: root.dataset.update,
+      selectCallback: root.dataset.select,
     }
   },
 });

@@ -378,7 +378,10 @@ export default {
     },
 
     back() {
-      window.location = Constants.PREV_PAGE_URL(this.locationId);
+      const cancelCallback = this.$root.cancelCallback;
+      if (cancelCallback in window && typeof window[cancelCallback] === 'function') {
+        window[cancelCallback]();
+      }
     },
 
     rounded(point) {
