@@ -122,6 +122,7 @@
       <button id="btn-fork-up" class="btn btn-success half"><span class="glyphicon glyphicon-arrow-up"></span></button>
       <button id="btn-fork-down" class="btn btn-success half"><span class="glyphicon glyphicon-arrow-down"></span></button>
     </div>
+    <br>
     <div class="manual-control">
       <button id="btn-tilt-up" class="btn btn-warning half"><span class="glyphicon glyphicon-chevron-left"></span></button>
       <button id="btn-tilt-down" class="btn btn-warning half"><span class="glyphicon glyphicon-chevron-right"></span></button>
@@ -139,7 +140,10 @@
         $('#label_vehicle_id').text('{{ vehicle.name }}');
 
         // 全体で利用するインスタンス変数みたいなの
-        var loopInterval = null;
+        var moveInterval = null;
+        var forkInterval = null;
+        var tiltInterval = null;
+
         var nippleVertical = null;
         var nippleHorizontal = null;
         var onMoveVertical = false;
@@ -170,18 +174,18 @@
         });
 
         // フォークアップ・ダウン
-        var forkInterval = null;
         $('#btn-fork-up, #btn-fork-down').on('touchstart', function (data) {
+            var targetId = data.target.id;
             if (forkInterval) {
                 return;
             }
-
             forkInterval = setInterval(function() {
+                console.log('fork=' + targetId);
                 $.ajax({
                     url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        fork_up: data.target.id === 'btn-fork-up' ? 1 : -1
+                        fork_up: targetId === 'btn-fork-up' ? 1 : -1
                     }
                 }).done(function () {}).fail(function () {});
             }, SEND_DURATION_MS);
@@ -192,20 +196,18 @@
         });
 
         // チルトアップ・ダウン
-        var tiltInterval = null;
         $('#btn-tilt-up, #btn-tilt-down').on('touchstart', function (data) {
+            var targetId = data.target.id;
             if (tiltInterval) {
                 return;
             }
-
             tiltInterval = setInterval(function() {
+                console.log('tilt=' + targetId);
                 $.ajax({
                     url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        speed: 0,
-                        stair_angle: 0,
-                        tilt_up: data.target.id === 'btn-tilt-up'
+                        tilt_up: targetId === 'btn-tilt-up' ? 1 : -1
                     }
                 }).done(function () {}).fail(function () {});
             }, SEND_DURATION_MS);
@@ -349,11 +351,13 @@
                     }
                 }).done(function() {}).fail(function() {});
             } else {
-                // TODO: いまはゼロをJSで投げてるけど、WiFi切断時の安全性などを考慮するとIoT-GWで常にゼロを投げるようにしたい
-                $.ajax({
-                    url: '/api/vehicle/control/' + vehicleId,
-                    type: 'POST',
-                }).done(function() {}).fail(function() {});
+                if (!forkInterval && !tiltInterval) {
+                    // TODO: いまはゼロをJSで投げてるけど、WiFi切断時の安全性などを考慮するとIoT-GWで常にゼロを投げるようにしたい
+                    $.ajax({
+                        url: '/api/vehicle/control/' + vehicleId,
+                        type: 'POST',
+                    }).done(function () {}).fail(function () {});
+                }
             }
         }
 
@@ -367,7 +371,7 @@
                 createJoyStick();
 
                 // 手動制御ループ開始
-                loopInterval = setInterval(manualControlLoop, SEND_DURATION_MS);
+                moveInterval = setInterval(manualControlLoop, SEND_DURATION_MS);
             } else {
                 // JoyStickの削除
                 removeJoyStick();
@@ -377,9 +381,9 @@
                 $('.manual-control').hide();
 
                 // 手動制御ループを止める
-                if (loopInterval) {
-                    clearInterval(loopInterval);
-                    loopInterval = null;
+                if (moveInterval) {
+                    clearInterval(moveInterval);
+                    moveInterval = null;
                 }
             }
         }

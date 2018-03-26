@@ -25,7 +25,7 @@ def manual_control(request, vehicle_id=0):
     tilt_up = int(request.POST.get('tilt_up', 0))
     print(request.POST)
 
-    fork_up_value = 0
+    fork_up_value = -999
     if fork_up == 1:
         fork_up_value = 999
     elif fork_up == -1:
@@ -41,7 +41,7 @@ def manual_control(request, vehicle_id=0):
     send_data = utility.to_hex(0, 2) + \
                 utility.to_hex(utility.to_can_signed(speed), 4) + \
                 utility.to_hex(utility.to_can_signed(stair_angle), 4) + \
-                utility.to_hex(fork_up_value, 4) + \
+                utility.to_hex(utility.to_can_signed(fork_up_value), 4) + \
                 utility.to_hex(tilt_up_value, 2)
     mqtt.send(vehicle_id, can_const.CAN_ID_MANUAL_CTRL, send_data, qos=mqtt.MQTT_QOS_NORMAL)
 
