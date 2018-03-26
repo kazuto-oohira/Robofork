@@ -380,10 +380,18 @@
                 $('#manual-control-start-message').show();
                 $('.manual-control').hide();
 
-                // 手動制御ループを止める
+                // ループを止める
                 if (moveInterval) {
                     clearInterval(moveInterval);
                     moveInterval = null;
+                }
+                if (forkInterval) {
+                    clearInterval(forkInterval);
+                    forkInterval = null;
+                }
+                if (tiltInterval) {
+                    clearInterval(tiltInterval);
+                    tiltInterval = null;
                 }
             }
         }
