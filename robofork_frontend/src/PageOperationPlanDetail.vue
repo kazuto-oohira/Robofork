@@ -370,13 +370,18 @@ export default {
         },
       })
       .then(() => {
-        // jQuery使っちゃってごめんなさい...
-        $(document).trigger('showInfoAlert', { message: '保存しました' });
+        const saveCallback = this.$root.saveCallback;
+        if (saveCallback in window && typeof window[saveCallback] === 'function') {
+          window[saveCallback]();
+        }
       });
     },
 
     back() {
-      window.location = Constants.PREV_PAGE_URL(this.locationId);
+      const cancelCallback = this.$root.cancelCallback;
+      if (cancelCallback in window && typeof window[cancelCallback] === 'function') {
+        window[cancelCallback]();
+      }
     },
 
     rounded(point) {

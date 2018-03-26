@@ -245,11 +245,16 @@ export default {
 
     selectVehicle(index) {
       if (this.selectedVehicleIndex === index) {
-        this.selectedVehicleIndex = -1;
-        return;
+        index = -1;
       }
 
       this.selectedVehicleIndex = index;
+
+      // 選択した vehicle index を外部に渡す
+      const selectCallback = this.$root.selectCallback;
+      if (selectCallback in window && typeof window[selectCallback] === 'function') {
+        window[selectCallback](index);
+      }
     },
   },
 }

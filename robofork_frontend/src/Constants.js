@@ -2,8 +2,8 @@
 export const CONFIG_ENDPOINT = (id) => `/api/location/${id}/map_config`;
 export const LOAD_ENDPOINT = (id) => `/api/operation_plan/${id}/load`;
 export const SAVE_ENDPOINT = (id) => `/api/operation_plan/${id}/save`;
-export const VEHICLES_ENDPOINT = '/api/vehicle_operation_status/load';  // TODO: 場所の特定が必要
-export const VEHICLES_UPDATE_ENDPOINT = `ws://${window.location.host}/vehicle_operation_status`;  // 場所の特定が必要？
+export const VEHICLES_ENDPOINT = (id) => `/api/vehicle_operation_status/${id}/load`;
+export const VEHICLES_UPDATE_ENDPOINT = (host, id) => `ws://${host}/vehicle_operation_status/${id}`;
 export const PREV_PAGE_URL = (id) => `/${id}/operation_plan/`;
 
 // HOME 画面での車両ポップアップの色ごとの追加クラス名
