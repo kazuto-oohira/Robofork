@@ -86,11 +86,11 @@
     #control-other > div {
       margin-bottom: 10px;
     }
-    #control-other .btn-lg {
+    #control-other .btn.full {
       width: 100%;
       margin-bottom: 5px;
     }
-    #control-other .btn-lg.half{
+    #control-other .btn.half{
       float: left;
       width: 48%;
       margin-left: 2%;
@@ -113,18 +113,19 @@
   <div id="control-other">
     <div>
       <h4 id="label_vehicle_id" class="text-center"></h4>
-      <button id="btn-manual" class="btn btn-danger btn-lg"><span class="glyphicon glyphicon-user"></span> 手動</button>
-      <button id="btn-auto" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-ban-circle"></span> 自動</button>
+      <button id="btn-manual" class="btn btn-danger btn-lg full"><span class="glyphicon glyphicon-user"></span> 手動</button>
+      <button id="btn-auto" class="btn btn-primary btn-lg full"><span class="glyphicon glyphicon-ban-circle"></span> 自動</button>
     </div>
     <br>
-{#    <div class="manual-control">#}
-{#      <button id="btn-fork-up" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-arrow-up"></span></button>#}
-{#      <button id="btn-fork-down" class="btn btn-success btn-lg"><span class="glyphicon glyphicon-arrow-down"></span></button>#}
-{#    </div>#}
-{#    <div class="manual-control">#}
-{#      <button id="btn-tilt-up" class="btn btn-warning btn-lg half"><span class="glyphicon glyphicon-chevron-left"></span></button>#}
-{#      <button id="btn-tilt-down" class="btn btn-warning btn-lg half"><span class="glyphicon glyphicon-chevron-right"></span></button>#}
-{#    </div>#}
+    <br>
+    <div class="manual-control">
+      <button id="btn-fork-up" class="btn btn-success half"><span class="glyphicon glyphicon-arrow-up"></span></button>
+      <button id="btn-fork-down" class="btn btn-success half"><span class="glyphicon glyphicon-arrow-down"></span></button>
+    </div>
+    <div class="manual-control">
+      <button id="btn-tilt-up" class="btn btn-warning half"><span class="glyphicon glyphicon-chevron-left"></span></button>
+      <button id="btn-tilt-down" class="btn btn-warning half"><span class="glyphicon glyphicon-chevron-right"></span></button>
+    </div>
   </div>
 
 </div>
@@ -155,7 +156,7 @@
          * イベントハンドラ
          */
         // 手動・自動
-        $('#btn-auto, #btn-manual').on('touchstart', function (data) {
+        $('#btn-auto, #btn-manual').on('click', function (data) {
             $.ajax({
                 url: '/api/vehicle/auto_flag/' + vehicleId,
                 type: 'POST',
@@ -212,6 +213,11 @@
         $('#btn-tilt-up, #btn-tilt-down').on('touchend touchcancel', function (data) {
             clearInterval(tiltInterval);
             tiltInterval = null;
+        });
+
+        // 画面遷移前に自動モードに
+        $(window).bind('beforeunload', function(event) {
+            $('#btn-auto').trigger('click');
         });
 
         function removeJoyStick() {
