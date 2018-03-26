@@ -46,7 +46,7 @@ export default {
       this.updateVehicles = [];
 
       const loadConfigPromise = axios.get(Constants.CONFIG_ENDPOINT(this.locationId));
-      const loadVehiclesPromise = axios.get(Constants.VEHICLES_ENDPOINT);
+      const loadVehiclesPromise = axios.get(Constants.VEHICLES_ENDPOINT(this.locationId));
 
       loadConfigPromise
         .then(response => {
@@ -79,7 +79,8 @@ export default {
     },
 
     connectWebsocket() {
-      const client = new W3CWebSocket(Constants.VEHICLES_UPDATE_ENDPOINT);
+      const url = Constants.VEHICLES_UPDATE_ENDPOINT(window.location.host, this.locationId);
+      const client = new W3CWebSocket(url);
       this.reconnectInterval = 1;
 
       client.onerror = (error) => {
