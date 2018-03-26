@@ -250,10 +250,15 @@ export default {
 
       this.selectedVehicleIndex = index;
 
-      // 選択した vehicle index を外部に渡す
+      if (!(index in this.vehicles)) {
+        return;
+      }
+      const selectedVehicleId = this.vehicles[index].id;
+
+      // 選択した vehicle id を外部に渡す
       const selectCallback = this.$root.selectCallback;
       if (selectCallback in window && typeof window[selectCallback] === 'function') {
-        window[selectCallback](index);
+        window[selectCallback](selectedVehicleId);
       }
     },
   },
