@@ -10,7 +10,7 @@ class Vehicle(models.Model):
     vehicle_no = models.CharField(max_length=100, null=True)
     vehicle_model = models.ForeignKey(VehicleModel, on_delete=models.CASCADE, null=True)
     location = models.ForeignKey(Location, on_delete=models.CASCADE, null=True)
-    extra_info_json = models.TextField(null=True)
+    extra_info_json = models.TextField(null=True)   # TODO: jsonって名前ついてるけどテキスト入ってるゴメン
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -33,6 +33,8 @@ class Vehicle(models.Model):
 class VehicleForm(ModelForm):
     class Meta:
         model = Vehicle
+
         exclude = ['created_at', 'updated_at']
-        # localized_fields = '__all__'
+
+        localized_fields = '__all__'
 
