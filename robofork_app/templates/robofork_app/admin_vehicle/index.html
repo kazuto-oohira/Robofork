@@ -1,23 +1,53 @@
 {% extends "base.html" %}
-{% block title %}NKC管理画面{% endblock %}
+{% block title %}車両一覧 | Robofork{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 
 {% block content %}
     <div class="container body">
-        <div class="main_container">
-            <!-- sidebar menu -->
-            {% include "robofork_app/_admin_side_menu.html" with admin_vehicle="active" %}
+      <div class="main_container">
+        <!-- sidebar menu -->
+        {% include "robofork_app/_admin_side_menu.html" with admin_vehicle="active" %}
 
-            <!-- page content -->
-            <div class="right_col" role="main">
-                <h3>車両一覧:車両型式や配置場所などでの絞り込みなど</h3>
-                <h4>
-                    ・車両新規登録・修正・削除<br>
-                    　　配置場所紐付け, ゼロ点紐付け<br>
-                    　　オプション値:キャリブレーション,フォーク幅長さ<br>
-                    ・個別車両ステタースへジャンプ
-                </h4>
+        <!-- page content -->
+        <div class="right_col" role="main">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="x_panel">
+                <h2>車両一覧</h2>
+                  <p class="col-md-11">
+                  </p>
+                  <div class="col-md-1 text-right">
+                    <a href="{% url 'vehicle_new' %}" role="button" class="btn btn-success btn-sm">新規作成</a>
+                  </div>
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead class>
+                  <tr>
+                    <th class="column-title" class="column-title">#</th>
+                    <th class="column-title">車両名</th>
+                    <th class="column-title">車両ID</th>
+                    <th class="column-title">型式</th>
+                    <th class="column-title">配置場所</th>
+                    <th class="column-title"></th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for vehicle in vehicles %}
+                    <tr>
+                      <th scope="row">{{ vehicle.id }}</th>
+                      <td>{{ vehicle.name }}</td>
+                      <td>{{ vehicle.vehicle_no }}</td>
+                      <td>{{ vehicle.vehicle_model.name }}</td>
+                      <td>{{ vehicle.location.name }}</td>
+                      <td class="text-right">
+                        <a class="btn btn-sm btn-primary" href="{% url 'vehicle_detail' vehicle.id %}" role="button">詳細</a>
+                      </td>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
             </div>
+          </div>
         </div>
     </div>
 {% endblock %}

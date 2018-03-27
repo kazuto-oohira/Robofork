@@ -1,6 +1,6 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from robofork_app.views import vehicle_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
+from robofork_app.views import admin_vehicle_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
 from robofork_app.views import operation_plan_view
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency, vehicle_control
@@ -18,11 +18,11 @@ urlpatterns = [
     path('admin/setting/vehicle_type/', TemplateView.as_view(template_name='robofork_app/admin_setting/vehicle_type/index.html'), name='admin_setting_vehicle_type_user_index'),
 
     # 管理画面だけど...初期に作ったのから流用したので色々あってない
-    path('admin/vehicle', vehicle_view.index, name='admin_vehicle_index'),
-    path('admin/vehicle/new', vehicle_view.new, name='vehicle_new'),
-    path('admin/vehicle/save', vehicle_view.save, name='vehicle_save'),
-    path('admin/vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
-    path('admin/vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
+    path('admin/vehicle', admin_vehicle_view.index, name='admin_vehicle_index'),
+    path('admin/vehicle/new', admin_vehicle_view.new, name='vehicle_new'),
+    path('admin/vehicle/save', admin_vehicle_view.save, name='vehicle_save'),
+    path('admin/vehicle/save/<int:vehicle_id>', admin_vehicle_view.save, name='vehicle_save'),
+    path('admin/vehicle/<int:vehicle_id>', admin_vehicle_view.detail, name='vehicle_detail'),
 
     # 各配置場所 管理画面
     path('<int:location_id>/', home_view.index, name='home_index'),
@@ -54,11 +54,11 @@ urlpatterns = [
     path('mqtt_test/<int:vehicle_id>/route_execute', mqtt_test_view.route_execute),
 
     # 以下はまだテスト
-    path('vehicle', vehicle_view.index, name='vehicle_index'),
-    path('vehicle/new', vehicle_view.new, name='vehicle_new'),
-    path('vehicle/save', vehicle_view.save, name='vehicle_save'),
-    path('vehicle/save/<int:vehicle_id>', vehicle_view.save, name='vehicle_save'),
-    path('vehicle/<int:vehicle_id>', vehicle_view.detail, name='vehicle_detail'),
+    path('vehicle', admin_vehicle_view.index, name='vehicle_index'),
+    path('vehicle/new', admin_vehicle_view.new, name='vehicle_new'),
+    path('vehicle/save', admin_vehicle_view.save, name='vehicle_save'),
+    path('vehicle/save/<int:vehicle_id>', admin_vehicle_view.save, name='vehicle_save'),
+    path('vehicle/<int:vehicle_id>', admin_vehicle_view.detail, name='vehicle_detail'),
 ]
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency
 
