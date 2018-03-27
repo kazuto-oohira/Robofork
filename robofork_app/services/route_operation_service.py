@@ -30,7 +30,7 @@ class RouteOperationService:
                 route_count += 1
 
         # 件数を取得してPreMap送信
-        mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_MAP_PRE_INFO,
+        mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_SND_MAP_PRE_INFO,
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(route_count) + "00000000")
 
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
@@ -68,7 +68,7 @@ class RouteOperationService:
 
         # 実行開始
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_ACTION,
+        mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_SND_ACTION,
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(1, 2) + utility.to_hex(1, 2) + "00000000")
 
     @classmethod
@@ -81,7 +81,7 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["speed"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, can_const.CAN_ID_MAP_INFO_1, can_data)
+        mqtt.send(vehicle_id, can_const.CAN_ID_SND_MAP_INFO_1, can_data)
 
         # 荷上下げ関係すればflag_stopをON
         if populated_data["task"] == can_const.ROUTE_TASK_LIFTUP \
@@ -99,4 +99,4 @@ class RouteOperationService:
             utility.to_hex(utility.to_can_signed(populated_data["height_lift"]))
         )
         time.sleep(cls.CAN_SEND_WAIT_TIME_SEC)
-        mqtt.send(vehicle_id, can_const.CAN_ID_MAP_INFO_2, can_data)
+        mqtt.send(vehicle_id, can_const.CAN_ID_SND_MAP_INFO_2, can_data)

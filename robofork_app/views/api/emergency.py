@@ -23,11 +23,11 @@ def execute(request, location_id):
         data = data_list.get(emergency_type, "0000000000000000")
 
     if vehicle_id > 0:
-        mqtt.send(vehicle_id, can_const.CAN_ID_EMERGENCY, data)
+        mqtt.send(vehicle_id, can_const.CAN_ID_SND_EMERGENCY, data)
     else:
         # 存在する全車両に緊急指示を投げる
         vehicles = Vehicle.get_list(location_id=location_id)
         for vehicle in vehicles:
-            mqtt.send(vehicle.id, can_const.CAN_ID_EMERGENCY, data)
+            mqtt.send(vehicle.id, can_const.CAN_ID_SND_EMERGENCY, data)
 
     return JsonResponse({ "result": True })

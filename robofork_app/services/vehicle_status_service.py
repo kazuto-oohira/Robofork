@@ -19,21 +19,21 @@ class VehicleStatusService:
         else:
             vehicle_status = VehicleStatus(vehicle_id)
 
-        if data["id"] == can_const.CAN_ID_FORK_STATUS_1:
+        if data["id"] == can_const.CAN_ID_RCV_FORK_STATUS_1:
             self.__set_vehicle_status_1(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_STATUS_2:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_STATUS_2:
             self.__set_vehicle_status_2(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_STATUS_3:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_STATUS_3:
             self.__set_vehicle_status_3(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_ROAD_CELL:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_ROAD_CELL:
             self.__set_vehicle_road_cell(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_LIFT_HEIGHT:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_LIFT_HEIGHT:
             self.__set_vehicle_lift_height(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_INTERLOCK_1:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_INTERLOCK_1:
             self.__set_vehicle_interlock_1(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_INTERLOCK_2:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_INTERLOCK_2:
             self.__set_vehicle_interlock_2(vehicle_status, data)
-        elif data["id"] == can_const.CAN_ID_FORK_ARM_SLANT:
+        elif data["id"] == can_const.CAN_ID_RCV_FORK_ARM_SLANT:
             self.__set_vehicle_lift_slant(vehicle_status, data)
 
         self.__vehicle_status_list[vehicle_id] = vehicle_status
