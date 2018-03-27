@@ -64,13 +64,13 @@
                 <!-- vue.js control -->
                 <div
                   id="app"
-                  data-select="roboforkSelectCallback"
+                  data-select="onRoboforkChangeStatus"
                 >
                 </div>
-                <script>
-window.roboforkSelectCallback = function(id) {
-  alert(id);
-};
+                <script type="text/javascript">
+                  window.onRoboforkChangeStatus = function(vehicleId) {
+                      RBFK_HOME.onRoboforkChangeStatus(vehicleId);
+                  }
                 </script>
               </div>
 

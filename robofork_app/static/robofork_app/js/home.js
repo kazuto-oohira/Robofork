@@ -1,4 +1,11 @@
-$(function() {
+var RBFK_HOME = {
+    // プロパティ
+};
+
+/**
+ * 画面読み込み時処理
+ */
+RBFK_HOME.onLoad = function() {
     // 緊急停止監視開始
     watchEmergencyStatus();
     changeEmergencyStatus(false);
@@ -154,4 +161,14 @@ $(function() {
         // 変化
         $('.app-container').css('backgroundColor', bgColor);
     }
-});
+};
+
+/**
+ * マップ画面 フォーククリック時処理(Vuejs連携用)
+ */
+RBFK_HOME.onRoboforkChangeStatus = function(vehicleId) {
+    console.log('Fork#' + vehicleId + ' selected');
+};
+
+// 画面読み込み時処理
+$(RBFK_HOME.onLoad);
