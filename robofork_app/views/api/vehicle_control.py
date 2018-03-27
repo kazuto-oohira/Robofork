@@ -61,6 +61,6 @@ def operation_flag(request, vehicle_id=0):
         utility.to_hex(demo_obstacle_flag_2, 2) + \
         utility.to_hex(0, 10)
 
-    mqtt.send(vehicle_id, can_const.CAN_ID_EMERGENCY, send_data)
+    mqtt.send(vehicle_id, can_const.CAN_ID_FORK_EMERGENCY, send_data)
 
     return JsonResponse({ "result": True })
