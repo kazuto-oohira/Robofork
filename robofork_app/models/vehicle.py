@@ -1,6 +1,6 @@
 import json
 from django.db import models
-from django.forms import ModelForm
+from django.forms import ModelForm, CharField
 from .location import Location
 from .vehicle_model import VehicleModel
 
@@ -31,10 +31,10 @@ class Vehicle(models.Model):
 
 
 class VehicleForm(ModelForm):
+    extra_info_json = CharField(required=False)
+
     class Meta:
         model = Vehicle
-
         exclude = ['created_at', 'updated_at']
-
-        localized_fields = '__all__'
+        # localized_fields = '__all__'
 
