@@ -128,10 +128,10 @@ class VehicleStatusService:
 
 
     def __set_vehicle_road_cell(self, vehicle_status, data):
-        value1 = utility.from_can_singed_2(int(data["data"][0] + data["data"][1], 16)) * 0.01
-        value2 = utility.from_can_singed_2(int(data["data"][2] + data["data"][3], 16)) * 0.01
-        value3 = utility.from_can_singed_2(int(data["data"][4] + data["data"][5], 16)) * 0.01
-        value4 = utility.from_can_singed_2(int(data["data"][6] + data["data"][7], 16)) * 0.01
+        value1 = utility.from_can_singed_2(int(data["data"][1] + data["data"][0], 16))
+        value2 = utility.from_can_singed_2(int(data["data"][3] + data["data"][2], 16))
+        value3 = utility.from_can_singed_2(int(data["data"][5] + data["data"][4], 16))
+        value4 = utility.from_can_singed_2(int(data["data"][7] + data["data"][6], 16))
         vehicle_status.weight_road_cell = value1 + value2 + value3 + value4
 
 
