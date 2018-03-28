@@ -156,6 +156,7 @@ class VehicleStatusService:
         vehicle_status.interlock_emergency_button = 0 if (int(data["data"][0], 16) & 0b01110000) else 1
 
         print("EMERGENCY: " + str(vehicle_status.interlock_emergency_button))
+        print("EMERGENCY VALUE: " + bin(int(data["data"][0]), 16))
 
 
     def __set_vehicle_lift_slant(self, vehicle_status, data):
