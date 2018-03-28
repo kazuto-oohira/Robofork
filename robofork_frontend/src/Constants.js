@@ -24,7 +24,7 @@ export const TASK_LIFTUP             = 3;
 export const TASK_LIFTUP_WITH_TURN   = 4;
 export const TASK_LIFTDOWN           = 5;
 export const TASK_LIFTDOWN_WITH_TURN = 6;
-export const TASK_PAUSE              = 7;
+export const TASK_PAUSE              = 8;
 export const TASK_NOTHING            = 255;
 
 // タスクラベル
