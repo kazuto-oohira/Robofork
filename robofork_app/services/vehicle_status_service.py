@@ -80,6 +80,7 @@ class VehicleStatusService:
                         "interlock_body_around_tape": vehicle_status.interlock_body_around_tape,
                         "interlock_emergency_button": vehicle_status.interlock_emergency_button,
                         "lift_slant_x": vehicle_status.lift_slant_x,
+                        "lift_slant_y": vehicle_status.lift_slant_y,
                     },
                     "vehicle_positions": [
                         # 現在位置情報
