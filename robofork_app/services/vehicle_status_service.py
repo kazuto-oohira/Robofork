@@ -6,7 +6,7 @@ from robofork_app.libs import utility
 
 
 class VehicleStatusService:
-    PUBLISH_TO_CLIENT_INTERVAL_SEC = 1.5
+    PUBLISH_TO_CLIENT_INTERVAL_SEC = 1
 
     def __init__(self):
         self.__vehicle_status_list = {}
