@@ -11,6 +11,7 @@ class VehicleStatusService:
     def __init__(self):
         self.__vehicle_status_list = {}
         self.__last_publish_to_client = datetime.datetime.now()
+        self.__force_send_status_flag = False
 
 
     def set_data(self, vehicle_id, data):
@@ -31,8 +32,10 @@ class VehicleStatusService:
             self.__set_vehicle_lift_height(vehicle_status, data)
         elif data["id"] == can_const.CAN_ID_RCV_FORK_INTERLOCK_1:
             self.__set_vehicle_interlock_1(vehicle_status, data)
+            self.__force_send_status_flag = True
         elif data["id"] == can_const.CAN_ID_RCV_FORK_INTERLOCK_2:
             self.__set_vehicle_interlock_2(vehicle_status, data)
+            self.__force_send_status_flag = True
         elif data["id"] == can_const.CAN_ID_RCV_FORK_ARM_SLANT:
             self.__set_vehicle_lift_slant(vehicle_status, data)
 
@@ -40,21 +43,13 @@ class VehicleStatusService:
 
 
     def get_vehicle_status(self, vehicle_id):
-        # 最後にデータをPublishした時刻と現在時刻を比較して、Interval時間を過ぎていなかったらNoneを戻る
-        # クライアントへ送信しない。WebSocketの負荷軽減対策
-        if datetime.datetime.now() < \
-                (self.__last_publish_to_client + datetime.timedelta(seconds=self.PUBLISH_TO_CLIENT_INTERVAL_SEC)):
-            return None
-        else:
-            self.__last_publish_to_client = datetime.datetime.now()
-
         if vehicle_id in self.__vehicle_status_list.keys():
             vehicle_status = self.__vehicle_status_list[vehicle_id]
         else:
             vehicle_status = VehicleStatus(vehicle_id)
             self.__vehicle_status_list[vehicle_id] = vehicle_status
 
-        return {
+        return_data = {
             "vehicles": [
                 {
                     "id": vehicle_status.vehicle_id,
@@ -102,6 +97,15 @@ class VehicleStatusService:
             ]
         }
 
+        # 最後にデータをPublishした時刻と現在時刻を比較して、Interval時間を過ぎていなかったらNoneを戻る
+        # クライアントへ送信しない。WebSocketの負荷軽減対策
+        if not self.__force_send_status_flag and datetime.datetime.now() < \
+                (self.__last_publish_to_client + datetime.timedelta(seconds=self.PUBLISH_TO_CLIENT_INTERVAL_SEC)):
+            return None
+        else:
+            self.__last_publish_to_client = datetime.datetime.now()
+            self.__force_send_status_flag = False
+            return return_data
 
     def __set_vehicle_status_1(self, vehicle_status, data):
         vehicle_status.operation_id = int(data["data"][0] + data["data"][1], 16)
@@ -150,6 +154,8 @@ class VehicleStatusService:
         vehicle_status.interlock_lrf_rear = 1 if (int(data["data"][1], 16) & 0b00001111) else 0
         vehicle_status.interlock_body_around_tape = 1 if (int(data["data"][0], 16) & 0b10000000) else 0
         vehicle_status.interlock_emergency_button = 1 if (int(data["data"][0], 16) & 0b00001110) else 0
+
+        print("EMERGENCY: " + str(vehicle_status.interlock_emergency_button))
 
 
     def __set_vehicle_lift_slant(self, vehicle_status, data):
