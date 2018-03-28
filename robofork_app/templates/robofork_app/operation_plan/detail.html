@@ -25,13 +25,13 @@
               data-save="roboforkSaveCallback"
               data-cancel="roboforkCancelCallback"
             ></div>
-          <script>
-window.roboforkSaveCallback = function() {
-  $(document).trigger('showInfoAlert', { message: '保存しました' });
-};
-window.roboforkCancelCallback = function() {
-  window.location = Constants.PREV_PAGE_URL(this.locationId);
-};
+          <script type="text/javascript">
+            window.roboforkSaveCallback = function() {
+              $(document).trigger('showInfoAlert', { message: '保存しました' });
+            };
+            window.roboforkCancelCallback = function() {
+              window.history.back();
+            };
           </script>
         </div>
     </div>
