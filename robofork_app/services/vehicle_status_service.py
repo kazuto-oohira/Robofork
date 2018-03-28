@@ -227,17 +227,17 @@ class VehicleStatus:
 
 
     def get_status_name(self):
-        if self.interlock_fork_tip_1 or self.interlock_fork_tip_2 or self.interlock_fork_tip_3 or self.interlock_fork_tip_4:
+        if self.interlock_emergency_button:
+            return "緊急停止ボタン押下"
+        elif self.interlock_body_around_tape:
+            return "障害物検知(テープスイッチ)"
+        elif self.interlock_lrf_front or self.interlock_lrf_front:
+            return "障害物検知(LRF)"
+        elif self.interlock_ground_hole_right or self.interlock_ground_hole_left or self.interlock_ground_hole_center:
+            return "路面異常検知"
+        elif self.interlock_fork_tip_1 or self.interlock_fork_tip_2 or self.interlock_fork_tip_3 or self.interlock_fork_tip_4:
             return "爪先光電管接触検知"
         # elif self.interlock_pallet_switch:
         #     return "パレットリミットスイッチ"
-        elif self.interlock_ground_hole_right or self.interlock_ground_hole_left or self.interlock_ground_hole_center:
-            return "路面異常検知"
-        elif self.interlock_lrf_front or self.interlock_lrf_front:
-            return "障害物検知(LRF)"
-        elif self.interlock_body_around_tape:
-            return "障害物検知(テープスイッチ)"
-        elif self.interlock_emergency_button:
-            return "緊急停止ボタン押下"
         else:
             return VehicleStatus.get_task_name(self.operation_task)
