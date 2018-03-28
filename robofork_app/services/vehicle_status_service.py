@@ -170,7 +170,7 @@ class VehicleStatusService:
 
     def __set_vehicle_lift_slant(self, vehicle_status, data):
         vehicle_status.lift_slant_x = utility.from_can_singed_8bit_2hosu(int(data["data"][0], 16))
-        vehicle_status.lift_slant_y = utility.from_can_singed_8bit_2hosu(int(data["data"][2], 16))
+        vehicle_status.lift_slant_y = utility.from_can_singed_8bit_2hosu(int(data["data"][1], 16))
 
 
 class VehicleStatus:
