@@ -62,9 +62,9 @@ def on_message(client, userdata, msg):
         web_socket_test.send(result_data_json)
         print(result_data_json)
 
-        # ws1 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/1")
-        # ws1.send(result_data_json)
-        # ws1.close()
+        ws1 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+        ws1.send(result_data_json)
+        ws1.close()
 
     # MQTTテストへ
     web_socket_test.send(msg.payload.decode('ASCII'))
@@ -73,7 +73,6 @@ def on_message(client, userdata, msg):
 while True:
     try:
         web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/" + location_id)
-        print("WebSocket: " + "ws://" + web_socket_server + "/vehicle_operation_status/" + location_id + " Connected")
         web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
 
         client = mqtt.Client(protocol=mqtt.MQTTv311)
