@@ -68,7 +68,7 @@ def on_message(client, userdata, msg):
 
 while True:
     try:
-        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/" + location_id)
+        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
         web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
 
         client = mqtt.Client(protocol=mqtt.MQTTv311)

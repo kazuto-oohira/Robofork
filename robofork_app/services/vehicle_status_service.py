@@ -155,9 +155,6 @@ class VehicleStatusService:
         vehicle_status.interlock_body_around_tape = 1 if (int(data["data"][0], 16) & 0b00000001) else 0
         vehicle_status.interlock_emergency_button = 0 if ((int(data["data"][0], 16) & 0b01110000) == 0b01110000) else 1
 
-        print("INTERLOCK2-EmergencyButton: " + str(vehicle_status.interlock_emergency_button))
-        print("INTERLOCK2-EmergencyButton: " + str(bin(int(data["data"][0], 16))))
-
 
     def __set_vehicle_lift_slant(self, vehicle_status, data):
         vehicle_status.lift_slant = utility.from_can_singed_2(int(data["data"][0] + data["data"][1], 16))
