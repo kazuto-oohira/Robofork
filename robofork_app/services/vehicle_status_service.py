@@ -49,6 +49,7 @@ class VehicleStatusService:
             vehicle_status = VehicleStatus(vehicle_id)
             self.__vehicle_status_list[vehicle_id] = vehicle_status
 
+
         return_data = {
             "vehicles": [
                 {
@@ -65,8 +66,12 @@ class VehicleStatusService:
 
                         # 各ステータス
                         "battery": vehicle_status.battery,
-                        "weight_road_cell": vehicle_status.weight_road_cell,
                         "lift_height": vehicle_status.lift_height,
+                        "weight_road_cell": vehicle_status.weight_road_cell,
+                        "weight_road_cell_1": vehicle_status.weight_road_cell_1,
+                        "weight_road_cell_2": vehicle_status.weight_road_cell_2,
+                        "weight_road_cell_3": vehicle_status.weight_road_cell_3,
+                        "weight_road_cell_4": vehicle_status.weight_road_cell_4,
                         "interlock_fork_tip_1": vehicle_status.interlock_fork_tip_1,
                         "interlock_fork_tip_2": vehicle_status.interlock_fork_tip_2,
                         "interlock_fork_tip_3": vehicle_status.interlock_fork_tip_3,
@@ -98,7 +103,6 @@ class VehicleStatusService:
                 }
             ]
         }
-
         # 最後にデータをPublishした時刻と現在時刻を比較して、Interval時間を過ぎていなかったらNoneを戻る
         # クライアントへ送信しない。WebSocketの負荷軽減対策
         if not self.__force_send_status_flag and datetime.datetime.now() < \
@@ -129,11 +133,13 @@ class VehicleStatusService:
 
 
     def __set_vehicle_road_cell(self, vehicle_status, data):
-        value1 = utility.from_can_singed_16bit_2hosu(int(data["data"][1] + data["data"][0], 16))
-        value2 = utility.from_can_singed_16bit_2hosu(int(data["data"][3] + data["data"][2], 16))
-        value3 = utility.from_can_singed_16bit_2hosu(int(data["data"][5] + data["data"][4], 16))
-        value4 = utility.from_can_singed_16bit_2hosu(int(data["data"][7] + data["data"][6], 16))
-        vehicle_status.weight_road_cell = value1 + value2 + value3 + value4
+        vehicle_status.weight_road_cell_1 = utility.from_can_singed_16bit_2hosu(int(data["data"][1] + data["data"][0], 16))
+        vehicle_status.weight_road_cell_2 = utility.from_can_singed_16bit_2hosu(int(data["data"][3] + data["data"][2], 16))
+        vehicle_status.weight_road_cell_3 = utility.from_can_singed_16bit_2hosu(int(data["data"][5] + data["data"][4], 16))
+        vehicle_status.weight_road_cell_4 = utility.from_can_singed_16bit_2hosu(int(data["data"][7] + data["data"][6], 16))
+        vehicle_status.weight_road_cell = \
+            vehicle_status.weight_road_cell_1 + vehicle_status.weight_road_cell_2 + \
+            vehicle_status.weight_road_cell_3 + vehicle_status.weight_road_cell_4
 
 
     def __set_vehicle_lift_height(self, vehicle_status, data):
@@ -192,6 +198,10 @@ class VehicleStatus:
         self.angle = 0
         self.weight = 0
         self.weight_road_cell = 0
+        self.weight_road_cell_1 = 0
+        self.weight_road_cell_2 = 0
+        self.weight_road_cell_3 = 0
+        self.weight_road_cell_4 = 0
         self.battery = 0
         self.lift_height = 0
         self.lift_slant_x = 0
