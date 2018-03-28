@@ -119,7 +119,7 @@
                     <th class="column-title">説明</th>
                     <th class="column-title">車両名</th>
                     <th class="column-title">状態</th>
-                    <th class="column-title">バッテリー</th>
+{#                    <th class="column-title">バッテリー</th>#}
                     <th class="column-title"></th>
                   </tr>
                   </thead>
@@ -130,11 +130,11 @@
                     <td>{{ operation_plan.explain }}</td>
                     <td>{{ operation_plan.vehicle.name }}</td>
                     <td id="vehicle_status_1[{{ vehicle.id }}]">-</td>
-                    <td>
-                      <div class="progress progress_sm">
-                        <div class="progress-bar bg-green" role="progressbar" style="width: 78%;"></div>
-                      </div>
-                    </td>
+{#                    <td>#}
+{#                      <div class="progress progress_sm">#}
+{#                        <div class="progress-bar bg-green" role="progressbar" style="width: 78%;"></div>#}
+{#                      </div>#}
+{#                    </td>#}
                     <td class="text-right">
                       <a class="button-route-execute btn btn-primary" data-route-id="{{ operation_plan.id }}">運行開始</a>
                     </td>
