@@ -245,24 +245,25 @@ class VehicleStatus:
         bit5:路面異常
         bit6:荷重異常
         """
-        return_strs = []
+        interlock_strings = []
 
         if (self.fork_status & 0b00000001) != 0:
-            return_strs.append("緊急停止ボタン")
-        elif (self.fork_status & 0b00000010) != 0:
-            return_strs.append("遠隔停止")
-        elif (self.fork_status & 0b00000100) != 0:
-            return_strs.append("インターロック信号検知")
-        elif (self.fork_status & 0b00001000) != 0:
-            return_strs.append("LRF検知")
-        elif (self.fork_status & 0b00010000) != 0:
-            return_strs.append("路面異常")
-        elif (self.fork_status & 0b00100000) != 0:
-            return_strs.append("荷重異常")
-        else:
-            return VehicleStatus.get_task_name(self.operation_task)
+            interlock_strings.append("緊急停止ボタン")
+        if (self.fork_status & 0b00000010) != 0:
+            interlock_strings.append("遠隔停止")
+        if (self.fork_status & 0b00000100) != 0:
+            interlock_strings.append("インターロック")
+        if (self.fork_status & 0b00001000) != 0:
+            interlock_strings.append("LRF検知")
+        if (self.fork_status & 0b00010000) != 0:
+            interlock_strings.append("路面異常")
+        if (self.fork_status & 0b00100000) != 0:
+            interlock_strings.append("荷重異常")
 
-        return "/".join(return_strs)
+        if len(interlock_strings) == 0:
+            return VehicleStatus.get_task_name(self.operation_task)
+        else:
+            return "/".join(interlock_strings)
 
         """ Interlock信号を直接見る場合
         if self.interlock_emergency_button:
