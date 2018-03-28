@@ -60,11 +60,7 @@ def on_message(client, userdata, msg):
         # ステータス用ソケットへ
         result_data_json = json.dumps(result_data)
         web_socket_test.send(result_data_json)
-        print(result_data_json)
-
-        ws1 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
-        ws1.send(result_data_json)
-        ws1.close()
+        # print(result_data_json)
 
     # MQTTテストへ
     web_socket_test.send(msg.payload.decode('ASCII'))
