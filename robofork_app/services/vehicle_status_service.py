@@ -55,7 +55,6 @@ class VehicleStatusService:
             self.__vehicle_status_list[vehicle_id] = vehicle_status
 
         return {
-            "reload": False,    # TODO: 不要になったら消す
             "vehicles": [
                 {
                     "id": vehicle_status.vehicle_id,
