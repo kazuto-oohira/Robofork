@@ -137,10 +137,6 @@ class VehicleStatusService:
         vehicle_status.weight_road_cell_2 = utility.from_can_singed_16bit_2hosu(int(data["data"][2] + data["data"][3], 16))
         vehicle_status.weight_road_cell_3 = utility.from_can_singed_16bit_2hosu(int(data["data"][4] + data["data"][5], 16))
         vehicle_status.weight_road_cell_4 = utility.from_can_singed_16bit_2hosu(int(data["data"][6] + data["data"][7], 16))
-        # vehicle_status.weight_road_cell_1 = utility.from_can_singed_16bit_2hosu(int(data["data"][1] + data["data"][0], 16))
-        # vehicle_status.weight_road_cell_2 = utility.from_can_singed_16bit_2hosu(int(data["data"][3] + data["data"][2], 16))
-        # vehicle_status.weight_road_cell_3 = utility.from_can_singed_16bit_2hosu(int(data["data"][5] + data["data"][4], 16))
-        # vehicle_status.weight_road_cell_4 = utility.from_can_singed_16bit_2hosu(int(data["data"][7] + data["data"][6], 16))
         vehicle_status.weight_road_cell = \
             vehicle_status.weight_road_cell_1 + vehicle_status.weight_road_cell_2 + \
             vehicle_status.weight_road_cell_3 + vehicle_status.weight_road_cell_4

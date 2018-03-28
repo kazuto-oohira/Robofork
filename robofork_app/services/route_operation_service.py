@@ -29,6 +29,9 @@ class RouteOperationService:
             if row["afterTask"] != can_const.ROUTE_TASK_NOTHING:
                 route_count += 1
 
+        # TODO: バグ？件数が1件多くなる
+        route_count = route_count - 1
+
         # 件数を取得してPreMap送信
         mqtt.send(vehicle_operation_plan.vehicle_id, can_const.CAN_ID_SND_MAP_PRE_INFO,
                   utility.to_hex(vehicle_operation_plan_id) + utility.to_hex(route_count) + "00000000")
