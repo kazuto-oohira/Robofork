@@ -150,8 +150,8 @@ class VehicleStatusService:
         vehicle_status.interlock_ground_hole_right = 1 if (int(data["data"][0], 16) & 0b00000010) else 0
         vehicle_status.interlock_ground_hole_left = 1 if (int(data["data"][0], 16) & 0b00000100) else 0
         vehicle_status.interlock_ground_hole_center = 1 if (int(data["data"][0], 16) & 0b00001000) else 0
-        vehicle_status.interlock_lrf_front = 1 if (int(data["data"][1], 16) & 0b00001111) else 0
-        vehicle_status.interlock_lrf_rear = 1 if (int(data["data"][1], 16) & 0b11110000) else 0
+        vehicle_status.interlock_lrf_front = 1 if (int(data["data"][1], 16) & 0b00000111) else 0
+        vehicle_status.interlock_lrf_rear  = 1 if (int(data["data"][1], 16) & 0b01110000) else 0
         vehicle_status.interlock_body_around_tape = 1 if (int(data["data"][0], 16) & 0b00000001) else 0
         vehicle_status.interlock_emergency_button = 0 if ((int(data["data"][0], 16) & 0b01110000) == 0b01110000) else 1
 
