@@ -26,7 +26,8 @@ class Vehicle(models.Model):
             "vehicle_no": self.vehicle_no,
             "vehicle_model": self.vehicle_model.as_json() if self.vehicle_model else None,
             "location_id": self.location_id,
-            "extra_info_json": json.loads(self.extra_info_json or "{}")
+            "extra_info_json": self.extra_info_json,
+            # "extra_info_json": json.loads(self.extra_info_json or "{}"),  # TODO: 本当はJSON
         }
 
 
