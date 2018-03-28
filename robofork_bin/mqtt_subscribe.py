@@ -59,7 +59,7 @@ def on_message(client, userdata, msg):
     if result_data:
         # ステータス用ソケットへ
         result_data_json = json.dumps(result_data)
-        web_socket_test.send(result_data_json)
+        web_socket.send(result_data_json)
         # print(result_data_json)
 
     # MQTTテストへ
@@ -68,7 +68,7 @@ def on_message(client, userdata, msg):
 
 while True:
     try:
-        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status")
+        web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/" + location_id)
         web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
 
         client = mqtt.Client(protocol=mqtt.MQTTv311)
