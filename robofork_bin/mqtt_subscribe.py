@@ -59,12 +59,12 @@ def on_message(client, userdata, msg):
     if result_data:
         # ステータス用ソケットへ
         result_data_json = json.dumps(result_data)
-        web_socket.send(result_data_json)
+        web_socket_test.send(result_data_json)
         print(result_data_json)
 
-        ws1 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/1")
-        ws1.send(result_data_json)
-        ws1.close()
+        # ws1 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/1")
+        # ws1.send(result_data_json)
+        # ws1.close()
 
     # MQTTテストへ
     web_socket_test.send(msg.payload.decode('ASCII'))
