@@ -139,20 +139,20 @@ class VehicleStatusService:
 
 
     def __set_vehicle_interlock_1(self, vehicle_status, data):
-        vehicle_status.interlock_fork_tip_1 = 1 if (int(data["data"][3], 16) & 0b10000000) else 0
-        vehicle_status.interlock_fork_tip_2 = 1 if (int(data["data"][3], 16) & 0b01000000) else 0
-        vehicle_status.interlock_fork_tip_3 = 1 if (int(data["data"][3], 16) & 0b00100000) else 0
-        vehicle_status.interlock_fork_tip_4 = 1 if (int(data["data"][3], 16) & 0b00010000) else 0
-        vehicle_status.interlock_pallet_switch = 1 if (int(data["data"][3], 16) & 0b00001000) else 0
+        vehicle_status.interlock_fork_tip_1 = 1 if (int(data["data"][3], 16) & 0b00000001) else 0
+        vehicle_status.interlock_fork_tip_2 = 1 if (int(data["data"][3], 16) & 0b00000010) else 0
+        vehicle_status.interlock_fork_tip_3 = 1 if (int(data["data"][3], 16) & 0b00000100) else 0
+        vehicle_status.interlock_fork_tip_4 = 1 if (int(data["data"][3], 16) & 0b00001000) else 0
+        vehicle_status.interlock_pallet_switch = 1 if (int(data["data"][3], 16) & 0b00010000) else 0
 
 
     def __set_vehicle_interlock_2(self, vehicle_status, data):
-        vehicle_status.interlock_ground_hole_right = 1 if (int(data["data"][0], 16) & 0b01000000) else 0
-        vehicle_status.interlock_ground_hole_left = 1 if (int(data["data"][0], 16) & 0b00100000) else 0
-        vehicle_status.interlock_ground_hole_center = 1 if (int(data["data"][0], 16) & 0b00010000) else 0
-        vehicle_status.interlock_lrf_front = 1 if (int(data["data"][1], 16) & 0b11110000) else 0
-        vehicle_status.interlock_lrf_rear = 1 if (int(data["data"][1], 16) & 0b00001111) else 0
-        vehicle_status.interlock_body_around_tape = 1 if (int(data["data"][0], 16) & 0b10000000) else 0
+        vehicle_status.interlock_ground_hole_right = 1 if (int(data["data"][0], 16) & 0b00000010) else 0
+        vehicle_status.interlock_ground_hole_left = 1 if (int(data["data"][0], 16) & 0b00000100) else 0
+        vehicle_status.interlock_ground_hole_center = 1 if (int(data["data"][0], 16) & 0b00001000) else 0
+        vehicle_status.interlock_lrf_front = 1 if (int(data["data"][1], 16) & 0b00001111) else 0
+        vehicle_status.interlock_lrf_rear = 1 if (int(data["data"][1], 16) & 0b11110000) else 0
+        vehicle_status.interlock_body_around_tape = 1 if (int(data["data"][0], 16) & 0b00000001) else 0
         vehicle_status.interlock_emergency_button = 0 if ((int(data["data"][0], 16) & 0b01110000) == 0b01110000) else 1
 
 
