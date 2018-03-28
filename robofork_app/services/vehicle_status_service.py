@@ -59,6 +59,7 @@ class VehicleStatusService:
                         "vehicle_operation_plan_id": vehicle_status.operation_id,
 
                         # 各ステータスをまとめた情報
+                        "vehicle_status": vehicle_status.fork_status,
                         "status_code": vehicle_status.get_status_code(),
                         "status_name": vehicle_status.get_status_name(),
 
@@ -111,7 +112,7 @@ class VehicleStatusService:
         vehicle_status.operation_id = int(data["data"][0] + data["data"][1], 16)
         vehicle_status.operation_index = int(data["data"][2] + data["data"][3], 16)
         vehicle_status.operation_task = int(data["data"][4], 16)
-        vehicle_status.operation_status = int(data["data"][5], 16)
+        vehicle_status.fork_status = int(data["data"][5], 16)
 
 
     def __set_vehicle_status_2(self, vehicle_status, data):
@@ -150,8 +151,8 @@ class VehicleStatusService:
         vehicle_status.interlock_ground_hole_right = 1 if (int(data["data"][0], 16) & 0b00000010) else 0
         vehicle_status.interlock_ground_hole_left = 1 if (int(data["data"][0], 16) & 0b00000100) else 0
         vehicle_status.interlock_ground_hole_center = 1 if (int(data["data"][0], 16) & 0b00001000) else 0
-        vehicle_status.interlock_lrf_front = 1 if (int(data["data"][1], 16) & 0b00000111) else 0
-        vehicle_status.interlock_lrf_rear  = 1 if (int(data["data"][1], 16) & 0b01110000) else 0
+        vehicle_status.interlock_lrf_front = 0 if ((int(data["data"][1], 16) & 0b00000111) == 0b00000111) else 1
+        vehicle_status.interlock_lrf_rear  = 0 if ((int(data["data"][1], 16) & 0b01110000) == 0b01110000) else 1
         vehicle_status.interlock_body_around_tape = 1 if (int(data["data"][0], 16) & 0b00000001) else 0
         vehicle_status.interlock_emergency_button = 0 if ((int(data["data"][0], 16) & 0b01110000) == 0b01110000) else 1
 
@@ -182,7 +183,7 @@ class VehicleStatus:
         self.operation_id = 0
         self.operation_index = 0
         self.operation_task = 255
-        self.operation_status = 0
+        self.fork_status = 0
         self.x = 0
         self.y = 0
         self.speed = 0
@@ -207,6 +208,17 @@ class VehicleStatus:
 
 
     def get_status_code(self):
+        """
+        bit1:緊急停止スイッチ
+        bit2:遠隔からの緊急停止
+        bit3:インターロック
+        bit4:LRF検知
+        bit5:路面異常
+        bit6:荷重異常
+        """
+        return 2 if (self.fork_status & 0b00111111) != 0 else 0
+
+        """ Interlock信号を直接見る場合
         if self.interlock_fork_tip_1 or self.interlock_fork_tip_2 or self.interlock_fork_tip_3 or self.interlock_fork_tip_4:
             return 2
         # elif self.interlock_pallet_switch:
@@ -221,9 +233,34 @@ class VehicleStatus:
             return 2
         else:
             return 0
+        """
 
 
     def get_status_name(self):
+        """
+        bit1:緊急停止スイッチ
+        bit2:遠隔からの緊急停止
+        bit3:インターロック
+        bit4:LRF検知
+        bit5:路面異常
+        bit6:荷重異常
+        """
+        if (self.fork_status & 0b00000001) != 0:
+            return "緊急停止ボタン"
+        elif (self.fork_status & 0b00000010) != 0:
+            return "遠隔停止"
+        elif (self.fork_status & 0b00000100) != 0:
+            return "インターロック信号検知"
+        elif (self.fork_status & 0b00001000) != 0:
+            return "LRF検知"
+        elif (self.fork_status & 0b00010000) != 0:
+            return "路面異常"
+        elif (self.fork_status & 0b00100000) != 0:
+            return "荷重異常"
+        else:
+            return VehicleStatus.get_task_name(self.operation_task)
+
+        """ Interlock信号を直接見る場合
         if self.interlock_emergency_button:
             return "緊急停止ボタン押下"
         elif self.interlock_body_around_tape:
@@ -238,3 +275,4 @@ class VehicleStatus:
         #     return "パレットリミットスイッチ"
         else:
             return VehicleStatus.get_task_name(self.operation_task)
+        """
