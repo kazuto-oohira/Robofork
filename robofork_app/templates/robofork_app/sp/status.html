@@ -123,7 +123,8 @@
                     infoStrList.push("バッテリー(v): " + vehicleData["battery"]);
                     infoStrList.push("ロードセル重量(kg): " + vehicleData["weight_road_cell"]);
                     infoStrList.push("リフト高さ(cm): " + vehicleData["lift_height"]);
-                    infoStrList.push("マスト傾斜: " + vehicleData["lift_slant"]);
+                    infoStrList.push("マスト傾斜(x): " + vehicleData["lift_slant_x"]);
+                    infoStrList.push("マスト傾斜(y): " + vehicleData["lift_slant_y"]);
                     $('#other_info').html(infoStrList.join('<br>'));
                 }
             };

@@ -79,7 +79,7 @@ class VehicleStatusService:
                         "interlock_lrf_rear": vehicle_status.interlock_lrf_rear,
                         "interlock_body_around_tape": vehicle_status.interlock_body_around_tape,
                         "interlock_emergency_button": vehicle_status.interlock_emergency_button,
-                        "lift_slant": vehicle_status.lift_slant,
+                        "lift_slant_x": vehicle_status.lift_slant_x,
                     },
                     "vehicle_positions": [
                         # 現在位置情報
@@ -158,7 +158,8 @@ class VehicleStatusService:
 
 
     def __set_vehicle_lift_slant(self, vehicle_status, data):
-        vehicle_status.lift_slant = utility.from_can_singed_2(int(data["data"][0] + data["data"][1], 16))
+        vehicle_status.lift_slant_x = utility.from_can_singed_2(int(data["data"][0], 16))
+        vehicle_status.lift_slant_y = utility.from_can_singed_2(int(data["data"][2], 16))
 
 
 class VehicleStatus:
@@ -192,7 +193,8 @@ class VehicleStatus:
         self.weight_road_cell = 0
         self.battery = 0
         self.lift_height = 0
-        self.lift_slant = 0
+        self.lift_slant_x = 0
+        self.lift_slant_y = 0
         self.interlock_fork_tip_1 = 0
         self.interlock_fork_tip_2 = 0
         self.interlock_fork_tip_3 = 0
