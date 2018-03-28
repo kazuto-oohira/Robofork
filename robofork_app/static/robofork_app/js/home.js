@@ -139,13 +139,6 @@ RBFK_HOME.onLoad = function() {
                     isEmergency = true;
                 }
             }
-
-            if (parsedData["status"] == 2) {
-                changeEmergencyStatus(true);
-            } else {
-                changeEmergencyStatus(false);
-            }
-
             changeEmergencyStatus(isEmergency);
         }
         client.onerror = function(error) {
