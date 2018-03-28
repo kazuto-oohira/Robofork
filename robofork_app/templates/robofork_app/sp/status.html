@@ -36,6 +36,11 @@
       margin-top: 0;
       font-weight: 700;
     }
+
+    #task_name, #status_name {
+      font-size: 1.1em;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body class="">
@@ -44,19 +49,29 @@
     <hr>
     <div class="row">
       <div class="col-xs-12">
-        <h5>現在の運行計画</h5>
-        <hr class="light">
-        <div id="task_name">ー</div>
-        <div id="task_explain">　</div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-12">
         <h5>ステータス</h5>
         <hr class="light">
         <div id="status_name">ー</div>
       </div>
     </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <h5>現在の運行計画</h5>
+        <hr class="light">
+        <div id="task_name">----</div>
+        <div id="task_explain"></div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-12">
+        <h5>その他情報</h5>
+        <hr class="light">
+        <div id="other_info"></div>
+      </div>
+    </div>
+
   </div>
 </body>
 <script type="text/javascript">
@@ -80,16 +95,15 @@
                     if (vehicleId != parsedData["vehicles"][i]["id"]) {
                         continue;
                     }
+                    var vehicleData = parsedData["vehicles"][i]['vehicle_status'];
 
-                    var vehicleData = parsedData["vehicles"][i];
-
-                    $('#task_name').text(vehicleData["vehicle_status"]["vehicle_operation_plan_id"])
-                    $('#status_name').text(vehicleData['vehicle_status']['status_name']);
+                    $('#status_name').text(vehicleData['status_name']);
 
                     // タスク名取得
-                    if (lastId != vehicleData["vehicle_status"]["vehicle_operation_plan_id"]) {
+                    if (vehicleData["vehicle_operation_plan_id"] != 0
+                        && lastId != vehicleData["vehicle_operation_plan_id"]) {
                         $.ajax({
-                            url: '/api/operation_plan/' + vehicleData["vehicle_status"]["vehicle_operation_plan_id"] + '/load'
+                            url: '/api/operation_plan/' + vehicleData["vehicle_operation_plan_id"] + '/load'
                         }).done(function(data) {
                             $('#task_name').text(data.name);
                             $('#task_explain').text(data.explain);
@@ -97,17 +111,25 @@
                         });
                     }
 
-                    // 緊急？
+                    // 緊急だったら背景色変更
                     if (vehicleData["status_code"] != 0) {
-                        $('.container').addClass('emergency');
+                        $("body").addClass('emergency');
                     } else {
-                        $('.container').removeClass('emergency');
+                        $("body").removeClass('emergency');
                     }
+
+                    // その他情報を表示
+                    var infoStrList = [];
+                    infoStrList.push("バッテリー(v): " + vehicleData["battery"]);
+                    infoStrList.push("ロードセル重量(kg): " + vehicleData["weight_road_cell"]);
+                    infoStrList.push("リフト高さ(cm): " + vehicleData["lift_height"]);
+                    infoStrList.push("マスト傾斜: " + vehicleData["lift_slant"]);
+                    $('#other_info').html(infoStrList.join('<br>'));
                 }
-            }
+            };
             client.onerror = function(error) {
                 console.log(error);
-            }
+            };
         }
     });</script>
 </html>
