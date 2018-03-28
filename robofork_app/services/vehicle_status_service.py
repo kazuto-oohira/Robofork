@@ -129,15 +129,15 @@ class VehicleStatusService:
 
 
     def __set_vehicle_road_cell(self, vehicle_status, data):
-        value1 = utility.from_can_singed_2(int(data["data"][1] + data["data"][0], 16))
-        value2 = utility.from_can_singed_2(int(data["data"][3] + data["data"][2], 16))
-        value3 = utility.from_can_singed_2(int(data["data"][5] + data["data"][4], 16))
-        value4 = utility.from_can_singed_2(int(data["data"][7] + data["data"][6], 16))
+        value1 = utility.from_can_singed_16bit_2hosu(int(data["data"][1] + data["data"][0], 16))
+        value2 = utility.from_can_singed_16bit_2hosu(int(data["data"][3] + data["data"][2], 16))
+        value3 = utility.from_can_singed_16bit_2hosu(int(data["data"][5] + data["data"][4], 16))
+        value4 = utility.from_can_singed_16bit_2hosu(int(data["data"][7] + data["data"][6], 16))
         vehicle_status.weight_road_cell = value1 + value2 + value3 + value4
 
 
     def __set_vehicle_lift_height(self, vehicle_status, data):
-        vehicle_status.lift_height = utility.from_can_singed_2(int(data["data"][0] + data["data"][1], 16)) * 0.001
+        vehicle_status.lift_height = utility.from_can_singed_16bit_2hosu(int(data["data"][0] + data["data"][1], 16)) * 0.001
 
 
     def __set_vehicle_interlock_1(self, vehicle_status, data):
@@ -159,8 +159,8 @@ class VehicleStatusService:
 
 
     def __set_vehicle_lift_slant(self, vehicle_status, data):
-        vehicle_status.lift_slant_x = utility.from_can_singed_2(int(data["data"][0], 16))
-        vehicle_status.lift_slant_y = utility.from_can_singed_2(int(data["data"][2], 16))
+        vehicle_status.lift_slant_x = utility.from_can_singed_8bit_2hosu(int(data["data"][0], 16))
+        vehicle_status.lift_slant_y = utility.from_can_singed_8bit_2hosu(int(data["data"][2], 16))
 
 
 class VehicleStatus:
