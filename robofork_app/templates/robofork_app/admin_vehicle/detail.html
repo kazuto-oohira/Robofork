@@ -27,16 +27,16 @@
               <div class="x_content">
                 <div class="col-md-8">
                   {% if form.instance.id %}
-                    <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal">
+                    <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
                   {% else %}
-                    <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal">
+                    <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
                   {% endif %}
                   {% csrf_token %}
                   <div class="form-group">
                     <label for="vehicle_name">車両名</label>
                     <input type="text" class="form-control" id="{{ form.name.auto_id }}"
                            name="{{ form.name.html_name }}"
-                           placeholder="車両名" value="{{ form.name.value|default_if_none:'' }}"/>
+                           placeholder="車両名" value="{{ form.name.value|default_if_none:'' }}" required/>
                     <small id="emailHelp" class="form-text text-muted">車両名を入力してください</small>
                   </div>
 
