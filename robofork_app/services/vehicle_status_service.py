@@ -60,10 +60,14 @@ class VehicleStatusService:
                     "id": vehicle_status.vehicle_id,
                     "reload": False,
                     "vehicle_status": {
+                        # ID
                         "vehicle_operation_plan_id": vehicle_status.operation_id,
+
+                        # 各ステータスをまとめた情報
                         "status_code": vehicle_status.get_status_code(),
                         "status_name": vehicle_status.get_status_name(),
 
+                        # 各ステータス
                         "battery": vehicle_status.battery,
                         "weight_road_cell": vehicle_status.weight_road_cell,
                         "lift_height": vehicle_status.lift_height,
@@ -82,6 +86,7 @@ class VehicleStatusService:
                         "lift_slant": vehicle_status.lift_slant,
                     },
                     "vehicle_positions": [
+                        # 現在位置情報
                         {
                             "x": vehicle_status.x,
                             "y": vehicle_status.y,
