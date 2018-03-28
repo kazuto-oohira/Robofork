@@ -43,6 +43,8 @@ def on_connect(client, userdata, flags, rc):
 # The callback for when a PUBLISH message is received from the server.
 def on_message(client, userdata, msg):
     # print(msg.topic + " " + str(msg.payload))
+    global web_socket
+    global web_socket_test
     global vehicle_status
 
     # TODO: 本当はElasticSerachに投げたい。いまはメモリ内データとしてclassに保持
@@ -58,7 +60,11 @@ def on_message(client, userdata, msg):
         # ステータス用ソケットへ
         result_data_json = json.dumps(result_data)
         web_socket.send(result_data_json)
-        # print(result_data_json)
+        print(result_data_json)
+
+        ws1 = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/1")
+        ws1.send(result_data_json)
+        ws1.close()
 
     # MQTTテストへ
     web_socket_test.send(msg.payload.decode('ASCII'))
@@ -67,6 +73,7 @@ def on_message(client, userdata, msg):
 while True:
     try:
         web_socket = websocket.create_connection("ws://" + web_socket_server + "/vehicle_operation_status/" + location_id)
+        print("WebSocket: " + "ws://" + web_socket_server + "/vehicle_operation_status/" + location_id + " Connected")
         web_socket_test = websocket.create_connection("ws://" + web_socket_server + "/mqtt_test_ws")
 
         client = mqtt.Client(protocol=mqtt.MQTTv311)
