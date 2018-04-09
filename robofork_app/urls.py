@@ -50,7 +50,7 @@ urlpatterns = [
     path('api/vehicle_operation_status/<int:location_id>/load/', vehicle_operation_status.load),
 
     # PLC連携
-    path('plc/execute/<int:plc_id>', plc_view.execute),
+    path('plc/execute/<int:plc_id>', plc_view.execute), # location_idをつけてもいいけど、工場に配置されるものだから不要...かな
 
     # MQTT テスト
     path('mqtt_test/<int:vehicle_id>', mqtt_test_view.index),
