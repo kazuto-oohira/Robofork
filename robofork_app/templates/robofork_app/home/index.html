@@ -3,13 +3,6 @@
 {% load static %}
 {% block title %}滋賀工場{% endblock %}
 {% block body_class %}nav-md{% endblock %}
-{% block page_style_sheets %}
-  <style type="text/css">
-  #emergency-status-label-parent {
-    overflow: visible;  /* 隣にあるラベルを正しく表示さるため */
-  }
-  </style>
-{% endblock %}
 {% block page_scripts %}
   {% render_bundle 'main' 'js' %}
   <script type="text/javascript">
