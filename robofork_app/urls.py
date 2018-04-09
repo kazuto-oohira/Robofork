@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 from robofork_app.views import admin_vehicle_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
-from robofork_app.views import operation_plan_view
+from robofork_app.views import operation_plan_view, plc_view
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency, vehicle_control
 
 
@@ -49,17 +49,13 @@ urlpatterns = [
     path('api/operation_plan/<int:vehicle_operation_plan_id>/execute', vehicle_operation_plan.execute),
     path('api/vehicle_operation_status/<int:location_id>/load/', vehicle_operation_status.load),
 
+    # PLC連携
+    path('plc/execute/<int:plc_id>', plc_view.execute),
+
     # MQTT テスト
     path('mqtt_test/<int:vehicle_id>', mqtt_test_view.index),
     path('mqtt_test/<int:vehicle_id>/route_execute', mqtt_test_view.route_execute),
-
-    # 以下はまだテスト
-    path('vehicle', admin_vehicle_view.index, name='vehicle_index'),
-    path('vehicle/new', admin_vehicle_view.new, name='vehicle_new'),
-    path('vehicle/save', admin_vehicle_view.save, name='vehicle_save'),
-    path('vehicle/save/<int:vehicle_id>', admin_vehicle_view.save, name='vehicle_save'),
-    path('vehicle/<int:vehicle_id>', admin_vehicle_view.detail, name='vehicle_detail'),
 ]
-from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency
+
 
 
