@@ -12,12 +12,9 @@ urlpatterns = [
 
     # NKC管理画面
     path('admin/location/', TemplateView.as_view(template_name='robofork_app/admin_location/index.html'), name='admin_location_index'),
-    # path('admin/vehicle/', TemplateView.as_view(template_name='robofork_app/admin_vehicle/index.html'), name='admin_vehicle_index'),
     path('admin/vehicle_status/', TemplateView.as_view(template_name='robofork_app/admin_vehicle_status/index.html'), name='admin_vehicle_status_index'),
     path('admin/user/', TemplateView.as_view(template_name='robofork_app/admin_user/index.html'), name='admin_user_index'),
     path('admin/setting/vehicle_type/', TemplateView.as_view(template_name='robofork_app/admin_setting/vehicle_type/index.html'), name='admin_setting_vehicle_type_user_index'),
-
-    # 管理画面だけど...初期に作ったのから流用したので色々あってない
     path('admin/vehicle', admin_vehicle_view.index, name='admin_vehicle_index'),
     path('admin/vehicle/new', admin_vehicle_view.new, name='vehicle_new'),
     path('admin/vehicle/save', admin_vehicle_view.save, name='vehicle_save'),

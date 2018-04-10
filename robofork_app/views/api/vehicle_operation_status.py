@@ -26,7 +26,7 @@ def load(request, location_id=1):
             "vehicle_positions": [
                 {
                     "datetime": "2018-03-20T09:00:00+09:00",
-                    "x": "-7.90",
+                    "x": "-7.90",   # TODO: xyを工場の初期設定に
                     "y": "-1.20",
                     "task": 255,
                     "speed": 0,
