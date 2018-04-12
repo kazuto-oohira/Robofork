@@ -27,9 +27,9 @@ def manual_control(request, vehicle_id=0):
 
     fork_up_value = 0
     if fork_up == 1:
-        fork_up_value = 5000
+        fork_up_value = 2500
     elif fork_up == -1:
-        fork_up_value = 100
+        fork_up_value = 75
 
     tilt_up_value = 0
     if tilt_up == 1:
