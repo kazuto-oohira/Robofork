@@ -22,13 +22,14 @@ def to_can_data(value):
     return [(i + j) for (i, j) in zip(value[::2], value[1::2])]
 
 
-def to_can_signed(value):
+def to_can_signed(value, *, for_1_byte=False):
     """
     CAN向けにU数値をSignedに変更する
-    :param value:
-    :return:
     """
-    return int(value) + 32768
+    if for_1_byte:
+        return int(value) + 128
+    else:
+        return int(value) + 32768
 
 
 def from_can_singed(value):

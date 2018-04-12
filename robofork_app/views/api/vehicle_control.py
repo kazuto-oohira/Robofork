@@ -27,22 +27,22 @@ def manual_control(request, vehicle_id=0):
 
     fork_up_value = -999
     if fork_up == 1:
-        fork_up_value = 999
+        fork_up_value = 100
     elif fork_up == -1:
-        fork_up_value = 0
+        fork_up_value = 10
 
     tilt_up_value = 0
     if tilt_up == 1:
-        tilt_up_value = 2
+        tilt_up_value = 1
     elif tilt_up == -1:
-        tilt_up_value = 4
+        tilt_up_value = -1
 
     # データ作成して送信
     send_data = utility.to_hex(0, 2) + \
                 utility.to_hex(utility.to_can_signed(speed), 4) + \
                 utility.to_hex(utility.to_can_signed(stair_angle), 4) + \
                 utility.to_hex(utility.to_can_signed(fork_up_value), 4) + \
-                utility.to_hex(tilt_up_value, 2)
+                utility.to_hex(utility.to_can_signed(tilt_up_value, for_1_byte=True), 2)
     mqtt.send(vehicle_id, can_const.CAN_ID_SND_MANUAL_CTRL, send_data, qos=mqtt.MQTT_QOS_NORMAL)
 
     return JsonResponse({ "result": True })
