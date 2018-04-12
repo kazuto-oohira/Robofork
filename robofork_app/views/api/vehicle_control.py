@@ -27,9 +27,9 @@ def manual_control(request, vehicle_id=0):
 
     fork_up_value = 0
     if fork_up == 1:
-        fork_up_value = 2500
+        fork_up_value = 2500    # 現場で調整した値
     elif fork_up == -1:
-        fork_up_value = 75
+        fork_up_value = 75      # 現場で調整した値
 
     tilt_up_value = 0
     if tilt_up == 1:
