@@ -25,11 +25,11 @@ def manual_control(request, vehicle_id=0):
     tilt_up = int(request.POST.get('tilt_up', 0))
     print(request.POST)
 
-    fork_up_value = -999
+    fork_up_value = 0
     if fork_up == 1:
-        fork_up_value = 100
+        fork_up_value = 1000
     elif fork_up == -1:
-        fork_up_value = 10
+        fork_up_value = 500
 
     tilt_up_value = 0
     if tilt_up == 1:
