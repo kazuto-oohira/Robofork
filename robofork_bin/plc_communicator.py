@@ -20,22 +20,22 @@ def handle_client_connection(handled_client_socket):
     """
     受信時処理
     """
-    request = handled_client_socket.recv(1024)
-    print('Received {}'.format(request))
+    recv_message = handled_client_socket.recv(4096)
+    print('Received {}'.format(recv_message))
 
     # 受信処理
     plc_service = PlcService()
-    plc_service.receive_plc_message(request)
-
-    handled_client_socket.send('ACK')
+    plc_service.receive_plc_message(recv_message)
+    
+    handled_client_socket.send(b'ACK')
     handled_client_socket.close()
 
 
 # TCP Socket Server
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind((socket.gethostname(), plc_server_port))
+server_socket.bind(('0.0.0.0', plc_server_port))
 server_socket.listen(1)
-print('TCP Server Listening on {}:{}'.format(socket.gethostname(), plc_server_port))
+print('TCP Server Listening on port {}'.format(plc_server_port))
 
 # 無限ループによる接続待ち処理
 while True:
