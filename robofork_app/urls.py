@@ -2,7 +2,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 from robofork_app.views import admin_vehicle_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
-from robofork_app.views import operation_plan_view, plc_view
+from robofork_app.views import operation_plan_view
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency, vehicle_control
 
 
@@ -45,9 +45,6 @@ urlpatterns = [
     path('api/operation_plan/<int:vehicle_operation_plan_id>/load', vehicle_operation_plan.load),
     path('api/operation_plan/<int:vehicle_operation_plan_id>/execute', vehicle_operation_plan.execute),
     path('api/vehicle_operation_status/<int:location_id>/load/', vehicle_operation_status.load),
-
-    # PLC連携
-    path('plc/execute/<int:plc_id>', plc_view.execute), # location_idをつけてもいいけど、工場に配置されるものだから不要...かな
 
     # MQTT テスト
     path('mqtt_test/<int:vehicle_id>', mqtt_test_view.index),
