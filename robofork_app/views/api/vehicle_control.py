@@ -23,7 +23,6 @@ def manual_control(request, vehicle_id=0):
     stair_angle = int(request.POST.get('stair_angle', 0))
     fork_up = int(request.POST.get('fork_up', 0))
     tilt_up = int(request.POST.get('tilt_up', 0))
-    print(request.POST)
 
     fork_up_value = 0
     if fork_up == 1:
