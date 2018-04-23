@@ -119,13 +119,13 @@
     <br>
     <br>
     <div class="manual-control">
-      <button id="btn-fork-up" class="btn btn-success half"><span class="glyphicon glyphicon-arrow-up"></span></button>
-      <button id="btn-fork-down" class="btn btn-success half"><span class="glyphicon glyphicon-arrow-down"></span></button>
+      <button id="btn-fork-up" class="btn btn-success half"><span id="btn-fork-up-inner" class="glyphicon glyphicon-arrow-up"></span></button>
+      <button id="btn-fork-down" class="btn btn-success half"><span id="btn-fork-down-inner" class="glyphicon glyphicon-arrow-down"></span></button>
     </div>
     <br>
     <div class="manual-control">
-      <button id="btn-tilt-up" class="btn btn-warning half"><span class="glyphicon glyphicon-chevron-left"></span></button>
-      <button id="btn-tilt-down" class="btn btn-warning half"><span class="glyphicon glyphicon-chevron-right"></span></button>
+      <button id="btn-tilt-down" class="btn btn-warning half"><span id="btn-tilt-down-inner" class="glyphicon glyphicon-chevron-left"></span></button>
+      <button id="btn-tilt-up" class="btn btn-warning half"><span id="btn-tilt-up-inner" class="glyphicon glyphicon-chevron-right"></span></button>
     </div>
   </div>
 
@@ -180,12 +180,11 @@
                 return;
             }
             forkInterval = setInterval(function() {
-                console.log('fork=' + targetId);
                 $.ajax({
                     url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        fork_up: targetId === 'btn-fork-up' ? 1 : -1
+                        fork_up: (targetId === 'btn-fork-up' || targetId === 'btn-fork-up-inner') ? 1 : -1
                     }
                 }).done(function () {}).fail(function () {});
             }, SEND_DURATION_MS);
@@ -202,12 +201,11 @@
                 return;
             }
             tiltInterval = setInterval(function() {
-                console.log('tilt=' + targetId);
                 $.ajax({
                     url: '/api/vehicle/control/' + vehicleId,
                     type: 'POST',
                     data: {
-                        tilt_up: targetId === 'btn-tilt-up' ? 1 : -1
+                        tilt_up: (targetId === 'btn-tilt-up' || targetId === 'btn-tilt-up-inner') ? 1 : -1
                     }
                 }).done(function () {}).fail(function () {});
             }, SEND_DURATION_MS);
