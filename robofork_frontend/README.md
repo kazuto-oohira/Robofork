@@ -87,8 +87,8 @@ npm run build
 通常の構築手順を踏んだ場合は特別な手順は不要です。
 そうでない場合は、以下の手順でアップデートしてください。
 
-1. robofork_frontend ディレクトリ上で `npm update`
-2. robofork_app ディレクトリ上で `pip install -r requirements.txt`
+1. robofork_frontend ディレクトリ上で、`rm -fr node_modules/`からの`npm install`
+2. `robofork_frontend/../` 一つ上のディレクトリ上で `pip install -r requirements.txt`
 
 参考までに導入手順を記載しておきます。
 
