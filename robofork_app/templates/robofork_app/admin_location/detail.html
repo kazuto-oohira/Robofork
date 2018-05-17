@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}場所明細 | Robofork{% endblock %}
+{% block body_class %}nav-md{% endblock %}
+
+{% block content %}
+  <div class="container body">
+    <div class="main_container">
+      <!-- sidebar menu -->
+      {% include "robofork_app/_admin_side_menu.html" with admin_vehicle="active" %}
+
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <div class="row">
+          <div class="col-md-12">
+            {% if form.errors %}
+              <div class="col-md-8 alert alert-danger" role="alert">
+                {% for field, error in form.errors.items %}
+                  {{ field|escape }}: {{ error|escape }}
+                {% endfor %}
+              </div>
+            {% endif %}
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>場所明細</h2>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <div class="col-md-8">
+                  {% if form.instance.id %}
+                    <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
+                  {% else %}
+                    <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
+                  {% endif %}
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="vehicle_name">場所名</label>
+                    <input type="text" class="form-control" id="{{ form.name.auto_id }}"
+                           name="{{ form.name.html_name }}"
+                           placeholder="場所名" value="{{ form.name.value|default_if_none:'' }}" required/>
+                    <small id="emailHelp" class="form-text text-muted">場所名を入力してください</small>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">場所No</label>
+                    <input type="text" class="form-control" id="{{ form.vehicle_no.auto_id }}"
+                           name="{{ form.vehicle_no.html_name }}" placeholder="場所No"
+                           value="{{ form.vehicle_no.value|default_if_none:'' }}"/>
+                    <small id="emailHelp" class="form-text text-muted">場所を識別するID等を入力してください</small>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">配置場所</label>
+                    <select id="{{ form.location.auto_id }}" name="{{ form.location.html_name }}">
+                      <option value="0">(指定しない)</option>
+                      <option value="1">滋賀工場</option>
+                    </select>
+                    <br>
+                    <small id="emailHelp" class="form-text text-muted">配置する場所を選択してください。まだ配置しない場合は"選択しない"を選択してください</small>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">メモ</label>
+                      <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
+                                cols="30" rows="10" style="width: 100%;">{{ form.extra_info_json.value|default_if_none:'' }}</textarea>
+                      <small id="emailHelp" class="form-text text-muted">部品交換メモなどを入力してください</small>
+                  </div>
+                  <div class="well">
+                      場所のメモの登録などを行います
+                  </div>
+
+                  <input type="hidden" name="{{ form.vehicle_model.html_name }}" value="1" />
+
+                  <button type="submit" class="btn btn-primary">登録</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -18,7 +18,7 @@
                                 ここに配置場所（ex:滋賀工場など）一覧が表示されます。
                             </p>
                             <div class="col-md-1 text-right">
-                                <a class="btn btn-success btn-sm">新規作成</a>
+                                <a href="{% url 'admin_location_new' %}" role="button" class="btn btn-success btn-sm">新規作成</a>
                             </div>
                             <table class="table table-striped jambo_table bulk_action">
                                 <thead>
@@ -34,24 +34,6 @@
                                         <td style="font-size:125%;">NKC滋賀工場</td>
                                         <td style="font-size:125%;">2台</td>
                                         <td style="font-size:125%;">5ルート</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-primary btn-sm">詳細</a>
-                                            <a class="btn btn-danger btn-sm">削除</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-size:125%;">XXXXXXXXXX工場</td>
-                                        <td style="font-size:125%;">5台</td>
-                                        <td style="font-size:125%;">10ルート</td>
-                                        <td class="text-right">
-                                            <a class="btn btn-primary btn-sm">詳細</a>
-                                            <a class="btn btn-danger btn-sm">削除</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-size:125%;">YYYYYYYYYYY工場</td>
-                                        <td style="font-size:125%;">1台</td>
-                                        <td style="font-size:125%;">1ルート</td>
                                         <td class="text-right">
                                             <a class="btn btn-primary btn-sm">詳細</a>
                                             <a class="btn btn-danger btn-sm">削除</a>
