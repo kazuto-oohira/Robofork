@@ -32,6 +32,11 @@
                     <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
                   {% endif %}
                   {% csrf_token %}
+
+                  <div class="well">
+                      車両型式の紐付け、配置場所の紐付け、キャリブレーション情報の紐付け、有効無効、メンテナンス情報の登録などを行います
+                  </div>
+
                   <div class="form-group">
                     <label for="vehicle_name">車両名</label>
                     <input type="text" class="form-control" id="{{ form.name.auto_id }}"
@@ -59,13 +64,17 @@
                   </div>
 
                   <div class="form-group">
+                    <label for="vehicle_vehicle_no">車両キャリブレーションデータ</label>
+                    <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
+                                cols="30" rows="10" style="width: 100%;">{{ form.extra_info_json.value|default_if_none:'' }}</textarea>
+                    <small id="emailHelp" class="form-text text-muted">制御に利用する車両キャリブレーションデータをCSV形式で登録してください</small>
+                  </div>
+
+                  <div class="form-group">
                     <label for="vehicle_vehicle_no">メモ</label>
                       <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
                                 cols="30" rows="10" style="width: 100%;">{{ form.extra_info_json.value|default_if_none:'' }}</textarea>
                       <small id="emailHelp" class="form-text text-muted">部品交換メモなどを入力してください</small>
-                  </div>
-                  <div class="well">
-                      車両型式の紐付け、配置場所の紐付け、キャリブレーション情報の紐付け、有効無効、メンテナンス情報の登録などを行います
                   </div>
 
                   <input type="hidden" name="{{ form.vehicle_model.html_name }}" value="1" />
