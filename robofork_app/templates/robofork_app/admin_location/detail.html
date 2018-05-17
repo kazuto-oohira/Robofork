@@ -6,7 +6,7 @@
   <div class="container body">
     <div class="main_container">
       <!-- sidebar menu -->
-      {% include "robofork_app/_admin_side_menu.html" with admin_vehicle="active" %}
+      {% include "robofork_app/_admin_side_menu.html" with admin_location="active" %}
 
       <!-- page content -->
       <div class="right_col" role="main">
@@ -32,6 +32,7 @@
                     <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
                   {% endif %}
                   {% csrf_token %}
+
                   <div class="form-group">
                     <label for="vehicle_name">場所名</label>
                     <input type="text" class="form-control" id="{{ form.name.auto_id }}"
@@ -41,31 +42,38 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="vehicle_vehicle_no">場所No</label>
-                    <input type="text" class="form-control" id="{{ form.vehicle_no.auto_id }}"
-                           name="{{ form.vehicle_no.html_name }}" placeholder="場所No"
-                           value="{{ form.vehicle_no.value|default_if_none:'' }}"/>
-                    <small id="emailHelp" class="form-text text-muted">場所を識別するID等を入力してください</small>
+                    <label for="vehicle_vehicle_no">運行計画マップ(画像)</label>
+                    <input type="file" />
+                    <small id="emailHelp" class="form-text text-muted">運行計画マップに利用する画像を指定します。登録できる画像形式はPNG/JPG形式です。</small>
                   </div>
 
                   <div class="form-group">
-                    <label for="vehicle_vehicle_no">配置場所</label>
-                    <select id="{{ form.location.auto_id }}" name="{{ form.location.html_name }}">
-                      <option value="0">(指定しない)</option>
-                      <option value="1">滋賀工場</option>
-                    </select>
-                    <br>
-                    <small id="emailHelp" class="form-text text-muted">配置する場所を選択してください。まだ配置しない場合は"選択しない"を選択してください</small>
+                    <label for="vehicle_name">PLC連携：受信</label>
+                    <p>
+                      PLCより受信するデータ(ASCII文字列)を定義してください。データ受信をトリガーに実行する運行計画は、各場所毎の運行計画作成画面で指定できます。
+                      また緊急停止信号を定義することもできます。
+                    </p>
+                    <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
+                              cols="30" rows="10" style="width: 100%;"></textarea>
                   </div>
 
                   <div class="form-group">
-                    <label for="vehicle_vehicle_no">メモ</label>
+                    <label for="vehicle_name">PLC連携：送信</label>
+                    <p>
+                      PLCへ受信するデータ(ASCII文字列)を定義してください。運行計画完了をトリガーにデータを送信する場合、各場所毎の運行計画作成画面で指定できます。
+                    </p>
+                    <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
+                              cols="30" rows="10" style="width: 100%;"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">防火扉位置</label>
                       <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
-                                cols="30" rows="10" style="width: 100%;">{{ form.extra_info_json.value|default_if_none:'' }}</textarea>
-                      <small id="emailHelp" class="form-text text-muted">部品交換メモなどを入力してください</small>
-                  </div>
-                  <div class="well">
-                      場所のメモの登録などを行います
+                                cols="30" rows="5" style="width: 100%;">X=100,Y=-75/X=300,Y=-200
+X=700,Y=-200/X=750,Y=-250</textarea>
+                      <div class="well">
+                          防火扉の位置を、"右上座標/左下座標"(例:X=100,Y=-75/X=300,Y=-200)の形式で指定してください。複数行登録することで複数登録できます。
+                      </div>
                   </div>
 
                   <input type="hidden" name="{{ form.vehicle_model.html_name }}" value="1" />
