@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}設定 | 車両型式{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 
@@ -25,13 +26,15 @@
                                     <tr class="headings">
                                         <th class="column-title">車両タイプ名</th>
                                         <th class="column-title">説明</th>
+                                        <th class="column-title">画像</th>
                                         <th class="column-title"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr>
                                         <td style="font-size:125%;">FG-15</td>
-                                        <td style="font-size:125%;">FG-15</td>
+                                        <td style="font-size:125%;">Robofork FG-15</td>
+                                        <td><img src="{% static 'robofork_app/img/test/tmp-fg-15.png' %}" width="100" /></td>
                                         <td class="text-right">
                                             <a href="{% url 'admin_setting_vehicle_type_detail' %}" class="btn btn-primary btn-sm">詳細</a>
                                         </td>

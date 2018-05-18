@@ -25,6 +25,6 @@ def save(request, vehicle_id=None):
     vehicle_form = VehicleForm(request.POST, instance=vehicle)
     if vehicle_form.is_valid():
         vehicle_form.save()
-        return redirect('vehicle_index')
+        return redirect('admin_vehicle_index')
     else:
         return render(request, 'robofork_app/admin_vehicle/detail.html', {'form': vehicle_form})

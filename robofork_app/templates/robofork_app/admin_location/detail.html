@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}場所明細 | Robofork{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 
@@ -45,6 +46,7 @@
                     <label for="vehicle_vehicle_no">運行計画マップ(画像)</label>
                     <input type="file" />
                     <small id="emailHelp" class="form-text text-muted">運行計画マップに利用する画像を指定します。登録できる画像形式はPNG/JPG形式です。</small>
+                    <img src="{% static 'robofork_app/img/test/tmp-ope-map.png' %}" width="350" />
                   </div>
 
                   <div class="form-group">
