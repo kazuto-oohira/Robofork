@@ -17,7 +17,7 @@
                 <li class="{{ admin_user|default:"" }}"><a href="{% url 'admin_user_index' %}"><i class="fa fa-user"></i> ユーザー管理 </a></li>
                 <li><a><i class="fa fa-cog"></i> その他設定 <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu">
-                    <li class="{{ admin_setting_vehicle_type_user_index|default:"" }}"><a href="{% url 'admin_setting_vehicle_type_user_index' %}">車輌型式</a></li>
+                    <li class="{{ admin_setting_vehicle_type_user_index|default:"" }}"><a href="{% url 'admin_setting_vehicle_type_index' %}">車輌型式</a></li>
                   </ul>
                 </li>
                 <li><a href="{% url 'home_index' 1 %}" target="_blank"><i class="fa fa-arrow-circle-right"></i> [テスト]滋賀工場管理画面へ </a></li>

@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block title %}設定 | 車両型式 | 明細{% endblock %}
+{% block body_class %}nav-md{% endblock %}
+
+{% block content %}
+  <div class="container body">
+    <div class="main_container">
+      <!-- sidebar menu -->
+      {% include "robofork_app/_admin_side_menu.html" with admin_setting_vehicle_type_user_index="active" %}
+
+      <!-- page content -->
+      <div class="right_col" role="main">
+        <div class="row">
+          <div class="col-md-12">
+            {% if form.errors %}
+              <div class="col-md-8 alert alert-danger" role="alert">
+                {% for field, error in form.errors.items %}
+                  {{ field|escape }}: {{ error|escape }}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <div class="x_panel">
+              <div class="x_title">
+                <h2>車両形式明細</h2>
+                <div class="clearfix"></div>
+              </div>
+
+              <div class="x_content">
+                <div class="col-md-8">
+                  {% if form.instance.id %}
+                    <form action="{% url 'vehicle_save' form.instance.id %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
+                  {% else %}
+                    <form action="{% url 'vehicle_save' %}" method="post" class="form-horizontal" role="form" data-toggle="validator">
+                  {% endif %}
+                  {% csrf_token %}
+
+                  <div class="form-group">
+                    <label for="vehicle_name">車両形式名</label>
+                    <input type="text" class="form-control" id="{{ form.name.auto_id }}"
+                           name="{{ form.name.html_name }}"
+                           placeholder="車両形式名" value="{{ form.name.value|default_if_none:'' }}" required/>
+                    <small id="emailHelp" class="form-text text-muted">車両形式名を入力してください</small>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_vehicle_no">車両型式画像</label>
+                    <input type="file" />
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_name">基本情報</label>
+                    <p>
+                      車両のホイルベースなど、車両形式ごとに定められた基本情報を設定する
+                    </p>
+                    <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
+                              cols="30" rows="10" style="width: 100%;">wheel-base=1550
+front-wheel-size=100
+rear-wheel-size=150
+steering-type=1</textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-primary">登録</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

@@ -1,7 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
 
-from robofork_app.views import admin_vehicle_view, admin_location_view, admin_user_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
+from robofork_app.views import admin_vehicle_view, admin_location_view, admin_user_view, admin_setting_vehicle_type_view, mqtt_test_view, home_view, vehicle_status_view, sp_view
 from robofork_app.views.operation_plan_view import OperationPlanIndexView, OperationPlanDetailView
 from robofork_app.views import operation_plan_view
 from robofork_app.views.api import mqtt, file, location, vehicle_operation_plan, vehicle_operation_status, emergency, vehicle_control
@@ -15,10 +15,12 @@ urlpatterns = [
     path('admin/location', admin_location_view.index, name='admin_location_index'),
     path('admin/location/new', admin_location_view.new, name='admin_location_new'),
 
-    path('admin/user/', admin_user_view.index, name='admin_user_index'),
+    path('admin/user', admin_user_view.index, name='admin_user_index'),
 
-    path('admin/vehicle_status/', TemplateView.as_view(template_name='robofork_app/admin_vehicle_status/index.html'), name='admin_vehicle_status_index'),
-    path('admin/setting/vehicle_type/', TemplateView.as_view(template_name='robofork_app/admin_setting/vehicle_type/index.html'), name='admin_setting_vehicle_type_user_index'),
+    path('admin/vehicle_status', TemplateView.as_view(template_name='robofork_app/admin_vehicle_status/index.html'), name='admin_vehicle_status_index'),
+
+    path('admin/setting/vehicle_type', admin_setting_vehicle_type_view.index, name='admin_setting_vehicle_type_index'),
+    path('admin/setting/vehicle_type/new', admin_setting_vehicle_type_view.new, name='admin_setting_vehicle_type_detail'),
 
     path('admin/vehicle', admin_vehicle_view.index, name='admin_vehicle_index'),
     path('admin/vehicle/new', admin_vehicle_view.new, name='vehicle_new'),
