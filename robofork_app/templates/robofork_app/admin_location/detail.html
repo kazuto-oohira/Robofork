@@ -37,7 +37,7 @@
                     <label for="vehicle_name">場所名</label>
                     <input type="text" class="form-control" id="{{ form.name.auto_id }}"
                            name="{{ form.name.html_name }}"
-                           placeholder="場所名" value="{{ form.name.value|default_if_none:'' }}" required/>
+                           placeholder="場所名" value="NKC滋賀工場" required/>
                     <small id="emailHelp" class="form-text text-muted">場所名を入力してください</small>
                   </div>
 
@@ -51,7 +51,6 @@
                     <label for="vehicle_name">PLC連携：受信</label>
                     <p>
                       PLCより受信するデータ(ASCII文字列)を定義してください。データ受信をトリガーに実行する運行計画は、各場所毎の運行計画作成画面で指定できます。
-                      また緊急停止信号を定義することもできます。
                     </p>
                     <div class="col-md-12">
                       <div class="col-md-12 text-right">
@@ -69,13 +68,6 @@
                               </tr>
                           </thead>
                           <tbody>
-                              <tr>
-                                  <td>999</td>
-                                  <td>火災警報</td>
-                                  <td class="text-right">
-                                      <a class="btn btn-danger btn-sm">削除</a>
-                                  </td>
-                              </tr>
                               <tr>
                                   <td>A1</td>
                                   <td>製品Aの製造が完了した</td>
@@ -99,7 +91,41 @@
                   <div class="form-group">
                     <label for="vehicle_name">PLC連携：送信</label>
                     <p>
-                      PLCへ受信するデータ(ASCII文字列)を定義してください。運行計画完了をトリガーにデータを送信する場合、各場所毎の運行計画作成画面で指定できます。
+                      PLCへ送信するデータ(ASCII文字列)を定義してください。運行計画完了をトリガーにデータを送信する場合、各場所毎の運行計画作成画面で指定できます。
+                    </p>
+                    <div class="col-md-12">
+                      <div class="col-md-12 text-right">
+                          <a href="#" role="button" class="btn btn-success btn-sm">追加</a>
+                      </div>
+                      <br/>
+                      <br/>
+                      <div class="col-md-12">
+                        <table class="table table-bordered bulk_action">
+                          <thead>
+                              <tr class="headings">
+                                  <th class="column-title">送信データ</th>
+                                  <th class="column-title">説明</th>
+                                  <th class="column-title"></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>CMP1</td>
+                                  <td>製品Aの棚への移動が完了した</td>
+                                  <td class="text-right">
+                                      <a class="btn btn-danger btn-sm">削除</a>
+                                  </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="vehicle_name">PLC連携：緊急停止信号</label>
+                    <p>
+                      PLCから受信する緊急停止信号データ(ASCII文字列)を定義してください
                     </p>
                     <div class="col-md-12">
                       <div class="col-md-12 text-right">
@@ -118,8 +144,8 @@
                           </thead>
                           <tbody>
                               <tr>
-                                  <td>CMP1</td>
-                                  <td>製品Aの棚への移動が完了した</td>
+                                  <td>999</td>
+                                  <td>火災報知</td>
                                   <td class="text-right">
                                       <a class="btn btn-danger btn-sm">削除</a>
                                   </td>
