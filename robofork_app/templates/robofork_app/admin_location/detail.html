@@ -53,8 +53,47 @@
                       PLCより受信するデータ(ASCII文字列)を定義してください。データ受信をトリガーに実行する運行計画は、各場所毎の運行計画作成画面で指定できます。
                       また緊急停止信号を定義することもできます。
                     </p>
-                    <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
-                              cols="30" rows="10" style="width: 100%;"></textarea>
+                    <div class="col-md-12">
+                      <div class="col-md-12 text-right">
+                          <a href="#" role="button" class="btn btn-success btn-sm">追加</a>
+                      </div>
+                      <br/>
+                      <br/>
+                      <div class="col-md-12">
+                        <table class="table table-bordered bulk_action">
+                          <thead>
+                              <tr class="headings">
+                                  <th class="column-title">受信データ</th>
+                                  <th class="column-title">説明</th>
+                                  <th class="column-title"></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>999</td>
+                                  <td>火災警報</td>
+                                  <td class="text-right">
+                                      <a class="btn btn-danger btn-sm">削除</a>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>A1</td>
+                                  <td>製品Aの製造が完了した</td>
+                                  <td class="text-right">
+                                      <a class="btn btn-danger btn-sm">削除</a>
+                                  </td>
+                              </tr>
+                              <tr>
+                                  <td>B1</td>
+                                  <td>製品B製造が完了した</td>
+                                  <td class="text-right">
+                                      <a class="btn btn-danger btn-sm">削除</a>
+                                  </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="form-group">
@@ -62,16 +101,43 @@
                     <p>
                       PLCへ受信するデータ(ASCII文字列)を定義してください。運行計画完了をトリガーにデータを送信する場合、各場所毎の運行計画作成画面で指定できます。
                     </p>
-                    <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
-                              cols="30" rows="10" style="width: 100%;"></textarea>
+                    <div class="col-md-12">
+                      <div class="col-md-12 text-right">
+                          <a href="#" role="button" class="btn btn-success btn-sm">追加</a>
+                      </div>
+                      <br/>
+                      <br/>
+                      <div class="col-md-12">
+                        <table class="table table-bordered bulk_action">
+                          <thead>
+                              <tr class="headings">
+                                  <th class="column-title">受信データ</th>
+                                  <th class="column-title">説明</th>
+                                  <th class="column-title"></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              <tr>
+                                  <td>CMP1</td>
+                                  <td>製品Aの棚への移動が完了した</td>
+                                  <td class="text-right">
+                                      <a class="btn btn-danger btn-sm">削除</a>
+                                  </td>
+                              </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
                   </div>
 
                   <div class="form-group">
                     <label for="vehicle_vehicle_no">防火扉位置</label>
+                    <p>
+                      防火扉の位置を、"右上座標/左下座標"(例:X=100,Y=-75/X=300,Y=-200)の形式で指定してください。複数行登録することで複数登録できます。
+                    </p>
                       <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
                                 cols="30" rows="5" style="width: 100%;">X=100,Y=-75/X=300,Y=-200
 X=700,Y=-200/X=750,Y=-250</textarea>
-                    <small id="emailHelp" class="form-text text-muted">防火扉の位置を、"右上座標/左下座標"(例:X=100,Y=-75/X=300,Y=-200)の形式で指定してください。複数行登録することで複数登録できます。</small>
                   </div>
 
                   <input type="hidden" name="{{ form.vehicle_model.html_name }}" value="1" />
