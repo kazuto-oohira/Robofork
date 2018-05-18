@@ -3,7 +3,7 @@ from robofork_app.models.vehicle import Vehicle, VehicleForm
 
 
 def index(request):
-    return render(request, 'robofork_app/admin_location/index.html', {'locations': None})
+    return render(request, 'robofork_app/admin_user/index.html', {'users': None})
 
 
 def new(request):

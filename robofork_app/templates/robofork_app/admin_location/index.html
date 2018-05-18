@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}NKC管理画面{% endblock %}
+{% block title %}場所一覧{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 
 {% block content %}
@@ -15,7 +15,7 @@
                         <div class="x_panel">
                             <h2>配置場所一覧</h2>
                             <p class="col-md-11">
-                                ここに配置場所（ex:滋賀工場など）一覧が表示されます。
+                                Roboforkを配置する配置場所（ex:滋賀工場など）一覧
                             </p>
                             <div class="col-md-1 text-right">
                                 <a href="{% url 'admin_location_new' %}" role="button" class="btn btn-success btn-sm">新規作成</a>

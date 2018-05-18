@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}NKC管理画面{% endblock %}
+{% block title %}ユーザー一覧{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 
 {% block content %}
@@ -10,10 +10,40 @@
 
             <!-- page content -->
             <div class="right_col" role="main">
-                <h3>ユーザー一覧:ユーザー権限や参照できる配置場所など</h3>
-                <h4>
-                    ・ユーザー新規登録・修正・削除
-                </h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="x_panel">
+                            <h2>ユーザー一覧</h2>
+                            <p class="col-md-11">
+                                Robofork管理画面を利用できるユーザー一覧
+                            </p>
+                            <div class="col-md-1 text-right">
+                                <a href="{% url 'admin_location_new' %}" role="button" class="btn btn-success btn-sm">新規作成</a>
+                            </div>
+                            <table class="table table-striped jambo_table bulk_action">
+                                <thead>
+                                    <tr class="headings">
+                                        <th class="column-title">場所名</th>
+                                        <th class="column-title">配置済み車両数</th>
+                                        <th class="column-title">運行計画数</th>
+                                        <th class="column-title"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td style="font-size:125%;">NKC滋賀工場</td>
+                                        <td style="font-size:125%;">2台</td>
+                                        <td style="font-size:125%;">5ルート</td>
+                                        <td class="text-right">
+                                            <a class="btn btn-primary btn-sm">詳細</a>
+                                            <a class="btn btn-danger btn-sm">削除</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
