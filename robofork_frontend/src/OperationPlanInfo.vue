@@ -77,12 +77,22 @@
 
             <!-- PLC連携 -->
             <div class="form-group">
-              <label class="control-label col-md-4" for="plc_signal">PLC信号連携</label>
+              <label class="control-label col-md-4" for="plc_signal_recv">PLC連携：受信後実行</label>
               <div class="col-md-8">
-                <select id="plc_signal" class="form-control">
+                <select id="plc_signal_recv" class="form-control">
                   <option>指定なし</option>
+                  <option>A1:製品Aの製造が完了した</option>
+                  <option>B1:製品B製造が完了した</option>
                 </select>
                 <small>運行開始のトリガーとなるPLC信号</small>
+              </div>
+              <label class="control-label col-md-4" for="plc_signal_send">PLC連携：完了時送信</label>
+              <div class="col-md-8">
+                <select id="plc_signal_send" class="form-control">
+                  <option>指定なし</option>
+                  <option>CMP1:製品Aの棚への移動が完了した</option>
+                </select>
+                <small>運行完了後に送信するPLC信号</small>
               </div>
             </div>
 
