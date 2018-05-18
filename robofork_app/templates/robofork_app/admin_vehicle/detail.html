@@ -66,8 +66,9 @@
                   <div class="form-group">
                     <label for="vehicle_vehicle_no">車両キャリブレーションデータ</label>
                     <textarea id="{{ form.extra_info_json.auto_id }}" name="{{ form.extra_info_json.html_name }}"
-                                cols="30" rows="10" style="width: 100%;">{{ form.extra_info_json.value|default_if_none:'' }}</textarea>
-                    <small id="emailHelp" class="form-text text-muted">制御に利用する車両キャリブレーションデータをCSV形式で登録してください</small>
+                                cols="30" rows="10" style="width: 100%;">trim-steering=-0.25
+trim-motor-rpm=-0.001</textarea>
+                    <small id="emailHelp" class="form-text text-muted">車両個別のキャリブレーションデータを設定してください</small>
                   </div>
 
                   <div class="form-group">

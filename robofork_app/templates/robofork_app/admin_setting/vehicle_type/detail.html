@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 {% block title %}設定 | 車両型式 | 明細{% endblock %}
 {% block body_class %}nav-md{% endblock %}
 
@@ -39,13 +40,14 @@
                     <label for="vehicle_name">車両形式名</label>
                     <input type="text" class="form-control" id="{{ form.name.auto_id }}"
                            name="{{ form.name.html_name }}"
-                           placeholder="車両形式名" value="{{ form.name.value|default_if_none:'' }}" required/>
+                           placeholder="車両形式名" value="FG-15" required/>
                     <small id="emailHelp" class="form-text text-muted">車両形式名を入力してください</small>
                   </div>
 
                   <div class="form-group">
                     <label for="vehicle_vehicle_no">車両型式画像</label>
                     <input type="file" />
+                    <img src="{% static 'robofork_app/img/test/tmp-fg-15.png' %}" width="350" />
                   </div>
 
                   <div class="form-group">
